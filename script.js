@@ -319,16 +319,13 @@
     }
 
     /* =========================================================
-       Request Final Quote
+       Request Final Quote  →  emails LEAD_EMAIL via FormSubmit
        ---------------------------------------------------------
-       TODO once the site is hosted: set QUOTE_ENDPOINT to your form
-       backend URL (Formspree, Web3Forms, your own server, etc.) and
-       requests will POST there — reaching your Gmail inbox and, with
-       an SMS bridge (e.g. Twilio/Zapier), your company number too.
-       Until then, the button opens the visitor's email app with
-       everything pre-filled and addressed to jbroswc@gmail.com.
+       No account or key needed. The FIRST time a request is sent,
+       FormSubmit emails LEAD_EMAIL a one-time "Activate" link —
+       click it once and every request after that lands in the inbox.
        ========================================================= */
-    var QUOTE_ENDPOINT = ""; // e.g. "https://formspree.io/f/xxxxxx"
+    var LEAD_EMAIL = "jbroswc@gmail.com";
 
     function collectRequest() {
       var f = function (n) { return form.querySelector('[name="' + n + '"]').value.trim(); };
@@ -374,15 +371,34 @@
         var body = collectRequest();
         var name = form.querySelector('[name="name"]').value.trim();
 
-        if (QUOTE_ENDPOINT) {
-          fetch(QUOTE_ENDPOINT, {
+        if (LEAD_EMAIL) {
+          reqBtn.disabled = true;
+          reqBtn.textContent = "Sending…";
+          fetch("https://formsubmit.co/ajax/" + encodeURIComponent(LEAD_EMAIL), {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify({ subject: "Quote request: " + name, message: body })
-          }).then(function () {
-            reqBtn.textContent = "✓ Request Sent";
-            reqBtn.disabled = true;
-          });
+            body: JSON.stringify({
+              _subject: "New quote request: " + name,
+              _template: "table",
+              _captcha: "false",
+              name: name,
+              phone: form.querySelector('[name="phone"]').value.trim(),
+              email: form.querySelector('[name="email"]').value.trim(),
+              message: body
+            })
+          }).then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data && String(data.success) === "true") {
+                reqBtn.textContent = "✓ Request Sent";
+              } else {
+                reqBtn.disabled = false;
+                reqBtn.textContent = "Didn't send — tap to retry";
+              }
+            })
+            .catch(function () {
+              reqBtn.disabled = false;
+              reqBtn.textContent = "Didn't send — tap to retry";
+            });
         } else {
           window.location.href =
             "mailto:jbroswc@gmail.com" +
