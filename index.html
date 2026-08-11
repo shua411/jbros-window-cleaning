@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JBros Window Cleaning | Making Your Home Worth Looking At</title>
+  <meta name="description" content="Professional window cleaning, pressure washing & exterior care across Vancouver, the North Shore, Coquitlam & Burnaby. Fully insured & bonded. Get an instant quote." />
+
+  <!-- Anton = web-safe Impact-style heading font; others are Avenir fallbacks (see fonts/README.txt) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===== Constantly-moving city carousel (above header) ===== -->
+  <div class="citybar" aria-label="Service areas">
+    <div class="citybar__track">
+      <span class="citybar__group">
+        <span>Vancouver</span><i>◆</i>
+        <span>North Vancouver</span><i>◆</i>
+        <span>West Vancouver</span><i>◆</i>
+        <span>Coquitlam</span><i>◆</i>
+        <span>Burnaby</span><i>◆</i>
+      </span>
+    </div>
+  </div>
+
+  <!-- ===== Sticky Navigation ===== -->
+  <header class="nav" id="nav">
+    <div class="wrap nav__inner">
+      <a href="#top" class="brand" aria-label="JBros Window Cleaning home">
+        <img src="images/logo.png" alt="JBros Window Cleaning" class="brand__logo" />
+        <span class="brand__mark">JB</span>
+        <span class="brand__text"><b>JBROS</b><small>WINDOW CLEANING</small></span>
+      </a>
+
+      <nav class="nav__links" id="navLinks">
+        <a href="#reviews">Reviews</a>
+        <a href="#services">Services</a>
+        <a href="#plans">Plans</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="nav__cta">
+        <a href="tel:7789570282" class="phone">778 957 0282</a>
+        <a href="#quote" class="btn btn--grad btn--sm">Get Quote</a>
+      </div>
+
+      <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Hero + Instant Quote (dark island that fades into the silver page) ===== -->
+  <section class="hero" id="top">
+    <!-- save a photo as images/hero.jpg and it becomes the dimmed hero background -->
+    <div class="hero__bg" data-img="images/hero.jpg"></div>
+    <div class="hero__glow"></div>
+    <div class="wrap hero__grid">
+
+      <div class="hero__copy reveal">
+        <h1 class="hero__title">
+          <span class="hero__big">Miss The View?</span>
+          <span class="glow-text">We Make Your Home<br />Worth Looking At.</span>
+        </h1>
+        <p class="hero__sub">
+          Professional window cleaning and exterior cleaning services for homes across
+          the North Shore and Greater Vancouver. Book it once, or
+          <a href="#plans" class="setforget">set it and forget it<span class="setforget__tip">Check out maintenance plans</span></a>.
+        </p>
+
+        <div class="hero__trust">
+          <div><b>350+</b><span>Homes cleaned</span></div>
+          <div><b>4 yrs</b><span>In business</span></div>
+          <div><b>5.0★</b><span>Rated service</span></div>
+          <div><b>✓</b><span>Insured &amp; bonded</span></div>
+        </div>
+
+        <div class="hero__actions">
+          <a href="#quote" class="btn btn--grad">Get an instant estimate</a>
+          <a href="#services" class="btn btn--ghostlight">View services</a>
+        </div>
+      </div>
+
+      <!-- Instant Quote form -->
+      <div class="quote reveal" id="quote">
+        <div class="quote__head">
+          <h2>Instant Quote</h2>
+          <p>Get a price range in seconds. The more detail you add, the more accurate it gets.</p>
+        </div>
+
+        <form class="quote__form" id="quoteForm" novalidate>
+
+          <div class="field field--2">
+            <div>
+              <label>Name <em>*</em></label>
+              <input type="text" name="name" placeholder="Jane Smith" required />
+            </div>
+            <div>
+              <label>Phone <em>*</em></label>
+              <input type="tel" name="phone" placeholder="778 000 0000" required />
+            </div>
+          </div>
+
+          <div class="field field--2">
+            <div>
+              <label>Email <em>*</em></label>
+              <input type="email" name="email" placeholder="you@email.com" required />
+            </div>
+            <div>
+              <label>City</label>
+              <select name="city">
+                <option>North Vancouver</option>
+                <option>West Vancouver</option>
+                <option>Vancouver</option>
+                <option>Coquitlam</option>
+                <option>Burnaby</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Address <em>*</em></label>
+            <input type="text" name="address" placeholder="123 Lonsdale Ave" required />
+          </div>
+
+          <div class="field field--2">
+            <div>
+              <label>Home size</label>
+              <select name="size" id="size">
+                <option value="0.78">Small (condo / 1–2 bed)</option>
+                <option value="1" selected>Medium (3–4 bed)</option>
+                <option value="1.4">Large (5+ bed / estate)</option>
+              </select>
+            </div>
+            <div>
+              <label>Stories</label>
+              <select name="stories" id="stories">
+                <option value="0.85">1 storey</option>
+                <option value="1" selected>2 storeys</option>
+                <option value="1.28">3+ storeys</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Services needed</label>
+            <p class="field__hint">Only the fields above are required. More detail below means a tighter price range.</p>
+
+            <div class="svcs" id="svcs">
+
+              <!-- Window cleaning -->
+              <div class="svc" data-svc="windows">
+                <label class="svc__head">
+                  <input type="checkbox" class="svc__check" checked />
+                  <span class="svc__name">Window cleaning</span>
+                  <i class="svc__chev">▾</i>
+                </label>
+                <div class="svc__panel">
+                  <div class="opt">
+                    <label>What's included?</label>
+                    <select data-opt="scope">
+                      <option value="ext">Exterior only</option>
+                      <option value="int">Interior only</option>
+                      <option value="both">Interior &amp; Exterior</option>
+                    </select>
+                  </div>
+                  <div class="opt opt--2">
+                    <div>
+                      <label>Skylights</label>
+                      <select data-opt="skylights">
+                        <option value="0">None</option>
+                        <option value="35">1–2</option>
+                        <option value="75">3–5</option>
+                        <option value="130">6+</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Clean the screens too?</label>
+                      <select data-opt="screens">
+                        <option value="0">No screens</option>
+                        <option value="30">Yes, about 1–10</option>
+                        <option value="55">Yes, about 11–20</option>
+                        <option value="85">Yes, 21+</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="opt opt--2">
+                    <div>
+                      <label>Patio ceiling glass / glass awning</label>
+                      <select data-opt="awning">
+                        <option value="0">None</option>
+                        <option value="45">1–10 panes</option>
+                        <option value="85">11–20 panes</option>
+                        <option value="135">21+ panes</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Glass deck railings</label>
+                      <select data-opt="railings">
+                        <option value="0">None</option>
+                        <option value="90">1–10 panes</option>
+                        <option value="150">11–20 panes</option>
+                        <option value="230">21–40 panes</option>
+                        <option value="330">40+ panes</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pressure washing -->
+              <div class="svc" data-svc="pressure">
+                <label class="svc__head">
+                  <input type="checkbox" class="svc__check" />
+                  <span class="svc__name">Pressure washing</span>
+                  <i class="svc__chev">▾</i>
+                </label>
+                <div class="svc__panel">
+                  <div class="opt">
+                    <label>Which surfaces?</label>
+                    <div class="minichecks">
+                      <label class="mchk"><input type="checkbox" data-surface="140" checked /><span>Driveway</span></label>
+                      <label class="mchk"><input type="checkbox" data-surface="125" /><span>Patio / deck</span></label>
+                      <label class="mchk"><input type="checkbox" data-surface="85" /><span>Walkways</span></label>
+                      <label class="mchk"><input type="checkbox" data-surface="130" /><span>Fences</span></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- House washing -->
+              <div class="svc" data-svc="house">
+                <label class="svc__head">
+                  <input type="checkbox" class="svc__check" />
+                  <span class="svc__name">House washing</span>
+                  <i class="svc__chev">▾</i>
+                </label>
+                <div class="svc__panel">
+                  <div class="opt opt--2">
+                    <div>
+                      <label>Siding material</label>
+                      <select data-opt="siding">
+                        <option value="vinyl">Vinyl</option>
+                        <option value="stucco">Stucco</option>
+                        <option value="wood">Wood</option>
+                        <option value="brick">Brick</option>
+                        <option value="metal">Metal</option>
+                        <option value="unsure" selected>Not sure</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Wash the roof too?</label>
+                      <select data-opt="roof">
+                        <option value="0">No</option>
+                        <option value="270">Yes</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gutter cleaning -->
+              <div class="svc" data-svc="gutters">
+                <label class="svc__head">
+                  <input type="checkbox" class="svc__check" />
+                  <span class="svc__name">Gutter cleaning</span>
+                  <i class="svc__chev">▾</i>
+                </label>
+                <div class="svc__panel">
+                  <div class="opt opt--2">
+                    <div>
+                      <label>How many stories have gutters?</label>
+                      <select data-opt="gutterStories">
+                        <option value="160">1 storey</option>
+                        <option value="230" selected>2 storeys</option>
+                        <option value="320">3+ storeys</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Last cleaned?</label>
+                      <select data-opt="gutterLast">
+                        <option value="0">Within 6 months</option>
+                        <option value="0" selected>6–12 months ago</option>
+                        <option value="40">1–2 years ago</option>
+                        <option value="75">Over 2 years ago</option>
+                        <option value="60">Never / not sure</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Solar panel cleaning -->
+              <div class="svc" data-svc="solar">
+                <label class="svc__head">
+                  <input type="checkbox" class="svc__check" />
+                  <span class="svc__name">Solar panel cleaning</span>
+                  <i class="svc__chev">▾</i>
+                </label>
+                <div class="svc__panel">
+                  <div class="opt opt--2">
+                    <div>
+                      <label>How many panels?</label>
+                      <select data-opt="panels">
+                        <option value="160">1–10</option>
+                        <option value="240" selected>11–20</option>
+                        <option value="350">21+</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Protective nano coating?</label>
+                      <select data-opt="nano">
+                        <option value="0">No</option>
+                        <option value="120">Yes</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Photos <span class="optional">(optional)</span></label>
+            <label class="upload" for="photoInput">
+              <input type="file" id="photoInput" accept="image/*" multiple hidden />
+              <span id="uploadText">📷 &nbsp;Add photos of your home to help us quote faster</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn--grad btn--full">Get my instant estimate</button>
+
+          <div class="estimate" id="estimate" hidden>
+            <div class="estimate__label">Estimated range</div>
+            <div class="estimate__value" id="estimateValue">$0 – $0</div>
+            <p class="estimate__note">Rough estimate for the services selected. <b>Save up to $100 every visit</b> with a maintenance plan below.</p>
+            <button type="button" class="btn btn--light btn--full" id="requestQuote">Request Final Quote</button>
+            <p class="estimate__follow">We'll get back to you within the hour. Once everything looks good, we'll confirm a date and get you serviced.</p>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Testimonials (social proof first) ===== -->
+  <section class="section" id="reviews">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow">Loved Locally</span>
+        <h2 class="section__title">Don't Just Take Our Word For It</h2>
+        <p class="section__lead">There's a reason people keep calling us back. When your home matters, you don't hand it to just anyone.</p>
+      </div>
+
+      <div class="tstscroll reveal" id="tstscroll">
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"Didn't realize how grimy our windows had gotten until these guys hit them. Signed up for the bi-annual plan on the spot. Now they just show up twice a year and I never think about it. Streak-free every time."</blockquote>
+            <figcaption><b>Ryan M.</b><span class="tst__co">Exterior Window Cleaning</span><span class="tst__loc">North Vancouver</span></figcaption>
+          </div>
+        </figure>
+
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"Had the windows done and the whole house soft-washed. The siding looks years younger and the glass is spotless. Place looks brand new from the street."</blockquote>
+            <figcaption><b>Jared T.</b><span class="tst__co">Exterior Window Cleaning + House Washing</span><span class="tst__loc">West Vancouver</span></figcaption>
+          </div>
+        </figure>
+
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"Did the windows inside and out and the whole house feels brighter now. We got on the quarterly plan so they're always spotless, and the discount every visit is a nice bonus. So happy with it."</blockquote>
+            <figcaption><b>Priya S.</b><span class="tst__co">Exterior &amp; Interior Window Cleaning</span><span class="tst__loc">Vancouver</span></figcaption>
+          </div>
+        </figure>
+
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"Pressure-washed our driveway and patio and it looks like fresh concrete. Years of moss and grime just gone. Punctual, thorough, and great to deal with."</blockquote>
+            <figcaption><b>Kevin L.</b><span class="tst__co">Pressure Washing</span><span class="tst__loc">Coquitlam</span></figcaption>
+          </div>
+        </figure>
+
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"Booked them for the windows and ended up adding the driveway too. Whole place looks brand new. Great guys, great work."</blockquote>
+            <figcaption><b>Daniel W.</b><span class="tst__co">Exterior Window Cleaning + Pressure Washing</span><span class="tst__loc">Vancouver</span></figcaption>
+          </div>
+        </figure>
+
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"Quick, professional, and the windows are spotless. I'm on their maintenance plan now and honestly it's the best decision. They just handle it and I never have to remember to book. Highly recommend."</blockquote>
+            <figcaption><b>Marcus B.</b><span class="tst__co">Exterior Window Cleaning</span><span class="tst__loc">Port Moody</span></figcaption>
+          </div>
+        </figure>
+
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"Got the windows and gutters done before the rainy season. Gutters were packed and now everything drains properly. Windows look amazing too. 10/10."</blockquote>
+            <figcaption><b>Arjun P.</b><span class="tst__co">Exterior Window Cleaning + Gutter Cleaning</span><span class="tst__loc">North Burnaby</span></figcaption>
+          </div>
+        </figure>
+
+        <figure class="tst">
+          <div class="tst__body">
+            <div class="stars">★★★★★</div>
+            <blockquote>"They did all our windows plus the glass deck railings and everything is crystal clear now. You can barely tell the glass is there. Two young guys doing genuinely great work."</blockquote>
+            <figcaption><b>Emily C.</b><span class="tst__co">Exterior &amp; Interior Window Cleaning + Deck Glass</span><span class="tst__loc">North Vancouver</span></figcaption>
+          </div>
+        </figure>
+      </div>
+      <p class="tsthint" id="tsthint">Scroll for more reviews <span>↓</span></p>
+    </div>
+  </section>
+
+  <!-- ===== Services ===== -->
+  <section class="section section--alt" id="services">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow">What We Do</span>
+        <h2 class="section__title">Our Services</h2>
+        <p class="section__lead">Pure-water, streak-free results and gentle soft-wash methods that protect your property. Tap a service to start your quote.</p>
+      </div>
+
+      <div class="cards" id="serviceCards">
+        <article class="card card--big reveal" data-quote="windows" data-scope="ext">
+          <div class="card__img" data-img="images/service-exterior.jpg" style="background-image:url('https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=1200&q=80')"></div>
+          <span class="card__tag">Our specialty</span>
+          <div class="card__body"><h3>Exterior Window Cleaning</h3><p>Pure-water pole system leaves glass spotless and streak-free, even hard-to-reach panes.</p></div>
+        </article>
+        <article class="card reveal" data-quote="windows" data-scope="int">
+          <div class="card__img" data-img="images/service-interior.jpg" style="background-image:url('https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=900&q=80')"></div>
+          <div class="card__body"><h3>Interior Window Cleaning</h3><p>Detailed inside-glass cleaning with sills and tracks wiped down. Shoe covers and care, always.</p></div>
+        </article>
+        <article class="card reveal" data-quote="gutters">
+          <div class="card__img" data-img="images/service-gutter.jpg" style="background-image:url('https://images.unsplash.com/photo-1632759145351-1d592919f522?auto=format&fit=crop&w=900&q=80')"></div>
+          <span class="card__tag">Our specialty</span>
+          <div class="card__body"><h3>Gutter Cleaning</h3><p>Full debris clear-out and downspout flush so rain flows where it should, not down your walls.</p></div>
+        </article>
+        <article class="card card--big reveal" data-quote="pressure">
+          <div class="card__img" data-img="images/service-pressure.jpg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80')"></div>
+          <span class="card__tag">Our specialty</span>
+          <div class="card__body"><h3>Pressure Washing</h3><p>Driveways, patios, walkways and stairs, lifting years of grime, moss and stains.</p></div>
+        </article>
+        <article class="card card--big reveal" data-quote="house">
+          <div class="card__img" data-img="images/service-housewash.jpg" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80')"></div>
+          <span class="card__tag">Our specialty</span>
+          <div class="card__body"><h3>House Washing</h3><p>Low-pressure soft wash safely removes algae and dirt from siding without damage.</p></div>
+        </article>
+        <article class="card reveal" data-quote="solar">
+          <div class="card__img" data-img="images/service-solar.jpg" style="background-image:url('https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80')"></div>
+          <div class="card__body"><h3>Solar Panel Cleaning</h3><p>Gentle, deionized-water cleaning that clears buildup and keeps your panels producing.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Before & After ===== -->
+  <section class="section" id="beforeafter">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow">See The Difference</span>
+        <h2 class="section__title">Before &amp; After</h2>
+      </div>
+
+      <div class="bas">
+        <figure class="ba-block reveal">
+          <div class="ba">
+            <div class="ba__img ba__after" data-img="images/after-1.jpg" style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="ba__img ba__before" data-img="images/before-1.jpg" style="background-image:url('https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=1200&q=80')"></div>
+          </div>
+          <label class="ba__slider">
+            <input type="range" min="0" max="100" value="50" aria-label="Reveal before and after" />
+            <span>Slide to see results</span>
+          </label>
+          <figcaption>Exterior windows · North Vancouver</figcaption>
+        </figure>
+
+        <figure class="ba-block reveal">
+          <div class="ba">
+            <div class="ba__img ba__after" data-img="images/after-2.jpg" style="background-image:url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="ba__img ba__before" data-img="images/before-2.jpg" style="background-image:url('https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1200&q=80')"></div>
+          </div>
+          <label class="ba__slider">
+            <input type="range" min="0" max="100" value="50" aria-label="Reveal before and after" />
+            <span>Slide to see results</span>
+          </label>
+          <figcaption>Patio ceiling glass · Burnaby</figcaption>
+        </figure>
+
+        <figure class="ba-block reveal">
+          <div class="ba">
+            <div class="ba__img ba__after" data-img="images/after-3.jpg" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="ba__img ba__before" data-img="images/before-3.jpg" style="background-image:url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1200&q=80')"></div>
+          </div>
+          <label class="ba__slider">
+            <input type="range" min="0" max="100" value="50" aria-label="Reveal before and after" />
+            <span>Slide to see results</span>
+          </label>
+          <figcaption>Full house wash · West Vancouver</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Maintenance Plans ===== -->
+  <section class="section section--alt" id="plans">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow">Set It &amp; Forget It</span>
+        <h2 class="section__title">Window Care Maintenance Plans</h2>
+        <p class="section__lead">Keep your home looking its best year-round and lock in a lower rate. Cancel anytime.</p>
+      </div>
+
+      <div class="plans">
+        <article class="plan reveal">
+          <div class="plan__top">
+            <h3>Yearly</h3>
+            <p class="plan__freq">1 visit per year</p>
+            <div class="plan__price"><span class="plan__save">Base rate</span></div>
+          </div>
+          <ul class="plan__list">
+            <li>Full interior &amp; exterior window cleaning</li>
+            <li>Ideal for low dust &amp; pollen areas</li>
+            <li>Most budget-friendly option</li>
+            <li>Automatic annual reminder</li>
+          </ul>
+          <a href="#quote" class="btn btn--ghost btn--full">Choose Yearly</a>
+        </article>
+
+        <article class="plan plan--featured reveal">
+          <div class="plan__ribbon">★ Recommended ★</div>
+          <div class="plan__top">
+            <h3>Bi-Annual</h3>
+            <p class="plan__freq">2 visits per year</p>
+            <div class="plan__price"><span class="plan__pct grad-text">$50</span><span class="plan__off">off every visit</span></div>
+          </div>
+          <ul class="plan__list">
+            <li>Two full cleanings (Spring + Fall)</li>
+            <li>Clears seasonal pollen &amp; buildup</li>
+            <li>Best balance of value &amp; clarity</li>
+            <li>Priority scheduling</li>
+            <li>Free touch-ups between visits</li>
+          </ul>
+          <a href="#quote" class="btn btn--grad btn--full">Choose Bi-Annual</a>
+        </article>
+
+        <article class="plan reveal">
+          <div class="plan__top">
+            <h3>Quarterly</h3>
+            <p class="plan__freq">4 visits per year</p>
+            <div class="plan__price"><span class="plan__pct grad-text">$100</span><span class="plan__off">off every visit</span></div>
+          </div>
+          <ul class="plan__list">
+            <li>3 exterior + 1 interior cleaning per year</li>
+            <li>Always spotless, always show-ready</li>
+            <li>Early detection of glass &amp; frame issues</li>
+            <li>VIP scheduling &amp; top priority</li>
+          </ul>
+          <a href="#quote" class="btn btn--ghost btn--full">Choose Quarterly</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== How it works ===== -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow">Simple Process</span>
+        <h2 class="section__title">How It Works - The JBros Way</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><span class="step__n">1</span><div><h4>Get Your Quote</h4><p>Use the instant estimator or send us a photo. We reply fast.</p></div></div>
+        <div class="step reveal"><span class="step__n">2</span><div><h4>Pick A Time</h4><p>Choose a day that works, most jobs booked within the week.</p></div></div>
+        <div class="step reveal"><span class="step__n">3</span><div><h4>We Clean</h4><p>Insured, careful pros arrive on time with pro-grade gear.</p></div></div>
+        <div class="step reveal"><span class="step__n">4</span><div><h4>You Enjoy The View</h4><p>Not thrilled? We come back and make it right. Guaranteed.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About Us ===== -->
+  <section class="section section--alt" id="about">
+    <div class="wrap about">
+      <div class="about__copy reveal">
+        <span class="eyebrow">Who We Are</span>
+        <h2 class="section__title">The Guys Behind The Glass</h2>
+        <p>
+          JBros started back in our sophomore year of high school. Two friends, a squeegee,
+          and a lot of doors knocked on. Four years and 350+ homes later, we're still the
+          ones showing up at your door, just with better gear and a lot more experience.
+        </p>
+        <p>
+          We're local, we're fully insured and bonded, and we treat every house like it's our
+          mom's. If it's not perfect, we come back. Simple as that.
+        </p>
+        <a href="#quote" class="btn btn--grad">Work with us</a>
+      </div>
+
+      <div class="about__photo reveal">
+        <div class="about__img" data-img="images/founders.jpg" data-label="Your photo here (images/founders.jpg)"></div>
+        <div class="about__names">
+          <div><b>Joshua Tran</b><span>Co-Founder</span></div>
+          <div><b>Jayden Tesson</b><span>Co-Founder</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Final CTA / Contact ===== -->
+  <section class="cta" id="contact">
+    <div class="wrap cta__inner reveal">
+      <h2>What Are You Still Waiting For?</h2>
+      <p>Get your free, no-pressure quote today. We respond fast, usually the same day.</p>
+      <div class="cta__actions">
+        <a href="#quote" class="btn btn--grad btn--lg">Get my instant estimate</a>
+        <a href="tel:7789570282" class="btn btn--ghost btn--lg">Call 778 957 0282</a>
+      </div>
+      <div class="cta__meta">
+        <a href="https://jbroswc.ca" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9s1.4-6.4 3.9-9z"/></svg>
+          jbroswc.ca
+        </a>
+        <a href="mailto:jbroswc@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          jbroswc@gmail.com
+        </a>
+        <a href="https://instagram.com/jbroswindowcleaning_" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
+          @jbroswindowcleaning_
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="section section--alt" id="faq">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow">Good To Know</span>
+        <h2 class="section__title">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq">
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">How much does it cost?<i>+</i></button>
+          <div class="faq__a"><div><p>Every home is different, so we price by size, stories and the services you pick. The instant estimator above gives you a realistic range in seconds, and we confirm a firm, no-surprises price before any work starts. No hidden fees, ever.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">Do I need to be home during the service?<i>+</i></button>
+          <div class="faq__a"><div><p>Not for exterior work. Just leave gates unlocked and an outdoor tap accessible and we'll take care of the rest. For interior window cleaning, someone just needs to let us in at the start.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">What if it rains right after my cleaning?<i>+</i></button>
+          <div class="faq__a"><div><p>Rain itself rarely dirties clean glass. It's dust and debris that cause spots, and our pure-water rinse dries spot-free. If your windows ever look off within 48 hours of a clean, we'll come back and touch them up for free.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">Are you insured?<i>+</i></button>
+          <div class="faq__a"><div><p>Yes, JBros is fully insured and bonded. Your home, landscaping and property are protected the entire time we're on site, and we treat every job like it's our own house.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">How do you reach high or awkward windows?<i>+</i></button>
+          <div class="faq__a"><div><p>We use professional water-fed carbon-fibre poles that reach 3+ storeys from the ground. No ladders leaning on your siding, no scratched glass, and a safer job all around. Purified water means the glass dries crystal clear with zero streaks.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">How often should I get my windows cleaned?<i>+</i></button>
+          <div class="faq__a"><div><p>On the West Coast, twice a year (spring and fall) keeps most homes looking sharp year-round, which is exactly why our Bi-Annual plan is the one we recommend. It also takes $50 off every visit, with free touch-ups in between.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">What areas do you serve?<i>+</i></button>
+          <div class="faq__a"><div><p>We're based on the North Shore and serve Vancouver, North Vancouver, West Vancouver, Coquitlam and Burnaby. Just outside those areas? Reach out anyway. If the job's a good fit, we'll usually make the trip.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">How far in advance do I need to book?<i>+</i></button>
+          <div class="faq__a"><div><p>Most jobs get booked within the same week. Spring and summer fill up fastest, so it's worth reaching out a week or two ahead, and maintenance plan members always get priority scheduling, no matter the season.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">Are your products safe for kids, pets and plants?<i>+</i></button>
+          <div class="faq__a"><div><p>Yes. Windows are cleaned with purified water, no chemicals at all. For house and pressure washing we use biodegradable, exterior-safe solutions and rinse down your landscaping before and after, so gardens, pets and little ones are all good.</p></div></div>
+        </div>
+        <div class="faq__item reveal">
+          <button class="faq__q" type="button">How and when do I pay?<i>+</i></button>
+          <div class="faq__a"><div><p>Payment is only due once the job is done and you've had a look at the results. We accept e-transfer, credit card and cash, whatever's easiest for you, and you'll always get a receipt.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <div class="footer__brand brand brand--footer">
+        <img src="images/logo.png" alt="JBros Window Cleaning" class="brand__logo" />
+        <span class="brand__mark">JB</span>
+        <div class="brand__text"><b>JBROS WINDOW CLEANING</b></div>
+      </div>
+      <div class="footer__cols">
+        <div><h5>Services</h5><a href="#services">Windows</a><a href="#services">Pressure washing</a><a href="#services">House washing</a><a href="#services">Solar panels</a></div>
+        <div><h5>Company</h5><a href="#plans">Plans</a><a href="#about">About</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></div>
+        <div><h5>Contact</h5><a href="tel:7789570282">778 957 0282</a><a href="mailto:jbroswc@gmail.com">jbroswc@gmail.com</a><a href="https://jbroswc.ca" target="_blank" rel="noopener">jbroswc.ca</a><a href="https://instagram.com/jbroswindowcleaning_" target="_blank" rel="noopener">@jbroswindowcleaning_</a></div>
+      </div>
+    </div>
+    <div class="footer__bar"><div class="wrap">© <span id="year"></span> JBros Window Cleaning</div></div>
+  </footer>
+
+  <!-- ===== Mobile sticky action bar ===== -->
+  <div class="mobilebar" id="mobilebar">
+    <a href="tel:7789570282" class="btn btn--ghost">Call now</a>
+    <a href="#quote" class="btn btn--grad">Instant quote</a>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

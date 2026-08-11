@@ -1,0 +1,7 @@
+# macOS junk files
+.DS_Store
+**/.DS_Store
+
+# Editor / temp files
+*.swp
+*~
