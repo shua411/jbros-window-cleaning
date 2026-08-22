@@ -390,6 +390,7 @@
             .then(function (data) {
               if (data && String(data.success) === "true") {
                 reqBtn.textContent = "✓ Request Sent";
+                if (window.fbq) fbq("track", "Lead"); // Meta Pixel conversion
               } else {
                 reqBtn.disabled = false;
                 reqBtn.textContent = "Didn't send — tap to retry";
