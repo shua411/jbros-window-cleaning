@@ -441,6 +441,43 @@ h1,h2,h3,h4,h5{
 .tsthint span{display:inline-block;animation:bob 1.6s ease-in-out infinite;color:var(--blue2);font-weight:700}
 @keyframes bob{50%{transform:translateY(4px)}}
 
+/* ---------- Instagram gallery: 3-col feed mosaic, click-through tiles ---------- */
+.iggrid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;
+  max-width:900px;margin:0 auto;
+}
+.ig{
+  position:relative;display:block;aspect-ratio:1/1;
+  border-radius:14px;overflow:hidden;
+  background-size:cover;background-position:center;background-color:#dfe5ee;
+  border:1px solid var(--line);
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+}
+.ig--big{grid-column:span 2;grid-row:span 2}
+.ig:hover{
+  transform:translateY(-4px) scale(1.01);
+  border-color:rgba(66,155,248,.55);
+  box-shadow:0 0 0 1px rgba(66,155,248,.3),0 16px 44px rgba(0,78,212,.35);
+}
+.ig__badge{
+  position:absolute;top:.6rem;right:.6rem;z-index:2;
+  width:28px;height:28px;border-radius:9px;
+  display:grid;place-items:center;
+  background:rgba(4,6,11,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  color:#fff;
+}
+.ig__badge svg{width:15px;height:15px}
+.ig__ov{
+  position:absolute;inset:0;z-index:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
+  background:linear-gradient(180deg,rgba(0,78,212,.25),rgba(4,6,11,.65));
+  color:#fff;font-family:var(--font-head);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;
+  opacity:0;transition:opacity .3s ease;
+}
+.ig__ov svg{width:30px;height:30px}
+.ig:hover .ig__ov{opacity:1}
+.igcta{text-align:center;margin-top:1.8rem}
+
 /* ---------- Service cards: mosaic grid, full-bleed image, blue glow hover ---------- */
 .cards{display:grid;grid-template-columns:repeat(6,1fr);gap:1.2rem}
 .card{
@@ -786,6 +823,14 @@ h1,h2,h3,h4,h5{
   .tst.lit{transform:none;animation:none} /* no float on the swipe rail */
   .tst blockquote{font-size:.92rem}
   .tsthint span{transform:rotate(-90deg);animation:none} /* arrow points sideways */
+
+  /* instagram gallery: tighter feed look on phones */
+  .iggrid{gap:.35rem}
+  .ig{border-radius:9px}
+  .ig__badge{width:24px;height:24px;border-radius:7px;top:.45rem;right:.45rem}
+  .ig__badge svg{width:13px;height:13px}
+  .igcta{margin-top:1.4rem}
+  .igcta .btn{width:100%}
 
   /* services rail */
   .cards{

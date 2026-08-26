@@ -3,7 +3,9 @@
     "allow": [
       "Bash(git add *)",
       "Bash(git commit -q -m 'Add Meta Pixel + Lead event, remove testimonials section \\(saved for later\\) *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(open \"/Users/joshuatran/Jbros Website/index.html\")",
+      "Bash(git commit -q -m 'Add Instagram gallery section between quote form and services *)"
     ]
   }
 }
