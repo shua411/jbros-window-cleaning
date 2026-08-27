@@ -318,23 +318,30 @@
        ========================================================= */
     var LEAD_EMAIL = "jbroswc@gmail.com";
 
-    function collectRequest() {
+    /* callbackOnly = customer skipped the details and just wants a phone call */
+    function collectRequest(callbackOnly) {
       var f = function (n) { return form.querySelector('[name="' + n + '"]').value.trim(); };
       var sel = function (id) {
         var s = document.getElementById(id);
         return s.options[s.selectedIndex].textContent;
       };
       var lines = [
-        "New quote request from the website",
+        callbackOnly
+          ? "*** CALLBACK REQUEST — customer would rather talk on the phone ***"
+          : "New quote request from the website",
         "",
         "Name: " + f("name"),
         "Phone: " + f("phone"),
         "Email: " + f("email"),
         "Address: " + f("address") + ", " + form.querySelector('[name="city"]').value,
         "Home: " + sel("size") + " · " + sel("stories"),
-        "",
-        "Services requested:"
+        ""
       ];
+      if (callbackOnly) {
+        lines.push("They did not fill out the service details — give them a call.");
+        return lines.join("\n");
+      }
+      lines.push("Services requested:");
       svcs.forEach(function (svc) {
         if (!svc.querySelector(".svc__check").checked) return;
         var name = svc.querySelector(".svc__name").textContent;
@@ -355,49 +362,66 @@
       return lines.join("\n");
     }
 
+    /* shared sender for both the full quote request and the callback request */
+    function sendLead(btn, opts) {
+      if (!validate()) return;
+      var name = form.querySelector('[name="name"]').value.trim();
+      var body = collectRequest(opts.callbackOnly);
+
+      if (!LEAD_EMAIL) {
+        window.location.href =
+          "mailto:jbroswc@gmail.com" +
+          "?subject=" + encodeURIComponent(opts.subject + name) +
+          "&body=" + encodeURIComponent(body);
+        btn.textContent = "✓ Opening your email, just hit send";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Sending…";
+      fetch("https://formsubmit.co/ajax/" + encodeURIComponent(LEAD_EMAIL), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: opts.subject + name,
+          _template: "table",
+          _captcha: "false",
+          name: name,
+          phone: form.querySelector('[name="phone"]').value.trim(),
+          email: form.querySelector('[name="email"]').value.trim(),
+          message: body
+        })
+      }).then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && String(data.success) === "true") {
+            btn.textContent = opts.done;
+            if (window.fbq) fbq("track", "Lead"); // Meta Pixel conversion
+          } else {
+            btn.disabled = false;
+            btn.textContent = "Didn't send — tap to retry";
+          }
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = "Didn't send — tap to retry";
+        });
+    }
+
     var reqBtn = document.getElementById("requestQuote");
     if (reqBtn) {
       reqBtn.addEventListener("click", function () {
-        if (!validate()) return;
-        var body = collectRequest();
-        var name = form.querySelector('[name="name"]').value.trim();
+        sendLead(reqBtn, { subject: "New quote request: ", done: "✓ Request Sent" });
+      });
+    }
 
-        if (LEAD_EMAIL) {
-          reqBtn.disabled = true;
-          reqBtn.textContent = "Sending…";
-          fetch("https://formsubmit.co/ajax/" + encodeURIComponent(LEAD_EMAIL), {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify({
-              _subject: "New quote request: " + name,
-              _template: "table",
-              _captcha: "false",
-              name: name,
-              phone: form.querySelector('[name="phone"]').value.trim(),
-              email: form.querySelector('[name="email"]').value.trim(),
-              message: body
-            })
-          }).then(function (r) { return r.json(); })
-            .then(function (data) {
-              if (data && String(data.success) === "true") {
-                reqBtn.textContent = "✓ Request Sent";
-                if (window.fbq) fbq("track", "Lead"); // Meta Pixel conversion
-              } else {
-                reqBtn.disabled = false;
-                reqBtn.textContent = "Didn't send — tap to retry";
-              }
-            })
-            .catch(function () {
-              reqBtn.disabled = false;
-              reqBtn.textContent = "Didn't send — tap to retry";
-            });
-        } else {
-          window.location.href =
-            "mailto:jbroswc@gmail.com" +
-            "?subject=" + encodeURIComponent("Quote request: " + name) +
-            "&body=" + encodeURIComponent(body);
-          reqBtn.textContent = "✓ Opening your email, just hit send";
-        }
+    var callBtn = document.getElementById("callMeBtn");
+    if (callBtn) {
+      callBtn.addEventListener("click", function () {
+        sendLead(callBtn, {
+          callbackOnly: true,
+          subject: "CALLBACK REQUEST: ",
+          done: "✓ Got it — we'll call you shortly"
+        });
       });
     }
   }
