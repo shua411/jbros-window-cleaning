@@ -221,7 +221,7 @@
         }
 
         if (kind === "gutters") {
-          sub = num(svc, "gutterStories") * size + num(svc, "gutterLast");
+          sub = num(svc, "gutterStories") * size + num(svc, "gutterLast") + num(svc, "roofClean");
         }
 
         if (kind === "solar") {

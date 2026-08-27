@@ -74,103 +74,102 @@
     </div>
   </header>
 
-  <!-- ===== Hero + Instant Quote (dark island that fades into the silver page) ===== -->
+  <!-- ===== Hero (centered, fills the opening view) ===== -->
   <section class="hero" id="top">
     <!-- save a photo as images/hero.jpg and it becomes the dimmed hero background -->
     <div class="hero__bg" data-img="images/hero.jpg"></div>
     <div class="hero__glow"></div>
-    <div class="wrap hero__grid">
+    <div class="wrap hero__center reveal">
 
-      <div class="hero__copy reveal">
-        <h1 class="hero__title">
-          <span class="hero__big">Miss The View?</span>
-          <span class="glow-text">We Make Your Home<br />Worth Looking At.</span>
-        </h1>
-        <p class="hero__sub">
-          Professional window cleaning and exterior cleaning services for homes across
-          the North Shore and Greater Vancouver. Book it once, or
-          <a href="#plans" class="setforget">set it and forget it<span class="setforget__tip">Check out maintenance plans</span></a>.
-        </p>
+      <h1 class="hero__title">
+        <span class="hero__big">Miss The View?</span>
+        <span class="glow-text">We Make Your Home Worth Looking At.</span>
+      </h1>
+      <p class="hero__sub">
+        Professional window cleaning and exterior cleaning services for homes across the North Shore and Greater Vancouver.<br />
+        Book it once, or
+        <a href="#plans" class="setforget">set it and forget it<span class="setforget__tip">Check out maintenance plans</span></a>.
+      </p>
 
-        <div class="hero__trust">
-          <div><b>350+</b><span>Homes cleaned</span></div>
-          <div><b>4 yrs</b><span>In business</span></div>
-          <div><b>5.0★</b><span>Rated service</span></div>
-          <div><b>✓</b><span>Insured &amp; bonded</span></div>
-        </div>
-
-        <div class="hero__actions">
-          <a href="#quote" class="btn btn--grad">Get an instant estimate</a>
-          <a href="#services" class="btn btn--ghostlight">View services</a>
-        </div>
+      <div class="hero__actions">
+        <a href="#quote" class="btn btn--grad">Get an instant estimate</a>
+        <a href="#services" class="btn btn--ghostlight">View services</a>
       </div>
 
-      <!-- Instant Quote form -->
-      <div class="quote reveal" id="quote">
+    </div>
+  </section>
+
+  <!-- ===== Instant Quote (own section, wide + short) ===== -->
+  <section class="section quotesec" id="quote">
+    <div class="wrap">
+      <div class="quote reveal">
         <div class="quote__head">
           <h2>Instant Quote</h2>
           <p>Get a price range in seconds. The more detail you add, the more accurate it gets.</p>
         </div>
 
         <form class="quote__form" id="quoteForm" novalidate>
+          <div class="quotegrid">
 
-          <div class="field field--2">
-            <div>
-              <label>Name <em>*</em></label>
-              <input type="text" name="name" placeholder="Jane Smith" required />
-            </div>
-            <div>
-              <label>Phone <em>*</em></label>
-              <input type="tel" name="phone" placeholder="778 000 0000" required />
-            </div>
-          </div>
+            <div class="qcol qcol--contact">
+              <div class="field field--2">
+                <div>
+                  <label>Name <em>*</em></label>
+                  <input type="text" name="name" placeholder="Jane Smith" required />
+                </div>
+                <div>
+                  <label>Phone <em>*</em></label>
+                  <input type="tel" name="phone" placeholder="778 000 0000" required />
+                </div>
+              </div>
 
-          <div class="field field--2">
-            <div>
-              <label>Email <em>*</em></label>
-              <input type="email" name="email" placeholder="you@email.com" required />
-            </div>
-            <div>
-              <label>City</label>
-              <select name="city">
-                <option>North Vancouver</option>
-                <option>West Vancouver</option>
-                <option>Vancouver</option>
-                <option>Coquitlam</option>
-                <option>Burnaby</option>
-              </select>
-            </div>
-          </div>
+              <div class="field field--2">
+                <div>
+                  <label>Email <em>*</em></label>
+                  <input type="email" name="email" placeholder="you@email.com" required />
+                </div>
+                <div>
+                  <label>City</label>
+                  <select name="city">
+                    <option>North Vancouver</option>
+                    <option>West Vancouver</option>
+                    <option>Vancouver</option>
+                    <option>Coquitlam</option>
+                    <option>Burnaby</option>
+                  </select>
+                </div>
+              </div>
 
-          <div class="field">
-            <label>Address <em>*</em></label>
-            <input type="text" name="address" placeholder="123 Lonsdale Ave" required />
-          </div>
+              <div class="field">
+                <label>Address <em>*</em></label>
+                <input type="text" name="address" placeholder="123 Lonsdale Ave" required />
+              </div>
 
-          <div class="field field--2">
-            <div>
-              <label>Home size</label>
-              <select name="size" id="size">
-                <option value="0.78">Small (condo / 1–2 bed)</option>
-                <option value="1" selected>Medium (3–4 bed)</option>
-                <option value="1.4">Large (5+ bed / estate)</option>
-              </select>
+              <div class="field field--2">
+                <div>
+                  <label>Home size</label>
+                  <select name="size" id="size">
+                    <option value="0.78">Small (condo / 1–2 bed)</option>
+                    <option value="1" selected>Medium (3–4 bed)</option>
+                    <option value="1.4">Large (5+ bed / estate)</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Stories</label>
+                  <select name="stories" id="stories">
+                    <option value="0.85">1 storey</option>
+                    <option value="1" selected>2 storeys</option>
+                    <option value="1.28">3+ storeys</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div>
-              <label>Stories</label>
-              <select name="stories" id="stories">
-                <option value="0.85">1 storey</option>
-                <option value="1" selected>2 storeys</option>
-                <option value="1.28">3+ storeys</option>
-              </select>
-            </div>
-          </div>
 
-          <div class="field">
-            <label>Services needed</label>
-            <p class="field__hint">Only the fields above are required. More detail below means a tighter price range.</p>
+            <div class="qcol qcol--services">
+              <label class="field__toplabel">Services needed</label>
+              <p class="field__hint">Only the fields on the left are required. More detail below means a tighter price range.</p>
 
-            <div class="svcs" id="svcs">
+              <div class="svcs" id="svcs">
 
               <!-- Window cleaning -->
               <div class="svc" data-svc="windows">
@@ -311,6 +310,13 @@
                       </select>
                     </div>
                   </div>
+                  <div class="opt">
+                    <label>Add a basic roof clean? (moss &amp; debris up top end up back in clean gutters)</label>
+                    <select data-opt="roofClean">
+                      <option value="0">No, just the gutters</option>
+                      <option value="200">Yes, clear moss &amp; debris off the roof</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -345,26 +351,29 @@
             </div>
           </div>
 
-          <div class="field">
-            <label>Photos <span class="optional">(optional)</span></label>
-            <label class="upload" for="photoInput">
-              <input type="file" id="photoInput" accept="image/*" multiple hidden />
-              <span id="uploadText">📷 &nbsp;Add photos of your home to help us quote faster</span>
-            </label>
-          </div>
+            <div class="qcol qcol--send">
+              <div class="field">
+                <label>Photos <span class="optional">(optional)</span></label>
+                <label class="upload" for="photoInput">
+                  <input type="file" id="photoInput" accept="image/*" multiple hidden />
+                  <span id="uploadText">📷 &nbsp;Add photos of your home to help us quote faster</span>
+                </label>
+              </div>
 
-          <button type="submit" class="btn btn--grad btn--full">Get my instant estimate</button>
+              <button type="submit" class="btn btn--grad btn--full">Get my instant estimate</button>
 
-          <div class="estimate" id="estimate" hidden>
-            <div class="estimate__label">Estimated range</div>
-            <div class="estimate__value" id="estimateValue">$0 – $0</div>
-            <p class="estimate__note">Rough estimate for the services selected. <b>Save up to $100 every visit</b> with a maintenance plan below.</p>
-            <button type="button" class="btn btn--light btn--full" id="requestQuote">Request Final Quote</button>
-            <p class="estimate__follow">We'll get back to you within the hour. Once everything looks good, we'll confirm a date and get you serviced.</p>
-          </div>
+              <div class="estimate" id="estimate" hidden>
+                <div class="estimate__label">Estimated range</div>
+                <div class="estimate__value" id="estimateValue">$0 – $0</div>
+                <p class="estimate__note">Rough estimate for the services selected. <b>Save up to $100 every visit</b> with a maintenance plan below.</p>
+                <button type="button" class="btn btn--light btn--full" id="requestQuote">Request Final Quote</button>
+                <p class="estimate__follow">We'll get back to you within the hour. Once everything looks good, we'll confirm a date and get you serviced.</p>
+              </div>
+            </div>
+
+          </div><!-- /quotegrid -->
         </form>
       </div>
-
     </div>
   </section>
 
