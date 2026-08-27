@@ -86,11 +86,14 @@
      (e.g. a file gets deleted) and swaps in a graceful gradient + label
      instead of a broken image. */
   document.querySelectorAll("[data-img]").forEach(function (el) {
-    var m = el.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+    var m = el.style.backgroundImage && el.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
     var src = m ? m[1] : el.getAttribute("data-img");
     if (!src) return;
 
     var test = new Image();
+    test.onload = function () {
+      el.style.backgroundImage = "url('" + src + "')";
+    };
     test.onerror = function () {
       el.classList.add("noimg");
       el.style.backgroundImage = "";
