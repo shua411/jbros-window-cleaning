@@ -79,39 +79,27 @@
     reveals.forEach(function (el) { el.classList.add("in"); });
   }
 
-  /* ---- Image loading for [data-img] spots ---- */
+  /* ---- Image loading for [data-img] spots ----
+     The HTML already sets each element's real background-image directly,
+     so the browser can request and cache it normally (no re-fetching, no
+     cache-busting). This just watches for a photo going missing later
+     (e.g. a file gets deleted) and swaps in a graceful gradient + label
+     instead of a broken image. */
   document.querySelectorAll("[data-img]").forEach(function (el) {
-    var local = el.getAttribute("data-img");
-    var inline = el.style.backgroundImage;
-    var m = inline && inline.match(/url\(["']?(.*?)["']?\)/);
-    var stockUrl = m ? m[1] : null;
+    var m = el.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+    var src = m ? m[1] : el.getAttribute("data-img");
+    if (!src) return;
 
-    // Always prefer YOUR local image (images/xxx.jpg). If it exists, use it.
-    // If not, fall back to the stock URL, and if that fails too, show the gradient placeholder.
-    var tryLocal = new Image();
-    tryLocal.onload = function () {
-      el.style.backgroundImage = "url('" + local + "')";
-      el.classList.remove("noimg");
-    };
-    tryLocal.onerror = function () {
-      if (stockUrl) {
-        var tryStock = new Image();
-        tryStock.onerror = showPlaceholder;
-        tryStock.src = stockUrl; // stock stays as the inline background if it loads
-      } else {
-        showPlaceholder();
-      }
-    };
-    tryLocal.src = local + "?v=" + Date.now(); // cache-bust so newly added photos show on refresh
-
-    function showPlaceholder() {
+    var test = new Image();
+    test.onerror = function () {
       el.classList.add("noimg");
       el.style.backgroundImage = "";
       if (!el.getAttribute("data-label")) {
         var h3 = el.parentElement && el.parentElement.querySelector("h3");
         el.setAttribute("data-label", h3 ? h3.textContent : "Photo");
       }
-    }
+    };
+    test.src = src;
   });
 
   /* ---- FAQ accordion ---- */
