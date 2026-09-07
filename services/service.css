@@ -5,7 +5,8 @@
 /* page header band — glowing blue */
 .svchero{
   position:relative;
-  padding:clamp(3rem,6vw,5rem) 0 clamp(5rem,9vw,7.5rem);
+  /* top padding clears the floating nav bubble, which sits over this band */
+  padding:calc(var(--navh) + clamp(1.5rem,3vw,2.5rem)) 0 clamp(5rem,9vw,7.5rem);
   background:
     radial-gradient(90% 120% at 50% 0%,#1e6fd9 0%,#0b46b4 45%,#062a72 78%,rgba(6,42,114,0) 100%);
   text-align:center;overflow:hidden;
@@ -63,19 +64,19 @@
 }
 .svclist b{color:var(--text)}
 
-/* process timeline: connected line with numbered nodes */
+/* process timeline: horizontal line running through numbered nodes */
 .svcsteps{
   position:relative;
   display:grid;grid-template-columns:repeat(4,1fr);
   gap:1.4rem;padding-top:.5rem;
 }
-/* the line that runs through the nodes */
+/* the line the nodes sit on */
 .svcsteps::before{
   content:"";position:absolute;top:22px;left:12.5%;right:12.5%;height:3px;
   background:linear-gradient(90deg,rgba(0,78,212,.15),var(--blue2) 25%,var(--blue2) 75%,rgba(0,78,212,.15));
   border-radius:99px;
 }
-.svcstep{position:relative;text-align:center;padding-top:0}
+.svcstep{position:relative;text-align:center}
 .svcstep__n{
   position:relative;z-index:1;
   width:44px;height:44px;border-radius:50%;margin:0 auto .9rem;
@@ -93,14 +94,15 @@
 .svcstep p{font-size:.85rem;color:var(--muted);margin:0;line-height:1.6}
 
 @media (max-width:760px){
-  /* vertical timeline on small screens */
+  /* vertical timeline only on small screens, where 4 columns won't fit */
   .svcsteps{grid-template-columns:1fr;gap:1.5rem}
   .svcsteps::before{
     top:8px;bottom:8px;left:22px;right:auto;width:3px;height:auto;
     background:linear-gradient(180deg,var(--blue2),rgba(0,78,212,.15));
   }
   .svcstep{display:flex;gap:1rem;text-align:left;align-items:flex-start}
-  .svcstep__n{margin:0;flex:none;width:44px;height:44px}
+  .svcstep__n{margin:0;flex:none}
+  .svcstep__body{padding-top:.35rem}
   .svcstep h3{font-size:1rem}
 }
 

@@ -39,6 +39,10 @@
 
   --wrap:1180px;
   --r:18px;
+
+  /* nav bubble (80px) + its .55rem top/bottom padding */
+  --navh:98px;
+  --citybarh:32px;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -142,21 +146,37 @@ h1,h2,h3,h4,h5{
 /* ---------- Nav (dark frosted, matches hero stat boxes) ---------- */
 .nav{
   position:sticky;top:0;z-index:50;
-  background:rgba(255,255,255,.72);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line);
-  transition:background .3s ease, box-shadow .3s ease;
+  background:transparent;
+  padding:.55rem 0;
+  /* pull the next section up so the hero image runs underneath the bubble
+     instead of the page background showing behind it */
+  margin-bottom:calc(-1 * var(--navh));
 }
-.nav.scrolled{background:rgba(255,255,255,.92);box-shadow:0 6px 30px rgba(15,30,60,.08)}
-.nav__inner{display:flex;align-items:center;gap:1.5rem;height:88px}
+/* always a floating translucent bubble; it just tightens up on scroll */
+.nav__inner{
+  display:flex;align-items:center;gap:1.5rem;height:80px;
+  border:1px solid rgba(255,255,255,.7);border-radius:999px;
+  padding-inline:1.3rem;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  box-shadow:0 8px 28px rgba(15,30,60,.12);
+  transition:height .35s ease, background .35s ease, box-shadow .35s ease;
+}
+.nav.scrolled .nav__inner{
+  height:70px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 10px 34px rgba(15,30,60,.18);
+}
 
 .brand{display:flex;align-items:center;gap:.65rem}
 /* fits inside the 88px bar with a small gap top & bottom */
 .brand__logo{
-  display:none;height:72px;width:auto;
+  display:none;height:64px;width:auto;
   filter:drop-shadow(0 3px 8px rgba(15,30,60,.18));
+  transition:height .35s ease;
 }
+.nav.scrolled .brand__logo{height:56px}
 .brand.haslogo .brand__logo{display:block}
 .brand.haslogo .brand__mark,.brand.haslogo .brand__text{display:none}
 .brand__mark{
@@ -170,12 +190,14 @@ h1,h2,h3,h4,h5{
 .brand__text small{font-size:.58rem;letter-spacing:.28em;color:var(--muted);margin-top:3px}
 
 .nav__links{display:flex;gap:1.6rem;margin-inline:auto}
-.nav__links a{font-size:.92rem;color:var(--muted);position:relative;transition:color .2s}
+.nav__links a{font-size:.92rem;color:var(--muted);position:relative;transition:color .25s}
 .nav__links a::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--grad);transition:width .25s}
 .nav__links a:hover{color:var(--text)}
 .nav__links a:hover::after{width:100%}
+
 .nav__cta{display:flex;align-items:center;gap:1rem;margin-left:auto}
 .phone{font-family:var(--font-head);font-size:.9rem;letter-spacing:.04em;color:var(--text)}
+
 .nav__burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:6px}
 .nav__burger span{width:24px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
 .nav__burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
@@ -186,10 +208,10 @@ h1,h2,h3,h4,h5{
 .hero{
   position:relative;
   display:flex;align-items:center;justify-content:center;
-  /* fills the opening view: viewport minus citybar + nav */
-  min-height:calc(100vh - 122px);
-  min-height:calc(100svh - 122px);
-  padding:clamp(2.5rem,4vw,3.5rem) 0 clamp(3rem,5vw,4.5rem);
+  /* fills the opening view: viewport minus the citybar (the nav floats on top) */
+  min-height:calc(100vh - var(--citybarh));
+  min-height:calc(100svh - var(--citybarh));
+  padding:calc(var(--navh) + clamp(1rem,2vw,1.8rem)) 0 clamp(3rem,5vw,4.5rem);
   overflow:hidden;
   background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 80%,rgba(10,18,32,0) 100%);
 }
@@ -817,9 +839,15 @@ section[id]{scroll-margin-top:100px}
   .about{grid-template-columns:1fr;gap:2.2rem}
   .nav__links{display:none}
   .nav__links.open{
-    display:flex;flex-direction:column;position:absolute;top:88px;left:0;right:0;
-    background:rgba(255,255,255,.97);padding:1.4rem 6vw;gap:1.2rem;border-bottom:1px solid var(--line);margin:0;
+    display:flex;flex-direction:column;position:absolute;top:100%;left:1.5%;right:1.5%;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    padding:1.3rem 1.6rem;gap:1.2rem;margin:.5rem 0 0;
+    border:1px solid rgba(255,255,255,.7);border-radius:20px;
+    box-shadow:0 14px 40px rgba(15,30,60,.18);
   }
+  /* dropdown panel is light, so its links are always dark */
+  .nav__links.open a{color:var(--muted);text-shadow:none}
+  .nav__links.open a:hover{color:var(--text)}
   .nav__burger{display:flex}
   .nav__cta .phone{display:none}
 }
@@ -837,8 +865,8 @@ section[id]{scroll-margin-top:100px}
   /* hero: full-screen opener on phones too; cut the expensive blur
      effects that lag scrolling */
   .hero{
-    min-height:calc(100vh - 105px);
-    min-height:calc(100svh - 105px);
+    min-height:calc(100vh - var(--citybarh));
+    min-height:calc(100svh - var(--citybarh));
     background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 78%,rgba(10,18,32,0) 100%);
   }
   .hero__glow{filter:none}
@@ -854,15 +882,18 @@ section[id]{scroll-margin-top:100px}
 
   .citybar__group{font-size:.68rem;padding:.42rem 0;letter-spacing:.14em}
   .citybar__group span{padding:0 .8rem}
-  .nav__inner{height:72px;gap:.8rem}
-  .nav__links.open{top:72px}
+  /* shorter bubble + citybar on phones */
+  :root{--navh:90px;--citybarh:27px}
+  .nav__inner{height:72px;gap:.8rem;padding-inline:1rem}
+  .nav.scrolled .nav__inner{height:62px}
   .brand__logo{height:58px}
+  .nav.scrolled .brand__logo{height:48px}
   .brand__mark{width:34px;height:34px;border-radius:9px;font-size:.8rem}
   .brand__text b{font-size:.92rem}
   .brand__text small{font-size:.5rem;letter-spacing:.22em}
   .nav__cta .btn{display:none}
 
-  .hero{padding:2.2rem 0 3rem}
+  .hero{padding:calc(var(--navh) + .8rem) 0 3rem}
   .hero__title{font-size:clamp(2rem,9.4vw,2.7rem)}
   .hero__sub{font-size:.98rem;margin:1.2rem auto 1.5rem}
   .hero__actions .btn{--pad:.8rem 1.3rem;font-size:.85rem}
