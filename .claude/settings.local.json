@@ -10,7 +10,8 @@
       "Bash(git commit -q -m 'New gallery + before/after photos, deck glass caption, 1.2k followers mention *)",
       "Bash(git commit -q -m 'Link each gallery tile to its Instagram post/highlight *)",
       "Bash(open index.html)",
-      "Bash(git commit -q -m 'Add callback shortcut: send basic details for a phone call instead of full form *)"
+      "Bash(git commit -q -m 'Add callback shortcut: send basic details for a phone call instead of full form *)",
+      "Bash(python3 gen_pages.py)"
     ]
   }
 }

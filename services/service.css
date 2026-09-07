@@ -1,0 +1,121 @@
+/* =========================================================
+   JBros — service detail pages (layered on top of styles.css)
+   ========================================================= */
+
+/* page header band — glowing blue */
+.svchero{
+  position:relative;
+  padding:clamp(3rem,6vw,5rem) 0 clamp(5rem,9vw,7.5rem);
+  background:
+    radial-gradient(90% 120% at 50% 0%,#1e6fd9 0%,#0b46b4 45%,#062a72 78%,rgba(6,42,114,0) 100%);
+  text-align:center;overflow:hidden;
+}
+/* soft moving light so it reads as "glowing", not flat */
+.svchero__glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(45% 55% at 50% 12%,rgba(140,200,255,.5),transparent 70%),
+    radial-gradient(35% 45% at 15% 70%,rgba(66,155,248,.35),transparent 70%),
+    radial-gradient(35% 45% at 85% 60%,rgba(66,155,248,.3),transparent 70%);
+  filter:blur(6px);
+  animation:svcpulse 7s ease-in-out infinite;
+}
+@keyframes svcpulse{
+  0%,100%{opacity:.85}
+  50%{opacity:1}
+}
+.svchero .wrap{position:relative}
+.svchero__back{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.82rem;color:rgba(255,255,255,.75);margin-bottom:1.4rem;
+  transition:color .2s;
+}
+.svchero__back:hover{color:#fff}
+.svchero h1{
+  font-size:clamp(2.2rem,5vw,3.6rem);color:#fff;
+  text-shadow:0 2px 30px rgba(0,0,0,.5);
+}
+.svchero p{
+  color:rgba(255,255,255,.9);font-size:clamp(1rem,1.5vw,1.15rem);
+  max-width:60ch;margin:1.2rem auto 0;line-height:1.7;
+  text-shadow:0 1px 12px rgba(0,20,60,.5);
+}
+.svchero__back{color:rgba(255,255,255,.8)}
+
+/* body */
+.svcbody{padding:clamp(2.5rem,5vw,4rem) 0 clamp(3rem,6vw,5rem)}
+.svcwrap{width:min(880px,92vw);margin-inline:auto}
+
+.svcblock{margin-bottom:clamp(2.2rem,4vw,3.2rem)}
+.svcblock h2{
+  font-size:clamp(1.4rem,2.6vw,2rem);color:var(--text);margin-bottom:1rem;
+}
+.svcblock p{color:var(--muted);line-height:1.75;margin-bottom:.9rem}
+
+/* why-it-matters bullets */
+.svclist{list-style:none;display:grid;gap:.85rem;margin-top:.4rem}
+.svclist li{position:relative;padding-left:1.9rem;color:#3a4658;line-height:1.65}
+.svclist li::before{
+  content:"✓";position:absolute;left:0;top:.15rem;
+  width:21px;height:21px;border-radius:50%;
+  background:var(--grad-soft);color:var(--blue1);
+  display:grid;place-items:center;font-size:.72rem;font-weight:900;
+}
+.svclist b{color:var(--text)}
+
+/* process timeline: connected line with numbered nodes */
+.svcsteps{
+  position:relative;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1.4rem;padding-top:.5rem;
+}
+/* the line that runs through the nodes */
+.svcsteps::before{
+  content:"";position:absolute;top:22px;left:12.5%;right:12.5%;height:3px;
+  background:linear-gradient(90deg,rgba(0,78,212,.15),var(--blue2) 25%,var(--blue2) 75%,rgba(0,78,212,.15));
+  border-radius:99px;
+}
+.svcstep{position:relative;text-align:center;padding-top:0}
+.svcstep__n{
+  position:relative;z-index:1;
+  width:44px;height:44px;border-radius:50%;margin:0 auto .9rem;
+  background:var(--grad);color:#fff;
+  display:grid;place-items:center;
+  font-family:var(--font-head);font-size:1.05rem;
+  box-shadow:0 0 0 5px #fff,0 6px 18px rgba(0,78,212,.35);
+  transition:transform .3s,box-shadow .3s;
+}
+.svcstep:hover .svcstep__n{
+  transform:translateY(-3px);
+  box-shadow:0 0 0 5px #fff,0 10px 26px rgba(66,155,248,.55);
+}
+.svcstep h3{font-size:.98rem;margin-bottom:.4rem;color:var(--text);line-height:1.3}
+.svcstep p{font-size:.85rem;color:var(--muted);margin:0;line-height:1.6}
+
+@media (max-width:760px){
+  /* vertical timeline on small screens */
+  .svcsteps{grid-template-columns:1fr;gap:1.5rem}
+  .svcsteps::before{
+    top:8px;bottom:8px;left:22px;right:auto;width:3px;height:auto;
+    background:linear-gradient(180deg,var(--blue2),rgba(0,78,212,.15));
+  }
+  .svcstep{display:flex;gap:1rem;text-align:left;align-items:flex-start}
+  .svcstep__n{margin:0;flex:none;width:44px;height:44px}
+  .svcstep h3{font-size:1rem}
+}
+
+/* closing CTA */
+.svccta{
+  text-align:center;background:#fff;
+  border:1px solid var(--line);border-radius:20px;
+  padding:clamp(1.8rem,4vw,2.8rem) 1.5rem;
+  box-shadow:0 18px 50px rgba(15,30,60,.12);
+}
+.svccta h2{font-size:clamp(1.5rem,3vw,2.2rem);color:var(--text);margin-bottom:.7rem}
+.svccta p{color:var(--muted);max-width:46ch;margin:0 auto 1.5rem;line-height:1.65}
+.svccta__row{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap}
+
+@media (max-width:640px){
+  .svcshots{grid-template-columns:1fr}
+  .svccta__row .btn{width:100%}
+}

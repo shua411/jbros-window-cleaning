@@ -228,10 +228,10 @@ h1,h2,h3,h4,h5{
   position:relative;text-align:center;
   display:flex;flex-direction:column;align-items:center;
 }
-.hero__title{font-size:clamp(2.5rem,5.6vw,4.3rem);color:#fff}
+.hero__title{font-size:clamp(2.1rem,4.4vw,3.4rem);color:#fff}
 .hero__big{display:block;font-size:1.32em;color:#fff}
 .hero__title .glow-text{display:block;margin-top:.08em}
-.hero__sub{color:var(--hero-muted);font-size:clamp(1rem,1.6vw,1.2rem);max-width:56ch;margin:clamp(2rem,4vw,3rem) auto clamp(2.2rem,4vw,3rem);line-height:1.7}
+.hero__sub{color:var(--hero-muted);font-size:clamp(.95rem,1.35vw,1.05rem);max-width:56ch;margin:clamp(1.1rem,2vw,1.5rem) auto clamp(1.3rem,2.2vw,1.7rem);line-height:1.6}
 
 /* "set it and forget it" highlight + hover tip */
 .setforget{
@@ -257,6 +257,37 @@ h1,h2,h3,h4,h5{
 .setforget:hover .setforget__tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 
 .hero__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
+
+/* ---------- Google reviews ticker (under the hero CTAs) ---------- */
+.rvbar{
+  position:relative;width:min(880px,92vw);margin:clamp(1.8rem,3.5vw,2.8rem) auto 0;
+  overflow:hidden;
+  /* fade in/out at both edges instead of hard cropping */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+}
+.rvbar__track{display:flex;width:max-content;animation:rvscroll 80s linear infinite}
+.rvbar:hover .rvbar__track{animation-play-state:paused}
+.rvbar__group{display:flex;align-items:stretch}
+@keyframes rvscroll{to{transform:translateX(-50%)}}
+
+/* one review = stars, the full review text, then the name — flowing
+   inline over two lines. Nothing is clipped; the whole quote rolls past. */
+.rv{
+  flex:none;width:600px;
+  margin:0;padding:0 1.6rem;text-align:left;
+  border-right:1px solid rgba(255,255,255,.16);
+  font-size:.85rem;line-height:1.6;
+  color:rgba(255,255,255,.9);
+  text-shadow:0 1px 8px rgba(0,0,0,.5);
+}
+.rv__stars{color:#ffc53d;letter-spacing:1.5px;margin-right:.45rem}
+.rv__name{
+  font-family:var(--font-head);font-size:.78rem;letter-spacing:.06em;
+  text-transform:uppercase;color:#9ccafc;margin-left:.5rem;
+  white-space:nowrap;
+}
+.rv__name::before{content:"— "}
 
 /* ---------- Quote card (white, floats on the dark hero) ---------- */
 /* quote lives in its own wide section under the hero */
@@ -520,6 +551,10 @@ section[id]{scroll-margin-top:100px}
 }
 .card--big{grid-column:span 4;height:340px}
 .card--big .card__body h3{font-size:1.45rem}
+/* full-width feature banner (holiday lighting) */
+.card--wide{grid-column:span 6;height:230px}
+.card--wide .card__body{max-width:640px}
+.card--wide .card__body h3{font-size:1.45rem}
 .card:hover{
   transform:translateY(-6px);
   border-color:var(--blue2);
@@ -542,6 +577,10 @@ section[id]{scroll-margin-top:100px}
   background:var(--grad);color:#fff;font-family:var(--font-head);
   font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
   padding:.35rem .75rem;border-radius:999px;
+}
+.card__tag--winter{
+  background:linear-gradient(90deg,#0b3ea8,#7cc0ff);
+  box-shadow:0 4px 16px rgba(66,155,248,.45);
 }
 .card__body{
   position:absolute;left:0;right:0;bottom:0;z-index:2;
@@ -768,6 +807,7 @@ section[id]{scroll-margin-top:100px}
   .cards{grid-template-columns:repeat(2,1fr)}
   .card{grid-column:span 1;height:300px}
   .card--big{grid-column:span 2;height:320px}
+  .card--wide{grid-column:span 2;height:230px}
   .steps{grid-template-columns:repeat(2,1fr)}
   .bas{grid-template-columns:1fr;max-width:640px;margin-inline:auto;gap:2.2rem}
   .ba{aspect-ratio:16/10}
@@ -824,8 +864,11 @@ section[id]{scroll-margin-top:100px}
 
   .hero{padding:2.2rem 0 3rem}
   .hero__title{font-size:clamp(2rem,9.4vw,2.7rem)}
-  .hero__sub{font-size:.98rem;margin:1.6rem auto 2rem}
+  .hero__sub{font-size:.98rem;margin:1.2rem auto 1.5rem}
   .hero__actions .btn{--pad:.8rem 1.3rem;font-size:.85rem}
+  .rvbar{width:100vw;margin-inline:calc(50% - 50vw);margin-top:1.4rem}
+  .rv{width:290px;padding:0 1.1rem;font-size:.78rem;line-height:1.55}
+  .rv__name{font-size:.7rem}
 
   .quote{padding:1.15rem;border-radius:18px}
   .field--2{grid-template-columns:1fr 1fr;gap:.5rem}
@@ -874,9 +917,9 @@ section[id]{scroll-margin-top:100px}
   .cards::-webkit-scrollbar{display:none}
   .card{flex:0 0 78%;scroll-snap-align:center}
   .card:hover{transform:none}
-  .card,.card--big{height:300px}
-  .card--big{flex:0 0 86%}
-  .card--big .card__body h3{font-size:1.2rem}
+  .card,.card--big,.card--wide{height:300px}
+  .card--big,.card--wide{flex:0 0 86%}
+  .card--big .card__body h3,.card--wide .card__body h3{font-size:1.2rem}
 
   .bas{gap:2rem}
   .ba{aspect-ratio:4/3;border-radius:16px}

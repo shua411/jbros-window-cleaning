@@ -91,14 +91,34 @@
         <span class="glow-text">We Make Your Home Worth Looking At.</span>
       </h1>
       <p class="hero__sub">
-        Professional window cleaning and exterior cleaning services for homes across the North Shore and Greater Vancouver.<br />
-        Book it once, or
-        <a href="#plans" class="setforget">set it and forget it<span class="setforget__tip">Check out maintenance plans</span></a>.
+        The North Shore &amp; Greater Vancouver's first choice for professional window cleaning
+        and exterior cleaning services. Save money on your first clean with our
+        <a href="#plans" class="setforget">maintenance plans<span class="setforget__tip">See the plans</span></a>.
       </p>
 
       <div class="hero__actions">
         <a href="#quote" class="btn btn--grad">Get an instant estimate</a>
         <a href="#services" class="btn btn--ghostlight">View services</a>
+      </div>
+
+      <!-- ===== Google reviews ticker =====
+           To update: edit the <figure> blocks below. Each one is
+           name / 5 stars / the review text. Keep them short so they
+           stay on one line. The list auto-duplicates for a seamless loop. -->
+      <div class="rvbar" aria-label="Customer reviews">
+        <div class="rvbar__track" id="rvbarTrack">
+          <div class="rvbar__group">
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">Definitely recommend the JBros! The results could not have been better, especially for the price. They're the nicest people!</span><span class="rv__name">Maria I.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">They removed the screens, cleaned the windows and screens before putting them back on. My windows have never looked better!</span><span class="rv__name">Peggy C.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">Haven't had my windows cleaned in 3 years and they made it spotless. Really kind, and put everything back where it belonged.</span><span class="rv__name">Luke H.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">Punctual, polite and very efficient, both times they came. Very happy with the services and would definitely recommend them.</span><span class="rv__name">Sandra H.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">Our windows look amazing! We got many compliments and our neighbours requested JBros too. Very professional and friendly.</span><span class="rv__name">Lori B.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">Reasonably priced, right on time, and very respectful of our property. Crystal clear with no streaks. Great service throughout.</span><span class="rv__name">Nicole C.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">Professional, friendly, efficient, and paid great attention to detail. Our windows look amazing and are so clean!</span><span class="rv__name">Elnaz B.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">These guys did an amazing job cleaning my windows, they even did my garage windows which wasn't in the quote. Highly recommended.</span><span class="rv__name">Emy L.</span></figure>
+            <figure class="rv"><span class="rv__stars">★★★★★</span><span class="rv__text">Professional, friendly, and did an amazing job. Everything looks spotless and the whole process was quick and easy.</span><span class="rv__name">Anureet G.</span></figure>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -325,28 +345,94 @@
                 </div>
               </div>
 
-              <!-- Solar panel cleaning -->
-              <div class="svc" data-svc="solar">
+              <!-- Seal coating -->
+              <div class="svc" data-svc="sealcoat">
                 <label class="svc__head">
                   <input type="checkbox" class="svc__check" />
-                  <span class="svc__name">Solar panel cleaning</span>
+                  <span class="svc__name">Seal coating</span>
                   <i class="svc__chev">▾</i>
                 </label>
                 <div class="svc__panel">
                   <div class="opt opt--2">
                     <div>
-                      <label>How many panels?</label>
-                      <select data-opt="panels">
-                        <option value="160">1–10</option>
-                        <option value="240" selected>11–20</option>
-                        <option value="350">21+</option>
+                      <label>What surface?</label>
+                      <select data-opt="sealSurface">
+                        <option value="380" selected>Driveway</option>
+                        <option value="300">Patio / walkway</option>
+                        <option value="340">Paver stones</option>
+                        <option value="420">Driveway + patio</option>
                       </select>
                     </div>
                     <div>
-                      <label>Protective nano coating?</label>
-                      <select data-opt="nano">
-                        <option value="0">No</option>
-                        <option value="120">Yes</option>
+                      <label>Approx. size</label>
+                      <select data-opt="sealSize">
+                        <option value="0">Small (1 car / under 400 sq ft)</option>
+                        <option value="130" selected>Medium (2 car / 400–800 sq ft)</option>
+                        <option value="300">Large (3+ car / 800+ sq ft)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="opt opt--2">
+                    <div>
+                      <label>Finish</label>
+                      <select data-opt="sealFinish">
+                        <option value="0">Clear, natural matte</option>
+                        <option value="90">Wet look, deepens colour</option>
+                        <option value="60">Black / tinted (asphalt)</option>
+                        <option value="45" selected>Not sure, recommend one</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Pressure wash first?</label>
+                      <select data-opt="sealPrep">
+                        <option value="0">Already clean</option>
+                        <option value="180" selected>Yes, clean it first</option>
+                        <option value="90">Not sure, take a look</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Holiday lighting -->
+              <div class="svc" data-svc="holiday">
+                <label class="svc__head">
+                  <input type="checkbox" class="svc__check" />
+                  <span class="svc__name">Holiday lighting</span>
+                  <i class="svc__chev">▾</i>
+                </label>
+                <div class="svc__panel">
+                  <div class="opt opt--2">
+                    <div>
+                      <label>Roofline to cover</label>
+                      <select data-opt="holidayLength">
+                        <option value="450">Front of house only</option>
+                        <option value="700" selected>Front + one side</option>
+                        <option value="1050">Full perimeter</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Whose lights?</label>
+                      <select data-opt="holidayLights">
+                        <option value="0">I have my own</option>
+                        <option value="320" selected>Supply new pro-grade lights</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="opt opt--2">
+                    <div>
+                      <label>Add trees, columns or railings?</label>
+                      <select data-opt="holidayExtras">
+                        <option value="0">Just the roofline</option>
+                        <option value="180">Yes, a few features</option>
+                        <option value="360">Yes, the full display</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Takedown &amp; storage in January?</label>
+                      <select data-opt="holidayTakedown">
+                        <option value="0">No, I'll handle it</option>
+                        <option value="150" selected>Yes, include it</option>
                       </select>
                     </div>
                   </div>
@@ -384,6 +470,52 @@
 
           </div><!-- /quotegrid -->
         </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Services ===== -->
+  <section class="section section--alt" id="services">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow">What We Do</span>
+        <h2 class="section__title">Our Services</h2>
+        <p class="section__lead">Pure-water, streak-free results and gentle soft-wash methods that protect your property. Tap a service to see how we do it.</p>
+      </div>
+
+      <div class="cards" id="serviceCards">
+        <a class="card card--big reveal" href="services/exterior-window-cleaning.html">
+          <div class="card__img" data-img="images/service-exterior.jpg" style="background-image:url('images/service-exterior.jpg')"></div>
+          <span class="card__tag">Our specialty</span>
+          <div class="card__body"><h3>Exterior Window Cleaning</h3><p>Pure-water pole system leaves glass spotless and streak-free, even hard-to-reach panes.</p></div>
+        </a>
+        <a class="card reveal" href="services/interior-window-cleaning.html">
+          <div class="card__img" data-img="images/service-interior.jpg" style="background-image:url('images/service-interior.jpg')"></div>
+          <div class="card__body"><h3>Interior Window Cleaning</h3><p>Detailed inside-glass cleaning with sills and tracks wiped down. Shoe covers and care, always.</p></div>
+        </a>
+        <a class="card card--big reveal" href="services/gutter-cleaning.html">
+          <div class="card__img" data-img="images/service-gutter.jpg" style="background-image:url('images/service-gutter.jpg')"></div>
+          <span class="card__tag">Our specialty</span>
+          <div class="card__body"><h3>Gutter Cleaning</h3><p>Gutter-vac system with a camera on the tip, so nothing gets missed and no ladders touch your home.</p></div>
+        </a>
+        <a class="card reveal" href="services/pressure-washing.html">
+          <div class="card__img" data-img="images/service-pressure.jpg" style="background-image:url('images/service-pressure.jpg')"></div>
+          <div class="card__body"><h3>Pressure Washing</h3><p>Driveways, patios, walkways and stairs, lifting years of grime, moss and stains.</p></div>
+        </a>
+        <a class="card card--big reveal" href="services/house-washing.html">
+          <div class="card__img" data-img="images/service-housewash.jpg" style="background-image:url('images/service-housewash.jpg')"></div>
+          <span class="card__tag">Our specialty</span>
+          <div class="card__body"><h3>House Washing</h3><p>Low-pressure soft wash safely removes algae and dirt from siding without damage.</p></div>
+        </a>
+        <a class="card reveal" href="services/seal-coating.html">
+          <div class="card__img" data-img="images/service-sealcoat.jpg" style="background-image:url('images/service-sealcoat.jpg')"></div>
+          <div class="card__body"><h3>Seal Coating</h3><p>Locks out water, oil and frost damage so your driveway and pavers last years longer.</p></div>
+        </a>
+        <a class="card card--wide reveal" href="services/holiday-lighting.html">
+          <div class="card__img" data-img="images/service-holiday.jpg" style="background-image:url('images/service-holiday.jpg')"></div>
+          <span class="card__tag card__tag--winter">❄ Winter Favourite</span>
+          <div class="card__body"><h3>Holiday Lighting</h3><p>Pro-grade install, takedown and storage. Best looking house on the block, zero ladders for you.</p></div>
+        </a>
       </div>
     </div>
   </section>
@@ -446,50 +578,8 @@
     </div>
   </section>
 
-  <!-- ===== Services ===== -->
-  <section class="section section--alt" id="services">
-    <div class="wrap">
-      <div class="section__head reveal">
-        <span class="eyebrow">What We Do</span>
-        <h2 class="section__title">Our Services</h2>
-        <p class="section__lead">Pure-water, streak-free results and gentle soft-wash methods that protect your property. Tap a service to start your quote.</p>
-      </div>
-
-      <div class="cards" id="serviceCards">
-        <article class="card card--big reveal" data-quote="windows" data-scope="ext">
-          <div class="card__img" data-img="images/service-exterior.jpg" style="background-image:url('images/service-exterior.jpg')"></div>
-          <span class="card__tag">Our specialty</span>
-          <div class="card__body"><h3>Exterior Window Cleaning</h3><p>Pure-water pole system leaves glass spotless and streak-free, even hard-to-reach panes.</p></div>
-        </article>
-        <article class="card reveal" data-quote="windows" data-scope="int">
-          <div class="card__img" data-img="images/service-interior.jpg" style="background-image:url('images/service-interior.jpg')"></div>
-          <div class="card__body"><h3>Interior Window Cleaning</h3><p>Detailed inside-glass cleaning with sills and tracks wiped down. Shoe covers and care, always.</p></div>
-        </article>
-        <article class="card reveal" data-quote="gutters">
-          <div class="card__img" data-img="images/service-gutter.jpg" style="background-image:url('images/service-gutter.jpg')"></div>
-          <span class="card__tag">Our specialty</span>
-          <div class="card__body"><h3>Gutter Cleaning</h3><p>Full debris clear-out and downspout flush so rain flows where it should, not down your walls.</p></div>
-        </article>
-        <article class="card card--big reveal" data-quote="pressure">
-          <div class="card__img" data-img="images/service-pressure.jpg" style="background-image:url('images/service-pressure.jpg')"></div>
-          <span class="card__tag">Our specialty</span>
-          <div class="card__body"><h3>Pressure Washing</h3><p>Driveways, patios, walkways and stairs, lifting years of grime, moss and stains.</p></div>
-        </article>
-        <article class="card card--big reveal" data-quote="house">
-          <div class="card__img" data-img="images/service-housewash.jpg" style="background-image:url('images/service-housewash.jpg')"></div>
-          <span class="card__tag">Our specialty</span>
-          <div class="card__body"><h3>House Washing</h3><p>Low-pressure soft wash safely removes algae and dirt from siding without damage.</p></div>
-        </article>
-        <article class="card reveal" data-quote="solar">
-          <div class="card__img" data-img="images/service-solar.jpg" style="background-image:url('images/service-solar.jpg')"></div>
-          <div class="card__body"><h3>Solar Panel Cleaning</h3><p>Gentle, deionized-water cleaning that clears buildup and keeps your panels producing.</p></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== Before & After ===== -->
-  <section class="section" id="beforeafter">
+  <section class="section section--alt" id="beforeafter">
     <div class="wrap">
       <div class="section__head reveal">
         <span class="eyebrow">See The Difference</span>
@@ -537,7 +627,7 @@
   </section>
 
   <!-- ===== Maintenance Plans ===== -->
-  <section class="section section--alt" id="plans">
+  <section class="section" id="plans">
     <div class="wrap">
       <div class="section__head reveal">
         <span class="eyebrow">Set It &amp; Forget It</span>
@@ -597,7 +687,7 @@
   </section>
 
   <!-- ===== How it works ===== -->
-  <section class="section">
+  <section class="section section--alt">
     <div class="wrap">
       <div class="section__head reveal">
         <span class="eyebrow">Simple Process</span>
@@ -613,7 +703,7 @@
   </section>
 
   <!-- ===== About Us ===== -->
-  <section class="section section--alt" id="about">
+  <section class="section" id="about">
     <div class="wrap about">
       <div class="about__copy reveal">
         <span class="eyebrow">Who We Are</span>

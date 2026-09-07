@@ -20,14 +20,25 @@
     }
   }
 
-  /* ---- Logo: show images/logo.png everywhere once the file exists ---- */
-  var logoTest = new Image();
-  logoTest.onload = function () {
-    document.querySelectorAll(".brand").forEach(function (b) {
-      b.classList.add("haslogo");
-    });
-  };
-  logoTest.src = "images/logo.png";
+  /* ---- Reviews ticker: duplicate the group for a seamless loop ---- */
+  var rvTrack = document.getElementById("rvbarTrack");
+  if (rvTrack) {
+    var rvGroup = rvTrack.querySelector(".rvbar__group");
+    if (rvGroup) rvTrack.appendChild(rvGroup.cloneNode(true));
+  }
+
+  /* ---- Logo: reveal it once the file loads. Read the path off the <img>
+     itself so this works from subfolders (e.g. /services/*.html) too. ---- */
+  var logoImg = document.querySelector(".brand__logo");
+  if (logoImg) {
+    var logoTest = new Image();
+    logoTest.onload = function () {
+      document.querySelectorAll(".brand").forEach(function (b) {
+        b.classList.add("haslogo");
+      });
+    };
+    logoTest.src = logoImg.getAttribute("src");
+  }
 
   /* ---- Nav: elevate on scroll + mobile menu ---- */
   var nav = document.getElementById("nav");
@@ -224,8 +235,16 @@
           sub = num(svc, "gutterStories") * size + num(svc, "gutterLast") + num(svc, "roofClean");
         }
 
-        if (kind === "solar") {
-          sub = num(svc, "panels") + num(svc, "nano");
+        if (kind === "sealcoat") {
+          sub = (num(svc, "sealSurface") + num(svc, "sealSize")) * size +
+                num(svc, "sealFinish") + num(svc, "sealPrep");
+        }
+
+        if (kind === "holiday") {
+          sub = num(svc, "holidayLength") * size +
+                num(svc, "holidayLights") +
+                num(svc, "holidayExtras") +
+                num(svc, "holidayTakedown");
         }
 
         total += sub;
@@ -426,28 +445,37 @@
     }
   }
 
-  /* ---- Service cards → jump to the quote form pre-selected ---- */
-  document.querySelectorAll(".card[data-quote]").forEach(function (card) {
-    card.addEventListener("click", function () {
-      var kind = card.getAttribute("data-quote");
-      var svc = document.querySelector('.svc[data-svc="' + kind + '"]');
-      if (!svc) return;
+  /* ---- Arriving from a service page: index.html?service=windows&scope=ext#quote
+     preselects that service in the form and highlights it ---- */
+  (function preselectFromUrl() {
+    var params = new URLSearchParams(window.location.search);
+    var kind = params.get("service");
+    if (!kind) return;
 
-      var check = svc.querySelector(".svc__check");
-      check.checked = true;
-      svc.classList.add("on");
+    var svc = document.querySelector('.svc[data-svc="' + kind + '"]');
+    if (!svc) return;
 
-      var scope = card.getAttribute("data-scope");
-      if (scope) {
-        var scopeSel = svc.querySelector('[data-opt="scope"]');
-        if (scopeSel) { scopeSel.value = scope; scopeSel.dataset.touched = "1"; }
-      }
+    // start clean so the arriving service is the only one ticked
+    document.querySelectorAll(".svc").forEach(function (s) {
+      s.querySelector(".svc__check").checked = false;
+      s.classList.remove("on");
+    });
 
-      document.getElementById("quote").scrollIntoView({ behavior: "smooth" });
+    svc.querySelector(".svc__check").checked = true;
+    svc.classList.add("on");
+
+    var scope = params.get("scope");
+    if (scope) {
+      var scopeSel = svc.querySelector('[data-opt="scope"]');
+      if (scopeSel) { scopeSel.value = scope; scopeSel.dataset.touched = "1"; }
+    }
+
+    setTimeout(function () {
+      document.getElementById("quote").scrollIntoView({ behavior: "smooth", block: "start" });
       svc.classList.add("flash");
       setTimeout(function () { svc.classList.remove("flash"); }, 1800);
-    });
-  });
+    }, 300);
+  })();
 
   /* =========================================================
      Before / After — "slide to see results" bars (+ drag on image)
