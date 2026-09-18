@@ -514,4 +514,91 @@
     window.addEventListener("mouseup", function () { dragging = false; });
     window.addEventListener("touchend", function () { dragging = false; });
   });
+
+  /* =========================================================
+     Careers page — applicant form (same FormSubmit inbox)
+     ========================================================= */
+  var crForm = document.getElementById("careersForm");
+  if (crForm) {
+    var CR_EMAIL = "jbroswc@gmail.com";
+    var crBtn = document.getElementById("crSubmit");
+
+    crForm.querySelectorAll("input").forEach(function (i) {
+      i.addEventListener("input", function () { i.classList.remove("invalid"); });
+    });
+
+    function crValidate() {
+      var ok = true, first = null;
+      ["name", "phone", "email"].forEach(function (n) {
+        var input = crForm.querySelector('[name="' + n + '"]');
+        var bad = !input.value.trim() ||
+          (n === "email" && !/^\S+@\S+\.\S+$/.test(input.value.trim()));
+        input.classList.toggle("invalid", bad);
+        if (bad && !first) first = input;
+        if (bad) ok = false;
+      });
+      if (first) first.focus();
+      return ok;
+    }
+
+    function crVal(n) {
+      var el = crForm.querySelector('[name="' + n + '"]:checked') ||
+               crForm.querySelector('[name="' + n + '"]');
+      return el ? el.value.trim() : "";
+    }
+
+    crForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!crValidate()) return;
+
+      var name = crVal("name");
+      var body = [
+        "*** SALES REP APPLICANT ***",
+        "",
+        "Name: " + name,
+        "Phone: " + crVal("phone"),
+        "Email: " + crVal("email"),
+        "",
+        "Sales experience: " + crVal("experience"),
+        "Availability: " + crVal("availability"),
+        "",
+        "Their note: " + (crVal("note") || "(none)")
+      ].join("\n");
+
+      crBtn.disabled = true;
+      crBtn.textContent = "Sending…";
+
+      fetch("https://formsubmit.co/ajax/" + encodeURIComponent(CR_EMAIL), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: "JOB APPLICANT: " + name,
+          _template: "table",
+          _captcha: "false",
+          name: name,
+          phone: crVal("phone"),
+          email: crVal("email"),
+          message: body
+        })
+      }).then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && String(data.success) === "true") {
+            crForm.parentElement.innerHTML =
+              '<div class="crsent">' +
+              '<div class="crsent__tick">✓</div>' +
+              "<h2>Got it, " + name.split(" ")[0] + ".</h2>" +
+              "<p>We'll reach out within a day or two with the pay structure, " +
+              "the schedule and what the first week looks like. Keep an eye on your phone.</p>" +
+              "</div>";
+          } else {
+            crBtn.disabled = false;
+            crBtn.textContent = "Didn't send — tap to retry";
+          }
+        })
+        .catch(function () {
+          crBtn.disabled = false;
+          crBtn.textContent = "Didn't send — tap to retry";
+        });
+    });
+  }
 })();

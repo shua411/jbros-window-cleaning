@@ -793,6 +793,42 @@ section[id]{scroll-margin-top:100px}
 .faq__a>div{overflow:hidden}
 .faq__a p{padding:0 1.2rem 1.1rem;color:var(--muted);font-size:.92rem;line-height:1.65}
 
+/* ---------- Hiring band (links out to careers.html) ---------- */
+.hiring{
+  position:relative;overflow:hidden;
+  background:linear-gradient(100deg,#062a72 0%,#0b46b4 45%,#1e6fd9 100%);
+  padding:clamp(2.2rem,4.5vw,3.2rem) 0;
+}
+.hiring::after{ /* soft light sweep so it doesn't read flat */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(40% 90% at 78% 30%,rgba(140,200,255,.32),transparent 70%);
+}
+.hiring__inner{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:clamp(1.5rem,4vw,3rem);flex-wrap:wrap;
+}
+.hiring__badge{
+  display:inline-block;font-family:var(--font-head);
+  font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  color:#bfe0ff;margin-bottom:.7rem;
+}
+.hiring__badge::first-letter{color:#6ee787;font-size:1.1em}
+.hiring__copy h2{
+  font-size:clamp(1.4rem,2.8vw,2.1rem);color:#fff;line-height:1.15;
+  text-shadow:0 2px 20px rgba(0,20,60,.4);
+}
+.hiring__copy p{
+  color:rgba(255,255,255,.85);font-size:.95rem;
+  margin-top:.6rem;max-width:52ch;line-height:1.6;
+}
+.hiring__btn{flex:none}
+
+@media (max-width:640px){
+  .hiring__inner{flex-direction:column;align-items:flex-start;gap:1.3rem}
+  .hiring__btn{width:100%}
+}
+
 /* ---------- Footer ---------- */
 .footer{
   background:linear-gradient(180deg,rgba(222,229,239,0),rgba(222,229,239,.85) 30%);

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join The Team | JBros Window Cleaning</title>
+  <meta name="description" content="JBros is hiring door-to-door sales reps on the North Shore. Good money, flexible hours, full training. Tell us a bit about yourself and we'll reach out." />
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="careers.css" />
+</head>
+<body class="careers">
+
+  <!-- deliberately minimal header: this is a careers page, not the storefront -->
+  <header class="crheader">
+    <div class="wrap crheader__inner">
+      <!-- drop images/logo-careers.png in and it takes over automatically;
+           falls back to the standard logo until then -->
+      <img src="images/logo-careers.png" alt="JBros Window Cleaning" class="crheader__logo"
+           onerror="this.onerror=null;this.src='images/logo.png';" />
+      <a href="index.html" class="crheader__back">View our services →</a>
+    </div>
+  </header>
+
+  <!-- ===== Pitch ===== -->
+  <section class="crhero">
+    <div class="crhero__glow"></div>
+    <div class="wrap crhero__inner">
+      <span class="crhero__badge">● Now Hiring</span>
+      <h1>Get Paid To Knock<br />On Doors.</h1>
+      <p>
+        We're a local crew that's cleaned 400+ homes across the North Shore, and right now
+        we're growing faster than ever. We're looking for motivated people who want to grow
+        with us and be part of a team where everyone contributes, improves, and wins together.
+        We care more about your drive than your resume.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== What it actually is ===== -->
+  <section class="crbody">
+    <div class="crwrap">
+
+      <div class="crpoints">
+        <div class="crpoint">
+          <span class="crpoint__icon">💰</span>
+          <h3>Commission that's actually worth it</h3>
+          <p>You get paid per job you book. The guys who put the hours in do very well.</p>
+        </div>
+        <div class="crpoint">
+          <span class="crpoint__icon">🕒</span>
+          <h3>Work around your schedule</h3>
+          <p>Evenings, weekends, full days in the summer. Tell us what works and we'll build around it.</p>
+        </div>
+        <div class="crpoint">
+          <span class="crpoint__icon">🎓</span>
+          <h3>We train you from zero</h3>
+          <p>You'll shadow us first. What to say, how to handle a no, how to close. No experience needed.</p>
+        </div>
+        <div class="crpoint">
+          <span class="crpoint__icon">📅</span>
+          <h3>Weekly team meetings</h3>
+          <p>We get together every week to run through goals, share what's working and keep everyone sharp.</p>
+        </div>
+      </div>
+
+      <!-- ===== Short form ===== -->
+      <div class="crform" id="apply">
+        <div class="crform__head">
+          <h2>Interested? Two Questions.</h2>
+          <p>Answer these, leave your info, and we'll reach out with the full details, pay structure and next steps.</p>
+        </div>
+
+        <form id="careersForm" novalidate>
+
+          <div class="crq">
+            <label class="crq__label">1. Have you done door-to-door or in-person sales before?</label>
+            <div class="crpick" data-name="experience">
+              <label class="crpick__opt"><input type="radio" name="experience" value="No, but I want to learn" checked /><span>No, but I want to learn</span></label>
+              <label class="crpick__opt"><input type="radio" name="experience" value="A little" /><span>A little</span></label>
+              <label class="crpick__opt"><input type="radio" name="experience" value="Yes, lots" /><span>Yes, lots</span></label>
+            </div>
+          </div>
+
+          <div class="crq">
+            <label class="crq__label">2. How much time can you put in?</label>
+            <div class="crpick" data-name="availability">
+              <label class="crpick__opt"><input type="radio" name="availability" value="Full-time" checked /><span>Full-time</span></label>
+              <label class="crpick__opt"><input type="radio" name="availability" value="Part-time" /><span>Part-time</span></label>
+              <label class="crpick__opt"><input type="radio" name="availability" value="Weekends only" /><span>Weekends only</span></label>
+            </div>
+          </div>
+
+          <div class="crfields">
+            <div class="crfield">
+              <label>Name <em>*</em></label>
+              <input type="text" name="name" placeholder="Alex Smith" required />
+            </div>
+            <div class="crfield">
+              <label>Phone <em>*</em></label>
+              <input type="tel" name="phone" placeholder="778 000 0000" required />
+            </div>
+            <div class="crfield crfield--full">
+              <label>Email <em>*</em></label>
+              <input type="email" name="email" placeholder="you@email.com" required />
+            </div>
+            <div class="crfield crfield--full">
+              <label>Anything you want us to know? <span class="crfield__opt">(optional)</span></label>
+              <textarea name="note" rows="3" placeholder="Totally optional. A sentence about you is plenty."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn--grad btn--full btn--lg" id="crSubmit">Send my info</button>
+          <p class="crform__note">We read every one of these ourselves. Expect a text or call within a day or two.</p>
+        </form>
+      </div>
+
+      <div class="crfoot">
+        <p>Questions first? Text or call us at <a href="tel:7789570282">778 957 0282</a>.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
