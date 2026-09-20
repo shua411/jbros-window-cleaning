@@ -95,11 +95,12 @@ body.careers{
 }
 .crdots button.on{background:var(--blue2);width:22px;border-radius:99px}
 
-/* the earnings stat, right before the form */
+/* the earnings stat, right before the form.
+   kept as normal inline flow so it reads as one sentence and wraps cleanly */
 .crstat{
-  display:flex;align-items:baseline;gap:.6rem;
   font-size:clamp(1rem,2vw,1.15rem);color:rgba(232,237,245,.85);
-  margin:0 0 clamp(1.5rem,3vw,2rem);line-height:1.5;
+  margin:clamp(1.8rem,3.5vw,2.4rem) 0 clamp(1.5rem,3vw,2rem);
+  line-height:1.6;
 }
 .crstat b{
   color:#fff;font-weight:700;
@@ -107,7 +108,8 @@ body.careers{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .crstat__arrow{
-  color:var(--blue2);font-size:1.1em;flex:none;
+  display:inline-block;margin-right:.45rem;
+  color:var(--blue2);font-size:1.1em;
   animation:crnudge 1.6s ease-in-out infinite;
 }
 @keyframes crnudge{
@@ -215,5 +217,24 @@ body.careers{
   .crfields{grid-template-columns:1fr}
   .crpick{flex-direction:column}
   .crpick__opt span{text-align:left}
-  .crslide__card{padding:1.4rem 1.3rem}
+
+  /* phones: give every block room to breathe instead of stacking tight */
+  .crheader{padding:1.6rem 0 .6rem}
+  .crhero{padding:2rem 0 3rem}
+  .crhero p{margin-top:1.4rem;line-height:1.75}
+  .crbody{padding-bottom:3.5rem}
+
+  .crwhy{margin-bottom:2.4rem}
+  .crwhy__head{margin-bottom:1.3rem}
+  .crslide__card{padding:1.5rem 1.4rem}
+  .crslides{padding-bottom:1.2rem}
+
+  .crstat{margin:2.6rem 0 2.2rem;font-size:1.05rem}
+
+  .crform{padding:1.6rem 1.4rem}
+  .crform__head p{margin-bottom:1.9rem}
+  .crq{margin-bottom:1.9rem}
+  .crfields{margin:2rem 0 1.6rem;gap:1rem}
+  .crform__note{margin-top:1.1rem}
+  .crfoot{margin-top:2.6rem}
 }
