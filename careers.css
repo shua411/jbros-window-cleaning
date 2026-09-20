@@ -49,25 +49,74 @@ body.careers{
 .crbody{padding:0 0 clamp(3rem,7vw,5rem)}
 .crwrap{width:min(780px,92vw);margin-inline:auto}
 
-/* quick honest points, not a job description */
-.crpoints{
-  display:grid;grid-template-columns:1fr 1fr;gap:1rem;
-  margin-bottom:clamp(2.5rem,5vw,3.5rem);
+/* ---- "why this is the best opportunity" slider ----
+   one card in view at a time; swipe/scroll sideways for the next */
+.crwhy{margin-bottom:clamp(1.6rem,3.5vw,2.2rem)}
+.crwhy__head{
+  font-size:clamp(1.25rem,2.6vw,1.7rem);color:#fff;
+  margin-bottom:1.1rem;line-height:1.2;
 }
-.crpoint{
+.crslides{
+  display:flex;
+  overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  gap:.9rem;
+  /* let cards breathe at the edges without clipping their glow */
+  padding:.4rem .2rem 1rem;
+  margin-inline:-.2rem;
+  scrollbar-width:none;
+}
+.crslides::-webkit-scrollbar{display:none}
+
+.crslide{flex:0 0 100%;scroll-snap-align:center;display:flex}
+.crslide__card{
+  flex:1;
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.1);
-  border-radius:16px;padding:1.3rem 1.4rem;
-  transition:border-color .3s,transform .3s,background .3s;
+  border-radius:18px;padding:1.6rem 1.5rem;
+  /* resting state: dimmed and slightly back, until it scrolls into view */
+  opacity:.35;transform:scale(.94) translateY(6px);
+  transition:opacity .5s ease,transform .5s ease,border-color .5s ease,background .5s ease;
 }
-.crpoint:hover{
-  border-color:rgba(66,155,248,.45);
+.crslide.active .crslide__card{
+  opacity:1;transform:none;
+  border-color:rgba(66,155,248,.4);
   background:rgba(66,155,248,.07);
-  transform:translateY(-3px);
 }
-.crpoint__icon{font-size:1.5rem;display:block;margin-bottom:.6rem;line-height:1}
-.crpoint h3{font-size:1rem;color:#fff;margin-bottom:.4rem;line-height:1.3}
-.crpoint p{font-size:.88rem;color:rgba(232,237,245,.62);line-height:1.6}
+.crpoint__icon{font-size:1.7rem;display:block;margin-bottom:.7rem;line-height:1}
+.crslide__card h3{font-size:1.15rem;color:#fff;margin-bottom:.5rem;line-height:1.25}
+.crslide__card p{font-size:.92rem;color:rgba(232,237,245,.68);line-height:1.65}
+
+/* progress dots */
+.crdots{display:flex;justify-content:center;gap:.45rem}
+.crdots button{
+  width:7px;height:7px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.22);
+  transition:background .3s,width .3s;
+}
+.crdots button.on{background:var(--blue2);width:22px;border-radius:99px}
+
+/* the earnings stat, right before the form */
+.crstat{
+  display:flex;align-items:baseline;gap:.6rem;
+  font-size:clamp(1rem,2vw,1.15rem);color:rgba(232,237,245,.85);
+  margin:0 0 clamp(1.5rem,3vw,2rem);line-height:1.5;
+}
+.crstat b{
+  color:#fff;font-weight:700;
+  background:linear-gradient(90deg,#6ee787,#42e2b8);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.crstat__arrow{
+  color:var(--blue2);font-size:1.1em;flex:none;
+  animation:crnudge 1.6s ease-in-out infinite;
+}
+@keyframes crnudge{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(5px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .crstat__arrow{animation:none}
+}
 
 /* ---- form card ---- */
 .crform{
@@ -163,8 +212,8 @@ body.careers{
 
 @media (max-width:640px){
   .crheader__logo{height:52px}
-  .crpoints{grid-template-columns:1fr;gap:.8rem}
   .crfields{grid-template-columns:1fr}
   .crpick{flex-direction:column}
   .crpick__opt span{text-align:left}
+  .crslide__card{padding:1.4rem 1.3rem}
 }

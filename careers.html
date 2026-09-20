@@ -49,28 +49,45 @@
   <section class="crbody">
     <div class="crwrap">
 
-      <div class="crpoints">
-        <div class="crpoint">
-          <span class="crpoint__icon">💰</span>
-          <h3>Commission that's actually worth it</h3>
-          <p>You get paid per job you book. The guys who put the hours in do very well.</p>
+      <!-- one card at a time; swipe or scroll sideways for the next -->
+      <div class="crwhy">
+        <h2 class="crwhy__head">Why This Is The Best Opportunity For You</h2>
+
+        <div class="crslides" id="crSlides">
+          <div class="crslide">
+            <div class="crslide__card">
+              <span class="crpoint__icon">💰</span>
+              <h3>Get paid what you're worth</h3>
+              <p>Commission-based pay, so you're never capped by an hourly rate. You earn on every job you book, and the guys who put the hours in do very well.</p>
+            </div>
+          </div>
+          <div class="crslide">
+            <div class="crslide__card">
+              <span class="crpoint__icon">🕒</span>
+              <h3>Work around your schedule</h3>
+              <p>Evenings, weekends, full days in the summer. Tell us what works and we'll build around it.</p>
+            </div>
+          </div>
+          <div class="crslide">
+            <div class="crslide__card">
+              <span class="crpoint__icon">🎓</span>
+              <h3>We train you from zero</h3>
+              <p>You'll shadow us first. What to say, how to handle a no, how to close. No experience needed.</p>
+            </div>
+          </div>
+          <div class="crslide">
+            <div class="crslide__card">
+              <span class="crpoint__icon">📅</span>
+              <h3>Weekly team meetings</h3>
+              <p>We get together every week to run through goals, share what's working and keep everyone sharp.</p>
+            </div>
+          </div>
         </div>
-        <div class="crpoint">
-          <span class="crpoint__icon">🕒</span>
-          <h3>Work around your schedule</h3>
-          <p>Evenings, weekends, full days in the summer. Tell us what works and we'll build around it.</p>
-        </div>
-        <div class="crpoint">
-          <span class="crpoint__icon">🎓</span>
-          <h3>We train you from zero</h3>
-          <p>You'll shadow us first. What to say, how to handle a no, how to close. No experience needed.</p>
-        </div>
-        <div class="crpoint">
-          <span class="crpoint__icon">📅</span>
-          <h3>Weekly team meetings</h3>
-          <p>We get together every week to run through goals, share what's working and keep everyone sharp.</p>
-        </div>
+
+        <div class="crdots" id="crDots" aria-hidden="true"></div>
       </div>
+
+      <p class="crstat"><span class="crstat__arrow">➜</span> Our current reps are making <b>$200&ndash;$300 a day</b>.</p>
 
       <!-- ===== Short form ===== -->
       <div class="crform" id="apply">
@@ -82,11 +99,12 @@
         <form id="careersForm" novalidate>
 
           <div class="crq">
-            <label class="crq__label">1. Have you done door-to-door or in-person sales before?</label>
+            <label class="crq__label">1. How many years of sales experience do you have?</label>
             <div class="crpick" data-name="experience">
-              <label class="crpick__opt"><input type="radio" name="experience" value="No, but I want to learn" checked /><span>No, but I want to learn</span></label>
-              <label class="crpick__opt"><input type="radio" name="experience" value="A little" /><span>A little</span></label>
-              <label class="crpick__opt"><input type="radio" name="experience" value="Yes, lots" /><span>Yes, lots</span></label>
+              <label class="crpick__opt"><input type="radio" name="experience" value="No experience, but I'm ready to learn" checked /><span>No experience, but I'm ready to learn</span></label>
+              <label class="crpick__opt"><input type="radio" name="experience" value="Less than 1 year" /><span>Less than 1 year</span></label>
+              <label class="crpick__opt"><input type="radio" name="experience" value="1-2 years" /><span>1&ndash;2 years</span></label>
+              <label class="crpick__opt"><input type="radio" name="experience" value="3+ years" /><span>3+ years</span></label>
             </div>
           </div>
 

@@ -516,6 +516,43 @@
   });
 
   /* =========================================================
+     Careers page — "why this is the best opportunity" slider
+     Lights up whichever card is in view and syncs the dots.
+     ========================================================= */
+  var crSlides = document.getElementById("crSlides");
+  if (crSlides) {
+    var slides = Array.prototype.slice.call(crSlides.querySelectorAll(".crslide"));
+    var crDots = document.getElementById("crDots");
+
+    // build one dot per slide, each one jumps to its card
+    slides.forEach(function (slide, i) {
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.setAttribute("aria-label", "Slide " + (i + 1));
+      dot.addEventListener("click", function () {
+        crSlides.scrollTo({ left: slide.offsetLeft - crSlides.offsetLeft, behavior: "smooth" });
+      });
+      crDots.appendChild(dot);
+    });
+    var dots = Array.prototype.slice.call(crDots.children);
+
+    function setActive(i) {
+      slides.forEach(function (s, n) { s.classList.toggle("active", n === i); });
+      dots.forEach(function (d, n) { d.classList.toggle("on", n === i); });
+    }
+
+    if ("IntersectionObserver" in window) {
+      var slideIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.intersectionRatio >= 0.6) setActive(slides.indexOf(e.target));
+        });
+      }, { root: crSlides, threshold: [0, 0.6, 1] });
+      slides.forEach(function (s) { slideIO.observe(s); });
+    }
+    setActive(0);
+  }
+
+  /* =========================================================
      Careers page — applicant form (same FormSubmit inbox)
      ========================================================= */
   var crForm = document.getElementById("careersForm");
