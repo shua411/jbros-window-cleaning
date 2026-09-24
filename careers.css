@@ -30,15 +30,21 @@ body.careers{
 /* same width as the cards below so the block lines up over them,
    while the text itself stays left-aligned */
 .crhero__inner{position:relative;z-index:1;width:min(780px,92vw)}
-.crhero__badge{
-  display:inline-block;font-family:var(--font-head);
-  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
-  color:#bfe0ff;margin-bottom:1.1rem;
-}
-.crhero__badge::first-letter{color:#6ee787;font-size:1.15em}
 .crhero h1{
   font-size:clamp(2.4rem,7vw,4.4rem);color:#fff;line-height:1.02;
   text-shadow:0 4px 40px rgba(0,40,120,.5);
+}
+/* the role, sitting just under the headline.
+   selector is .crhero p.crhero__role so it outranks the generic .crhero p */
+.crhero p.crhero__role{
+  font-family:var(--font-head);
+  font-size:clamp(1.3rem,3.4vw,2.1rem);
+  letter-spacing:.06em;text-transform:uppercase;
+  max-width:none;
+  margin-top:.55rem;line-height:1.15;
+  /* transparent so .glow-text's animated gradient shows through;
+     needed here because .crhero p outranks .glow-text on its own */
+  color:transparent;
 }
 .crhero p{
   color:rgba(232,237,245,.72);font-size:clamp(1rem,1.6vw,1.15rem);
@@ -82,7 +88,6 @@ body.careers{
   border-color:rgba(66,155,248,.4);
   background:rgba(66,155,248,.07);
 }
-.crpoint__icon{font-size:1.7rem;display:block;margin-bottom:.7rem;line-height:1}
 .crslide__card h3{font-size:1.15rem;color:#fff;margin-bottom:.5rem;line-height:1.25}
 .crslide__card p{font-size:.92rem;color:rgba(232,237,245,.68);line-height:1.65}
 
