@@ -26,16 +26,31 @@
            falls back to the standard logo until then -->
       <img src="images/logo-careers.png" alt="JBros Window Cleaning" class="crheader__logo"
            onerror="this.onerror=null;this.src='images/logo.png';" />
-      <a href="index.html" class="crheader__back">View our services →</a>
+      <a href="index.html" class="crheader__back">The Company →</a>
     </div>
   </header>
 
-  <!-- ===== Pitch ===== -->
+  <!-- ===== Opening screen: headline only, then prompt to scroll ===== -->
   <section class="crhero">
     <div class="crhero__glow"></div>
     <div class="wrap crhero__inner">
-      <h1>We Are Hiring</h1>
-      <p class="crhero__role glow-text">Door-To-Door Sales Reps</p>
+      <h1 class="crhero__title"><span>We</span><span>Are</span><span>Hiring.</span></h1>
+      <p class="crhero__role"><span class="crhero__rolelabel">Role:</span> <span class="glow-text">Door-To-Door Sales Rep</span></p>
+    </div>
+
+    <a href="#intro" class="crscroll" aria-label="Scroll down">
+      <span class="crscroll__label">Scroll</span>
+      <span class="crscroll__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 4v15"/><path d="m5.5 12.5 6.5 6.5 6.5-6.5"/>
+        </svg>
+      </span>
+    </a>
+  </section>
+
+  <!-- ===== Who we are ===== -->
+  <section class="crintro" id="intro">
+    <div class="crwrap">
       <p>
         JBros is a local crew that's cleaned 400+ homes across the North Shore, and right now
         we're growing faster than ever. We're looking for motivated people who want to grow

@@ -18,8 +18,15 @@ body.careers{
 }
 .crheader__back:hover{color:#9ccafc}
 
-/* ---- pitch ---- */
-.crhero{position:relative;overflow:hidden;padding:clamp(2rem,5vw,3.5rem) 0 clamp(2.5rem,6vw,4rem)}
+/* ---- opening screen: headline fills the view, nothing else ---- */
+.crhero{
+  position:relative;overflow:hidden;
+  /* viewport minus the logo bar, so the whole screen is just this */
+  min-height:calc(100vh - 112px);
+  min-height:calc(100svh - 112px);
+  display:flex;flex-direction:column;justify-content:center;
+  padding-bottom:5rem; /* room for the scroll prompt */
+}
 .crhero__glow{
   position:absolute;inset:0;pointer-events:none;
   background:
@@ -30,25 +37,54 @@ body.careers{
 /* same width as the cards below so the block lines up over them,
    while the text itself stays left-aligned */
 .crhero__inner{position:relative;z-index:1;width:min(780px,92vw)}
-.crhero h1{
-  font-size:clamp(2.4rem,7vw,4.4rem);color:#fff;line-height:1.02;
+
+/* one word per line, sized off viewport height so it fills the screen */
+.crhero__title{
+  font-size:min(18vh,25vw,11rem);
+  line-height:1.06;letter-spacing:-.005em;
+  color:#fff;
   text-shadow:0 4px 40px rgba(0,40,120,.5);
 }
-/* the role, sitting just under the headline.
-   selector is .crhero p.crhero__role so it outranks the generic .crhero p */
+.crhero__title span{display:block}
+
+/* the role, kept to a single line under the headline.
+   selector outranks the generic .crhero p */
 .crhero p.crhero__role{
   font-family:var(--font-head);
-  font-size:clamp(1.3rem,3.4vw,2.1rem);
-  letter-spacing:.06em;text-transform:uppercase;
+  font-size:min(3.4vh,4.8vw,2.1rem);
+  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;
   max-width:none;
-  margin-top:.55rem;line-height:1.15;
-  /* transparent so .glow-text's animated gradient shows through;
-     needed here because .crhero p outranks .glow-text on its own */
-  color:transparent;
+  margin-top:clamp(1.1rem,4vh,2.6rem);line-height:1.2;
+  color:rgba(232,237,245,.45);
 }
-.crhero p{
-  color:rgba(232,237,245,.72);font-size:clamp(1rem,1.6vw,1.15rem);
-  line-height:1.7;max-width:56ch;margin-top:1.3rem;
+.crhero__rolelabel{color:rgba(232,237,245,.45);margin-right:.2em}
+
+/* scroll prompt */
+.crscroll{
+  position:absolute;left:50%;bottom:clamp(1.4rem,4vh,2.6rem);
+  transform:translateX(-50%);z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  color:rgba(232,237,245,.45);
+  font-family:var(--font-head);font-size:.68rem;
+  letter-spacing:.24em;text-transform:uppercase;
+  transition:color .3s;
+}
+.crscroll:hover{color:#9ccafc}
+.crscroll__arrow{display:block;animation:crscrollbob 1.9s ease-in-out infinite}
+.crscroll__arrow svg{width:22px;height:22px;display:block}
+@keyframes crscrollbob{
+  0%,100%{transform:translateY(0);opacity:.55}
+  50%{transform:translateY(9px);opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .crscroll__arrow{animation:none}
+}
+
+/* ---- who we are ---- */
+.crintro{padding:clamp(3rem,8vh,5.5rem) 0 clamp(1rem,3vh,2rem)}
+.crintro p{
+  color:rgba(232,237,245,.78);font-size:clamp(1.05rem,1.9vw,1.3rem);
+  line-height:1.75;max-width:56ch;
 }
 
 /* ---- body ---- */
@@ -225,8 +261,13 @@ body.careers{
 
   /* phones: give every block room to breathe instead of stacking tight */
   .crheader{padding:1.6rem 0 .6rem}
-  .crhero{padding:2rem 0 3rem}
-  .crhero p{margin-top:1.4rem;line-height:1.75}
+  .crhero{
+    min-height:calc(100vh - 96px);
+    min-height:calc(100svh - 96px);
+    padding-bottom:4.5rem;
+  }
+  .crintro{padding:2.5rem 0 1rem}
+  .crintro p{line-height:1.8}
   .crbody{padding-bottom:3.5rem}
 
   .crwhy{margin-bottom:2.4rem}
