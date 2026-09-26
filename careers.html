@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Join The Team | JBros Window Cleaning</title>
-  <meta name="description" content="JBros is hiring door-to-door sales reps on the North Shore. Good money, flexible hours, full training. Tell us a bit about yourself and we'll reach out." />
+  <meta name="description" content="JBros is hiring door-to-door sales reps on the North Shore. Commission-based pay, flexible hours, full training. Tell us a bit about yourself and we'll reach out." />
   <meta name="robots" content="noindex" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,7 +30,7 @@
     </div>
   </header>
 
-  <!-- ===== Opening screen: headline only, then prompt to scroll ===== -->
+  <!-- ===== 1. Opening screen: headline only ===== -->
   <section class="crhero">
     <div class="crhero__glow"></div>
     <div class="wrap crhero__inner">
@@ -48,9 +48,10 @@
     </a>
   </section>
 
-  <!-- ===== Who we are ===== -->
-  <section class="crintro" id="intro">
-    <div class="crwrap">
+  <!-- ===== 2. Who we are ===== -->
+  <section class="crsec crintro" id="intro">
+    <div class="crwrap reveal">
+      <h2 class="crsec__head">Who Are We</h2>
       <p>
         JBros is a local crew that's cleaned 400+ homes across the North Shore, and right now
         we're growing faster than ever. We're looking for motivated people who want to grow
@@ -60,54 +61,83 @@
     </div>
   </section>
 
-  <!-- ===== What it actually is ===== -->
-  <section class="crbody">
-    <div class="crwrap">
+  <!-- ===== 3. The role ===== -->
+  <section class="crsec crrole">
+    <div class="crwrap reveal">
+      <h2 class="crsec__head">The Role</h2>
+      <ul class="crbullets">
+        <li>Knocking doors in assigned neighbourhoods and talking to homeowners face to face.</li>
+        <li>Explaining what we do and what it costs.</li>
+        <li>Booking jobs on the spot and passing the details straight to the crew.</li>
+        <li>Showing up on time, presentable, and representing the company well at every door.</li>
+        <li>Handling rejection, because there's no doubt you'll hear more no's than yes's.</li>
+      </ul>
+    </div>
+  </section>
 
-      <!-- one card at a time; swipe or scroll sideways for the next -->
-      <div class="crwhy">
-        <h2 class="crwhy__head">Why Join?</h2>
+  <!-- ===== 4. Why join (cards advance sideways as you scroll) ===== -->
+  <section class="crwhy" id="crWhy">
+    <div class="crwhy__sticky">
+      <div class="crwrap">
+        <h2 class="crsec__head">Why Join</h2>
 
-        <div class="crslides" id="crSlides">
-          <div class="crslide">
-            <div class="crslide__card">
-              <h3>Get paid what you're worth</h3>
-              <p>Commission-based pay, so you're never capped by an hourly rate. You earn on every job you book, and the guys who put the hours in do very well.</p>
+        <div class="crslides">
+          <div class="crtrack" id="crTrack">
+            <div class="crslide">
+              <div class="crslide__card">
+                <h3>Get paid what you're worth</h3>
+                <p>Commission-based pay, so you're never capped by an hourly rate. You earn on every job you book, and the guys who put the hours in do very well.</p>
+              </div>
             </div>
-          </div>
-          <div class="crslide">
-            <div class="crslide__card">
-              <h3>Work around your schedule</h3>
-              <p>Evenings, weekends, full days in the summer. Tell us what works and we'll build around it.</p>
+            <div class="crslide">
+              <div class="crslide__card">
+                <h3>Work around your schedule</h3>
+                <p>Evenings, weekends, full days in the summer. Tell us what works and we'll build around it.</p>
+              </div>
             </div>
-          </div>
-          <div class="crslide">
-            <div class="crslide__card">
-              <h3>We train you from zero</h3>
-              <p>You'll shadow us first. What to say, how to handle a no, how to close. No experience needed.</p>
+            <div class="crslide">
+              <div class="crslide__card">
+                <h3>We train you from zero</h3>
+                <p>You'll shadow us first. What to say, how to handle a no, how to close. No experience needed.</p>
+              </div>
             </div>
-          </div>
-          <div class="crslide">
-            <div class="crslide__card">
-              <h3>Weekly team meetings</h3>
-              <p>We get together every week to run through goals, share what's working and keep everyone sharp.</p>
+            <div class="crslide">
+              <div class="crslide__card">
+                <h3>Weekly team meetings</h3>
+                <p>We get together every week to run through goals, share what's working and keep everyone sharp.</p>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="crdots" id="crDots" aria-hidden="true"></div>
       </div>
+    </div>
+  </section>
 
-      <p class="crstat"><span class="crstat__arrow">➜</span> Our current reps are making <b>$200&ndash;$300 a day</b>.</p>
+  <!-- ===== 5. The earnings stat, on its own screen ===== -->
+  <section class="crsec crstatsec">
+    <div class="crwrap reveal">
+      <p class="crstat">
+        <span class="crstat__arrow" aria-hidden="true">➜</span>
+        Our current reps are making <b>$200&ndash;$300 a day</b>
+      </p>
+    </div>
+  </section>
 
-      <!-- ===== Short form ===== -->
-      <div class="crform" id="apply">
-        <div class="crform__head">
-          <h2>Interested? Two Questions.</h2>
-          <p>Answer these, leave your info, and we'll reach out with the full details, pay structure and next steps.</p>
-        </div>
+  <!-- ===== 6. Attention grab before the form ===== -->
+  <section class="crsec crask">
+    <div class="crwrap reveal">
+      <h2 class="crask__head">Interested?<br />Two Questions.</h2>
+    </div>
+  </section>
 
+  <!-- ===== 7. The form ===== -->
+  <section class="crsec crformsec" id="apply">
+    <div class="crwrap">
+      <div class="crform reveal">
         <form id="careersForm" novalidate>
+          <p class="crform__intro">Answer these, leave your info, and we'll reach out with the full details, pay structure and next steps.</p>
 
           <div class="crq">
             <label class="crq__label">1. How many years of sales experience do you have?</label>
@@ -155,7 +185,6 @@
       <div class="crfoot">
         <p>Questions first? Text or call us at <a href="tel:7789570282">778 957 0282</a>.</p>
       </div>
-
     </div>
   </section>
 

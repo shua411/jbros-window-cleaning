@@ -516,40 +516,65 @@
   });
 
   /* =========================================================
-     Careers page — "why this is the best opportunity" slider
-     Lights up whichever card is in view and syncs the dots.
+     Careers page — "why join" cards advance sideways while the
+     page scrolls down. The section is tall, the slider is pinned
+     inside it, and scroll progress drives the horizontal offset.
      ========================================================= */
-  var crSlides = document.getElementById("crSlides");
-  if (crSlides) {
-    var slides = Array.prototype.slice.call(crSlides.querySelectorAll(".crslide"));
+  var crWhy = document.getElementById("crWhy");
+  var crTrack = document.getElementById("crTrack");
+  if (crWhy && crTrack) {
+    var crSlideEls = Array.prototype.slice.call(crTrack.querySelectorAll(".crslide"));
     var crDots = document.getElementById("crDots");
+    var crViewport = crTrack.parentElement;
+    var lastIdx = -1;
 
-    // build one dot per slide, each one jumps to its card
-    slides.forEach(function (slide, i) {
+    // one dot per card; clicking scrolls the page to that card's position
+    crSlideEls.forEach(function (_, i) {
       var dot = document.createElement("button");
       dot.type = "button";
-      dot.setAttribute("aria-label", "Slide " + (i + 1));
+      dot.setAttribute("aria-label", "Card " + (i + 1));
       dot.addEventListener("click", function () {
-        crSlides.scrollTo({ left: slide.offsetLeft - crSlides.offsetLeft, behavior: "smooth" });
+        var span = crWhy.offsetHeight - crSticky.offsetHeight;
+        var p = crSlideEls.length > 1 ? i / (crSlideEls.length - 1) : 0;
+        window.scrollTo({ top: crWhy.offsetTop - stickyTop() + span * p, behavior: "smooth" });
       });
       crDots.appendChild(dot);
     });
-    var dots = Array.prototype.slice.call(crDots.children);
+    var crDotEls = Array.prototype.slice.call(crDots.children);
 
-    function setActive(i) {
-      slides.forEach(function (s, n) { s.classList.toggle("active", n === i); });
-      dots.forEach(function (d, n) { d.classList.toggle("on", n === i); });
+    var crSticky = crWhy.querySelector(".crwhy__sticky");
+    function stickyTop() {
+      // the CSS `top` offset the sticky block pins at
+      return parseFloat(getComputedStyle(crSticky).top) || 0;
     }
 
-    if ("IntersectionObserver" in window) {
-      var slideIO = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.intersectionRatio >= 0.6) setActive(slides.indexOf(e.target));
-        });
-      }, { root: crSlides, threshold: [0, 0.6, 1] });
-      slides.forEach(function (s) { slideIO.observe(s); });
+    var ticking = false;
+    function updateSlider() {
+      ticking = false;
+      var span = crWhy.offsetHeight - crSticky.offsetHeight;
+      if (span <= 0) return;
+
+      // 0 when the slider pins, 1 when it releases at the section's end
+      var p = (window.scrollY - (crWhy.offsetTop - stickyTop())) / span;
+      p = Math.min(Math.max(p, 0), 1);
+
+      var maxX = crTrack.scrollWidth - crViewport.clientWidth;
+      crTrack.style.transform = "translateX(" + (-p * maxX) + "px)";
+
+      var idx = Math.round(p * (crSlideEls.length - 1));
+      if (idx !== lastIdx) {
+        lastIdx = idx;
+        crSlideEls.forEach(function (el, n) { el.classList.toggle("active", n === idx); });
+        crDotEls.forEach(function (d, n) { d.classList.toggle("on", n === idx); });
+      }
     }
-    setActive(0);
+    function onScroll() {
+      if (!ticking) { ticking = true; requestAnimationFrame(updateSlider); }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateSlider);
+    updateSlider();
   }
 
   /* =========================================================

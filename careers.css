@@ -80,55 +80,90 @@ body.careers{
   .crscroll__arrow{animation:none}
 }
 
-/* ---- who we are ---- */
-.crintro{padding:clamp(3rem,8vh,5.5rem) 0 clamp(1rem,3vh,2rem)}
-.crintro p{
-  color:rgba(232,237,245,.78);font-size:clamp(1.05rem,1.9vw,1.3rem);
-  line-height:1.75;max-width:56ch;
-}
+/* =========================================================
+   Section rhythm — every block gets room and its own identity
+   ========================================================= */
+.crsec{padding:clamp(4rem,13vh,8rem) 0;position:relative}
 
-/* ---- body ---- */
-.crbody{padding:0 0 clamp(3rem,7vw,5rem)}
+/* the shared content column every section sits inside */
 .crwrap{width:min(780px,92vw);margin-inline:auto}
 
-/* ---- "why this is the best opportunity" slider ----
-   one card in view at a time; swipe/scroll sideways for the next */
-.crwhy{margin-bottom:clamp(1.6rem,3.5vw,2.2rem)}
-.crwhy__head{
-  font-size:clamp(1.25rem,2.6vw,1.7rem);color:#fff;
-  margin-bottom:1.1rem;line-height:1.2;
+/* one big blue heading per section */
+.crsec__head{
+  font-family:var(--font-head);
+  font-size:clamp(2rem,5.5vw,3.4rem);
+  letter-spacing:.02em;text-transform:uppercase;
+  color:var(--blue2);
+  line-height:1.1;margin-bottom:1.6rem;
+  text-shadow:0 2px 26px rgba(0,78,212,.45);
 }
-.crslides{
-  display:flex;
-  overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
-  gap:.9rem;
-  /* let cards breathe at the edges without clipping their glow */
-  padding:.4rem .2rem 1rem;
-  margin-inline:-.2rem;
-  scrollbar-width:none;
-}
-.crslides::-webkit-scrollbar{display:none}
 
-.crslide{flex:0 0 100%;scroll-snap-align:center;display:flex}
+/* ---- who we are ---- */
+.crintro{text-align:center}
+.crintro p{
+  color:rgba(232,237,245,.78);font-size:clamp(1.05rem,2vw,1.35rem);
+  line-height:1.8;max-width:56ch;margin-inline:auto;
+}
+
+/* ---- the role: points strung along a vertical line ---- */
+.crbullets{
+  list-style:none;position:relative;
+  margin:0;padding-left:1.9rem;
+  display:grid;gap:1.5rem;
+}
+/* the spine connecting every point */
+.crbullets::before{
+  content:"";position:absolute;left:5px;top:.55em;bottom:.55em;width:2px;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.85) 0%,rgba(255,255,255,.4) 100%);
+  border-radius:99px;
+}
+.crbullets li{
+  position:relative;
+  color:rgba(232,237,245,.8);
+  font-size:clamp(1rem,1.8vw,1.15rem);line-height:1.65;
+}
+.crbullets li::before{
+  content:"";position:absolute;left:-1.9rem;top:.5em;
+  width:12px;height:12px;border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 0 4px #080d17,0 0 12px rgba(255,255,255,.45);
+}
+
+
+/* ---- why join: the slider holds still while the cards advance sideways.
+   Pinned at 76vh (not full screen) so it never feels like a takeover. ---- */
+.crwhy{position:relative;height:210vh}
+.crwhy__sticky{
+  position:sticky;top:12vh;top:12svh;
+  height:76vh;height:76svh;
+  display:flex;flex-direction:column;justify-content:center;
+  overflow:hidden;
+}
+.crslides{overflow:hidden;padding:.4rem 0 1.2rem}
+.crtrack{
+  display:flex;gap:1.2rem;
+  will-change:transform;
+}
+.crslide{flex:0 0 100%;display:flex}
 .crslide__card{
   flex:1;
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.1);
-  border-radius:18px;padding:1.6rem 1.5rem;
-  /* resting state: dimmed and slightly back, until it scrolls into view */
-  opacity:.35;transform:scale(.94) translateY(6px);
-  transition:opacity .5s ease,transform .5s ease,border-color .5s ease,background .5s ease;
+  border-radius:18px;padding:clamp(1.5rem,4vh,2.4rem) clamp(1.4rem,3vw,2rem);
+  opacity:.3;transform:scale(.95);
+  transition:opacity .45s ease,transform .45s ease,border-color .45s ease,background .45s ease;
 }
 .crslide.active .crslide__card{
   opacity:1;transform:none;
   border-color:rgba(66,155,248,.4);
   background:rgba(66,155,248,.07);
 }
-.crslide__card h3{font-size:1.15rem;color:#fff;margin-bottom:.5rem;line-height:1.25}
-.crslide__card p{font-size:.92rem;color:rgba(232,237,245,.68);line-height:1.65}
+.crslide__card h3{font-size:clamp(1.15rem,2.6vw,1.6rem);color:#fff;margin-bottom:.6rem;line-height:1.25}
+.crslide__card p{font-size:clamp(.92rem,1.7vw,1.1rem);color:rgba(232,237,245,.68);line-height:1.7}
 
 /* progress dots */
-.crdots{display:flex;justify-content:center;gap:.45rem}
+.crdots{display:flex;justify-content:center;gap:.45rem;margin-top:.4rem}
 .crdots button{
   width:7px;height:7px;padding:0;border:0;border-radius:50%;cursor:pointer;
   background:rgba(255,255,255,.22);
@@ -136,29 +171,62 @@ body.careers{
 }
 .crdots button.on{background:var(--blue2);width:22px;border-radius:99px}
 
-/* the earnings stat, right before the form.
-   kept as normal inline flow so it reads as one sentence and wraps cleanly */
+/* ---- the earnings stat, alone on the screen ---- */
+.crstatsec{
+  min-height:50vh;min-height:50svh;
+  display:flex;align-items:center;
+  padding:clamp(2rem,5vh,3.5rem) 0;
+  background:
+    radial-gradient(62% 58% at 50% 50%,rgba(0,78,212,.28),transparent 72%);
+}
 .crstat{
-  font-size:clamp(1rem,2vw,1.15rem);color:rgba(232,237,245,.85);
-  margin:clamp(1.8rem,3.5vw,2.4rem) 0 clamp(1.5rem,3vw,2rem);
-  line-height:1.6;
+  font-size:clamp(1.6rem,5vw,3.4rem);
+  font-family:var(--font-head);line-height:1.25;
+  color:rgba(232,237,245,.9);margin:0;
 }
 .crstat b{
-  color:#fff;font-weight:700;
+  font-weight:inherit;
   background:linear-gradient(90deg,#6ee787,#42e2b8);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .crstat__arrow{
-  display:inline-block;margin-right:.45rem;
-  color:var(--blue2);font-size:1.1em;
+  display:inline-block;margin-right:.35em;
+  color:var(--blue2);
   animation:crnudge 1.6s ease-in-out infinite;
 }
 @keyframes crnudge{
   0%,100%{transform:translateX(0)}
-  50%{transform:translateX(5px)}
+  50%{transform:translateX(9px)}
 }
 @media (prefers-reduced-motion:reduce){
   .crstat__arrow{animation:none}
+}
+
+/* ---- the attention grab before the form ---- */
+.crask{
+  padding:clamp(5rem,20vh,10rem) 0 0;
+  background:
+    radial-gradient(62% 55% at 50% 50%,rgba(0,78,212,.2),transparent 72%);
+}
+.crask__head{
+  font-size:clamp(2.4rem,8vw,5rem);color:#fff;line-height:1.02;
+  text-shadow:0 4px 40px rgba(0,40,120,.5);
+}
+
+/* the form rises up to meet them rather than sitting there waiting */
+.crformsec{padding-top:clamp(1.2rem,3vh,2rem)}
+.crformsec .crform{
+  opacity:0;transform:translateY(110px) scale(.96);
+  transition:opacity .75s cubic-bezier(.2,.75,.3,1),
+             transform .75s cubic-bezier(.2,.75,.3,1);
+}
+.crformsec .crform.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .crformsec .crform{opacity:1;transform:none;transition:none}
+}
+.crform__intro{
+  color:rgba(232,237,245,.6);font-size:.92rem;
+  line-height:1.65;margin-bottom:1.8rem;
 }
 
 /* ---- form card ---- */
@@ -176,14 +244,8 @@ body.careers{
   -webkit-mask-composite:xor;mask-composite:exclude;
   opacity:.5;pointer-events:none;
 }
-.crform__head h2{font-size:clamp(1.4rem,3vw,1.9rem);color:#fff}
-.crform__head p{
-  color:rgba(232,237,245,.6);font-size:.9rem;
-  margin:.6rem 0 1.6rem;line-height:1.6;
-}
-
 /* the two questions */
-.crq{margin-bottom:1.4rem}
+.crq{margin-bottom:2rem}
 .crq__label{
   display:block;font-size:.92rem;color:#fff;
   margin-bottom:.7rem;font-weight:600;
@@ -259,26 +321,28 @@ body.careers{
   .crpick{flex-direction:column}
   .crpick__opt span{text-align:left}
 
-  /* phones: give every block room to breathe instead of stacking tight */
+  /* phones: shorter logo bar to subtract from the opening screen */
   .crheader{padding:1.6rem 0 .6rem}
   .crhero{
     min-height:calc(100vh - 96px);
     min-height:calc(100svh - 96px);
     padding-bottom:4.5rem;
   }
-  .crintro{padding:2.5rem 0 1rem}
-  .crintro p{line-height:1.8}
-  .crbody{padding-bottom:3.5rem}
 
-  .crwhy{margin-bottom:2.4rem}
-  .crwhy__head{margin-bottom:1.3rem}
+  /* keep the generous rhythm, just a touch tighter */
+  .crsec{padding:clamp(3.2rem,10vh,5rem) 0}
+  .crsec__head{margin-bottom:1.4rem}
+  .crbullets{gap:1.3rem}
+  .crwhy{height:200vh}
+  .crwhy__sticky{top:10svh;height:78svh}
   .crslide__card{padding:1.5rem 1.4rem}
-  .crslides{padding-bottom:1.2rem}
 
-  .crstat{margin:2.6rem 0 2.2rem;font-size:1.05rem}
+  /* these two set their own rhythm — must come after the .crsec rule above */
+  .crstatsec{min-height:46svh;padding:2rem 0}
+  .crask{padding:5.5rem 0 0}
+  .crformsec{padding-top:1.2rem}
 
   .crform{padding:1.6rem 1.4rem}
-  .crform__head p{margin-bottom:1.9rem}
   .crq{margin-bottom:1.9rem}
   .crfields{margin:2rem 0 1.6rem;gap:1rem}
   .crform__note{margin-top:1.1rem}
