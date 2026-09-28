@@ -793,6 +793,32 @@ section[id]{scroll-margin-top:100px}
 .faq__a>div{overflow:hidden}
 .faq__a p{padding:0 1.2rem 1.1rem;color:var(--muted);font-size:.92rem;line-height:1.65}
 
+/* ---------- WorkSafeBC trust strip ---------- */
+.wsbc{padding:clamp(1.8rem,4vw,2.8rem) 0}
+.wsbc__inner{
+  display:flex;align-items:center;gap:clamp(1.1rem,3vw,2rem);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:clamp(1.1rem,2.5vw,1.5rem) clamp(1.2rem,3vw,1.8rem);
+  box-shadow:0 10px 30px rgba(15,30,60,.08);
+}
+/* the badge sizes to its own proportions, whatever shape the logo is */
+.wsbc__badge{
+  flex:none;
+  width:clamp(150px,24vw,230px);
+  height:auto;
+}
+.wsbc p{
+  color:var(--muted);font-size:clamp(.92rem,1.6vw,1.02rem);
+  line-height:1.65;margin:0;
+}
+.wsbc p b{color:var(--text)}
+
+@media (max-width:560px){
+  .wsbc__inner{flex-direction:column;text-align:center;gap:1rem}
+}
+
 /* ---------- Hiring band (links out to careers.html) ---------- */
 .hiring{
   position:relative;overflow:hidden;
