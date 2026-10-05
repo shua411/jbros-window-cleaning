@@ -62,6 +62,28 @@
     });
   }
 
+  /* ---- Services dropdown ----
+     Desktop opens on hover (CSS). On touch/narrow screens the first tap
+     opens the submenu instead of navigating; "View all services" and the
+     individual services still link through normally. ---- */
+  document.querySelectorAll(".navdrop").forEach(function (drop) {
+    var top = drop.querySelector(".navdrop__top");
+    if (!top) return;
+
+    top.addEventListener("click", function (e) {
+      var touchy = window.matchMedia("(max-width: 960px), (hover: none)").matches;
+      if (!touchy) return;            // desktop: let it jump to #services
+      if (drop.classList.contains("open")) return;  // second tap follows the link
+      e.preventDefault();
+      drop.classList.add("open");
+    });
+
+    // close when tapping elsewhere
+    document.addEventListener("click", function (e) {
+      if (!drop.contains(e.target)) drop.classList.remove("open");
+    });
+  });
+
   /* ---- Scroll reveal with a soft stagger between siblings ---- */
   var reveals = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {

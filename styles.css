@@ -195,6 +195,50 @@ h1,h2,h3,h4,h5{
 .nav__links a:hover{color:var(--text)}
 .nav__links a:hover::after{width:100%}
 
+/* ---- Services dropdown ---- */
+.navdrop{position:relative}
+.navdrop__top{display:inline-flex;align-items:center;gap:.3rem}
+.navdrop__chev{
+  font-style:normal;font-size:.62rem;opacity:.7;
+  transition:transform .25s;
+}
+.navdrop:hover .navdrop__chev,.navdrop.open .navdrop__chev{transform:rotate(180deg)}
+.navdrop__menu{
+  position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(6px);
+  margin-top:.9rem;min-width:252px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.7);border-radius:16px;
+  box-shadow:0 16px 44px rgba(15,30,60,.2);
+  padding:.5rem;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease,visibility .25s;
+  z-index:5;
+}
+/* bridge the gap so the menu doesn't close as the cursor travels to it */
+.navdrop::after{
+  content:"";position:absolute;top:100%;left:0;right:0;height:1rem;
+}
+.navdrop:hover .navdrop__menu,
+.navdrop:focus-within .navdrop__menu,
+.navdrop.open .navdrop__menu{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transform:translateX(-50%) translateY(0);
+}
+.navdrop__menu a{
+  display:block;padding:.6rem .8rem;border-radius:10px;
+  font-size:.88rem;color:var(--muted);white-space:nowrap;
+  transition:background .2s,color .2s;
+}
+.navdrop__menu a::after{display:none}
+.navdrop__menu a:hover{background:rgba(66,155,248,.1);color:var(--blue1)}
+.navdrop__all{
+  margin-top:.25rem;border-top:1px solid var(--line);
+  border-radius:0 0 10px 10px !important;
+  font-family:var(--font-head);letter-spacing:.04em;
+  color:var(--blue1) !important;
+}
+
 .nav__cta{display:flex;align-items:center;gap:1rem;margin-left:auto}
 .phone{font-family:var(--font-head);font-size:.9rem;letter-spacing:.04em;color:var(--text)}
 
@@ -910,6 +954,23 @@ section[id]{scroll-margin-top:100px}
   /* dropdown panel is light, so its links are always dark */
   .nav__links.open a{color:var(--muted);text-shadow:none}
   .nav__links.open a:hover{color:var(--text)}
+
+  /* services submenu stacks inline inside the burger panel */
+  .navdrop{width:100%}
+  .navdrop__menu{
+    position:static;transform:none;margin:0;padding:0;min-width:0;
+    background:none;border:0;box-shadow:none;backdrop-filter:none;
+    opacity:1;visibility:visible;pointer-events:auto;
+    max-height:0;overflow:hidden;
+    transition:max-height .35s ease,margin .35s ease;
+  }
+  .navdrop.open .navdrop__menu{max-height:460px;margin:.7rem 0 .2rem}
+  .navdrop__menu a{
+    padding:.5rem 0 .5rem .9rem;font-size:.86rem;
+    border-left:2px solid var(--line);border-radius:0;
+  }
+  .navdrop__menu a:hover{background:none}
+  .navdrop__all{border-top:0;padding-top:.6rem !important}
   .nav__burger{display:flex}
   .nav__cta .phone{display:none}
 }
