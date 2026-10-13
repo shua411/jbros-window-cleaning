@@ -652,7 +652,10 @@
               "<h2>Thanks, " + payload.name.split(" ")[0] + ".</h2>" +
               "<p>We've got your details and we'll be in touch within the hour " +
               "with your quote. Keep an eye on your phone.</p>" +
-              '<a href="tel:7789570282" class="btn btn--grad">Or call us now</a>' +
+              '<div class="lpsent__actions">' +
+              '<a href="index.html" class="btn btn--grad">Check out website</a>' +
+              '<a href="tel:7789570282" class="btn btn--ghost">Or call us now</a>' +
+              "</div>" +
               "</div>";
             formCard.scrollIntoView({ behavior: "smooth", block: "center" });
           } else {

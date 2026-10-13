@@ -22,9 +22,13 @@
   padding:clamp(2.5rem,7vw,4.5rem) 0 clamp(2.4rem,5vw,3.4rem);
   background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 100%);
 }
+/* Full-width background, centred. The photo is a portrait shot of a
+   gutter run, so it's anchored a little below centre to keep the whole
+   gutter in view. */
 .lphero__bg{
-  position:absolute;inset:0;background-size:cover;background-position:center;
-  opacity:.5;
+  position:absolute;inset:0;
+  background-size:cover;background-position:50% 62%;
+  opacity:.55;
 }
 .lphero__bg::after{
   content:"";position:absolute;inset:0;
@@ -193,12 +197,9 @@
 }
 .lpsent h2{font-size:1.6rem;color:var(--text);margin-bottom:.7rem}
 .lpsent p{color:var(--muted);font-size:1rem;line-height:1.7;max-width:40ch;margin:0 auto 1.4rem}
-.lpsent .btn{display:inline-flex}
+.lpsent__actions{display:flex;flex-direction:column;gap:.7rem;max-width:300px;margin:0 auto}
+.lpsent .btn{display:flex;width:100%}
 
-/* ---- footer ---- */
-.lpfoot{
-  padding:2.4rem 0 3rem;text-align:center;border-top:1px solid var(--line);
-}
 
 @media (max-width:560px){
   /* keep all three badges on a single row */
@@ -210,4 +211,62 @@
   .lphead__phone{display:none}      /* the call button in the form covers this */
   .lppick{grid-template-columns:1fr 1fr}
   .lpf--2{grid-template-columns:1fr}
+}
+
+/* =========================================================
+   Phones: compact the page so the lead scrolls once or twice,
+   not endlessly. Width is untouched, only vertical size.
+   ========================================================= */
+@media (max-width:560px){
+  /* hero */
+  .lphero{padding:1.6rem 0 1.6rem}
+  .lpbadge{font-size:.62rem;padding:.35rem .8rem;margin-bottom:.7rem}
+  .lphero h1{font-size:1.85rem;line-height:1.02}
+  .lphero p{font-size:.9rem;line-height:1.5;margin-top:.7rem}
+  .lptrust{margin-top:.9rem}
+
+  /* section + card spacing */
+  .lpmain{padding:1rem 0 2rem}
+  .lpform{padding:1.1rem 1rem;border-radius:18px}
+  .lpform h2{font-size:1.25rem}
+  .lpform__sub{font-size:.8rem;line-height:1.5;margin:.3rem 0 1rem}
+
+  /* fields: keep the pairs side by side instead of stacking */
+  .lpf{margin-bottom:.7rem}
+  .lpf--2{grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:.7rem}
+  .lpf label{font-size:.62rem;margin-bottom:.25rem}
+  .lpf input,.lpf select,.lpf textarea{
+    padding:.6rem .65rem;font-size:.88rem;border-radius:9px;
+  }
+  .lpf select{padding-right:1.6rem;background-position:right .55rem center}
+
+  /* gutter block */
+  .lpsvc{padding:.8rem .8rem .15rem;margin-bottom:.7rem;border-radius:12px}
+  .lpsvc__head{margin-bottom:.7rem;gap:.5rem}
+  .lpsvc__head h3{font-size:.92rem}
+  .lpsvc__tick{width:21px;height:21px;font-size:.66rem}
+  .lpsvc .opt{display:none}           /* the roof-clean explainer; the option text already says it */
+
+  /* free window block */
+  .lpsvc--free{padding-bottom:.8rem}
+  .lpsvc__tag{font-size:.58rem;padding:.25rem .5rem}
+  .lpsvc__note{font-size:.8rem;line-height:1.5}
+
+  /* estimate */
+  .lpest{padding:.7rem .85rem;margin-bottom:.8rem;border-radius:12px}
+  .lpest__row{font-size:.84rem;padding:.25rem 0}
+  .lpest__row b{font-size:.92rem}
+  .lpest__save{margin-top:.45rem;padding-top:.55rem;font-size:.92rem}
+
+  /* timeline on one row */
+  .lppick{grid-template-columns:repeat(4,1fr);gap:.3rem}
+  .lppick__opt span{font-size:.66rem;padding:.5rem .15rem;border-radius:8px;white-space:nowrap}
+
+  /* actions */
+  .lpform .btn--lg{--pad:.85rem 1.2rem;font-size:.9rem}
+  .lpform button[type=submit]{margin-top:.2rem}
+  .lpcall{margin-top:.9rem}
+  .lpcall__or{margin-bottom:.6rem}
+  .lpcall p{font-size:.8rem;margin-bottom:.55rem}
+
 }
