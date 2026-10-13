@@ -1,15 +1,16 @@
 /* =========================================================
    Vercel serverless function: receives a lead from the ads
-   landing page, writes it into the Notion "Ad Leads" database,
-   and emails the details so they land in the inbox too.
+   landing page and writes it into the Notion "Ad Leads" database.
+
+   The email notification is sent from the visitor's browser
+   instead (see script.js) because FormSubmit returns 403 to
+   requests coming from Vercel's servers.
 
    Needs one environment variable set in Vercel:
      NOTION_TOKEN  — internal integration secret (starts ntn_)
    ========================================================= */
 
 const NOTION_DB = "61167d1f-ec96-40d2-987e-9487299a4f86"; // Ad Leads
-const LEAD_EMAIL = "jbroswc@gmail.com";
-const SITE = "https://www.jbroswc.ca";
 
 /* keep anything we store to the options the database actually has */
 const CITIES = ["North Vancouver","West Vancouver","Vancouver","Burnaby","Coquitlam","Other"];
@@ -73,59 +74,6 @@ async function writeToNotion(d) {
   if (!r.ok) throw new Error(`Notion ${r.status}: ${await r.text()}`);
 }
 
-async function sendEmail(d) {
-  const body = [
-    "*** NEW LEAD FROM META AD ***",
-    clean(d.offer) ? clean(d.offer, 120) : "",
-    "",
-    `Name: ${clean(d.name)}`,
-    `Phone: ${clean(d.phone)}`,
-    `Email: ${clean(d.email)}`,
-    `Address: ${clean(d.address) || "(not given)"}, ${clean(d.city)}`,
-    `Timeline: ${clean(d.timeline)}`,
-    "",
-    "--- GUTTER CLEANING ---",
-    `Home: ${clean(d.homeSize)} / ${clean(d.stories)}`,
-    `Gutters on: ${clean(d.gutterStoreys)}`,
-    `Last cleaned: ${clean(d.gutterLast)}`,
-    `Roof clean: ${clean(d.roofClean)}`,
-    `Estimate shown to them: ${clean(d.estimate)}`,
-    "",
-    "--- FREE WINDOW CLEANING ---",
-    `Value shown to them: ${clean(d.freeWindowValue)}`,
-    "",
-    `Notes: ${clean(d.notes) || "(none)"}`,
-    "",
-    "Saved to the Ad Leads database in Notion.",
-  ].filter((l) => l !== null).join("\n");
-
-  const r = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(LEAD_EMAIL)}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      // FormSubmit rejects requests that don't say which site they came from.
-      // Browsers add these automatically; a server has to set them itself.
-      "Origin": SITE,
-      "Referer": `${SITE}/claimoffer`,
-    },
-    body: JSON.stringify({
-      _subject: `NEW AD LEAD: ${clean(d.name)} - gutters (${clean(d.timeline)})`,
-      _template: "table",
-      _captcha: "false",
-      name: clean(d.name),
-      phone: clean(d.phone),
-      email: clean(d.email),
-      message: body,
-    }),
-  });
-  // FormSubmit answers 200 even when it refuses, so check the body too
-  const out = await r.json().catch(() => ({}));
-  if (!r.ok || String(out.success) !== "true") {
-    throw new Error(`Email ${r.status}: ${out.message || "unknown error"}`);
-  }
-}
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
@@ -137,25 +85,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: "Missing required fields" });
   }
 
-  // Run both, but never lose the lead because one of them failed.
-  const [notion, email] = await Promise.allSettled([writeToNotion(d), sendEmail(d)]);
-
-  if (notion.status === "rejected") console.error("Notion write failed:", notion.reason);
-  if (email.status === "rejected") console.error("Email send failed:", email.reason);
-
-  if (notion.status === "rejected" && email.status === "rejected") {
-    return res.status(502).json({ ok: false, error: "Could not record the lead" });
+  try {
+    await writeToNotion(d);
+    return res.status(200).json({ ok: true, notion: true });
+  } catch (err) {
+    console.error("Notion write failed:", err);
+    const body = { ok: false, notion: false };
+    if (req.headers["x-debug"] === "1") body.notionError = String(err && err.message);
+    return res.status(502).json(body);
   }
-
-  const body = {
-    ok: true,
-    notion: notion.status === "fulfilled",
-    email: email.status === "fulfilled",
-  };
-  // only reveal error detail when explicitly asked (for troubleshooting)
-  if (req.headers["x-debug"] === "1") {
-    if (notion.status === "rejected") body.notionError = String(notion.reason && notion.reason.message);
-    if (email.status === "rejected") body.emailError = String(email.reason && email.reason.message);
-  }
-  return res.status(200).json(body);
 }

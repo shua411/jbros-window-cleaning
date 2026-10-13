@@ -638,35 +638,74 @@
       leadBtn.disabled = true;
       leadBtn.textContent = "Sending…";
 
-      fetch("/api/lead", {
+      // Notion via our server; email straight from the browser (FormSubmit
+      // blocks requests from servers but accepts them from real visitors).
+      // Either one landing is enough to count the lead as captured.
+      var toNotion = fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data && data.ok) {
-            if (window.fbq) fbq("track", "Lead");
-            formCard.innerHTML =
-              '<div class="lpsent">' +
-              '<div class="lpsent__tick">✓</div>' +
-              "<h2>Thanks, " + payload.name.split(" ")[0] + ".</h2>" +
-              "<p>We've got your details and we'll be in touch within the hour " +
-              "with your quote. Keep an eye on your phone.</p>" +
-              '<div class="lpsent__actions">' +
-              '<a href="index.html" class="btn btn--grad">Check out website</a>' +
-              '<a href="tel:7789570282" class="btn btn--ghost">Or call us now</a>' +
-              "</div>" +
-              "</div>";
-            formCard.scrollIntoView({ behavior: "smooth", block: "center" });
-          } else {
-            leadBtn.disabled = false;
-            leadBtn.textContent = "Didn't send — tap to retry";
-          }
+        .then(function (d) { return !!(d && d.ok && d.notion); })
+        .catch(function () { return false; });
+
+      var emailBody = [
+        "*** NEW LEAD FROM META AD ***",
+        payload.offer,
+        "",
+        "Name: " + payload.name,
+        "Phone: " + payload.phone,
+        "Email: " + payload.email,
+        "Address: " + (payload.address || "(not given)") + ", " + payload.city,
+        "Timeline: " + payload.timeline,
+        "",
+        "--- GUTTER CLEANING ---",
+        "Home: " + payload.homeSize + " / " + payload.stories,
+        "Gutters on: " + payload.gutterStoreys,
+        "Last cleaned: " + payload.gutterLast,
+        "Roof clean: " + payload.roofClean,
+        "Estimate shown to them: " + payload.estimate,
+        "",
+        "--- FREE WINDOW CLEANING ---",
+        "Value shown to them: " + payload.freeWindowValue
+      ].join("\n");
+
+      var toEmail = fetch("https://formsubmit.co/ajax/jbroswc@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: "NEW AD LEAD: " + payload.name + " - gutters (" + payload.timeline + ")",
+          _template: "table",
+          _captcha: "false",
+          name: payload.name,
+          phone: payload.phone,
+          email: payload.email,
+          message: emailBody
         })
-        .catch(function () {
+      }).then(function (r) { return r.json(); })
+        .then(function (d) { return String(d && d.success) === "true"; })
+        .catch(function () { return false; });
+
+      Promise.all([toNotion, toEmail]).then(function (res) {
+        if (res[0] || res[1]) {
+          if (window.fbq) fbq("track", "Lead");
+          formCard.innerHTML =
+            '<div class="lpsent">' +
+            '<div class="lpsent__tick">✓</div>' +
+            "<h2>Thanks, " + payload.name.split(" ")[0] + ".</h2>" +
+            "<p>We've got your details and we'll be in touch within the hour " +
+            "with your quote. Keep an eye on your phone.</p>" +
+            '<div class="lpsent__actions">' +
+            '<a href="index.html" class="btn btn--grad">Check out website</a>' +
+            '<a href="tel:7789570282" class="btn btn--ghost">Or call us now</a>' +
+            "</div>" +
+            "</div>";
+          formCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
           leadBtn.disabled = false;
           leadBtn.textContent = "Didn't send — tap to retry";
-        });
+        }
+      });
     });
   }
 
