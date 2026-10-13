@@ -538,6 +538,94 @@
   });
 
   /* =========================================================
+     Ads landing page — lead form.
+     Posts once to /api/lead, which writes the lead into the
+     Notion CRM and emails it. Shows a thank-you on success.
+     ========================================================= */
+  var leadForm = document.getElementById("leadForm");
+  if (leadForm) {
+    var leadBtn = document.getElementById("leadSubmit");
+    var formCard = document.getElementById("formCard");
+
+    leadForm.querySelectorAll("input").forEach(function (i) {
+      i.addEventListener("input", function () { i.classList.remove("invalid"); });
+    });
+
+    function leadValid() {
+      var ok = true, first = null;
+      ["name", "phone", "email"].forEach(function (n) {
+        var el = leadForm.querySelector('[name="' + n + '"]');
+        var bad = !el.value.trim() ||
+          (n === "email" && !/^\S+@\S+\.\S+$/.test(el.value.trim()));
+        el.classList.toggle("invalid", bad);
+        if (bad && !first) first = el;
+        if (bad) ok = false;
+      });
+      if (first) first.focus();
+      return ok;
+    }
+
+    function fieldVal(n) {
+      var el = leadForm.querySelector('[name="' + n + '"]:checked') ||
+               leadForm.querySelector('[name="' + n + '"]');
+      return el ? el.value.trim() : "";
+    }
+
+    leadForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!leadValid()) return;
+
+      var services = [];
+      leadForm.querySelectorAll("#lpServices input:checked").forEach(function (c) {
+        services.push(c.value);
+      });
+
+      var payload = {
+        name: fieldVal("name"),
+        phone: fieldVal("phone"),
+        email: fieldVal("email"),
+        address: fieldVal("address"),
+        city: fieldVal("city"),
+        homeSize: fieldVal("homeSize"),
+        stories: fieldVal("stories"),
+        timeline: fieldVal("timeline"),
+        notes: fieldVal("notes"),
+        services: services
+      };
+
+      leadBtn.disabled = true;
+      leadBtn.textContent = "Sending…";
+
+      fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.ok) {
+            if (window.fbq) fbq("track", "Lead");
+            formCard.innerHTML =
+              '<div class="lpsent">' +
+              '<div class="lpsent__tick">✓</div>' +
+              "<h2>Thanks, " + payload.name.split(" ")[0] + ".</h2>" +
+              "<p>We've got your details and we'll be in touch within the hour " +
+              "with your quote. Keep an eye on your phone.</p>" +
+              '<a href="tel:7789570282" class="btn btn--grad">Or call us now</a>' +
+              "</div>";
+            formCard.scrollIntoView({ behavior: "smooth", block: "center" });
+          } else {
+            leadBtn.disabled = false;
+            leadBtn.textContent = "Didn't send — tap to retry";
+          }
+        })
+        .catch(function () {
+          leadBtn.disabled = false;
+          leadBtn.textContent = "Didn't send — tap to retry";
+        });
+    });
+  }
+
+  /* =========================================================
      Careers page — "why join" cards advance sideways while the
      page scrolls down. The section is tall, the slider is pinned
      inside it, and scroll progress drives the horizontal offset.
