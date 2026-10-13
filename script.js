@@ -538,6 +538,37 @@
   });
 
   /* =========================================================
+     Ads landing page — header review ticker.
+     Shows one review at a time; every few seconds the current one
+     slides up and out while the next rises into place from below.
+     ========================================================= */
+  var lprvTrack = document.getElementById("lprvTrack");
+  if (lprvTrack && lprvTrack.children.length > 1) {
+    var lprvCount = lprvTrack.children.length;
+    // a copy of the first review at the end lets the loop wrap seamlessly
+    lprvTrack.appendChild(lprvTrack.children[0].cloneNode(true));
+    var lprvIdx = 0;
+    var lprvStill = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    setInterval(function () {
+      var h = lprvTrack.parentElement.offsetHeight;
+      lprvIdx++;
+      lprvTrack.style.transition = lprvStill ? "none" : "transform .6s cubic-bezier(.4,0,.2,1)";
+      lprvTrack.style.transform = "translateY(" + (-lprvIdx * h) + "px)";
+
+      if (lprvIdx === lprvCount) {
+        // landed on the copy of review #1: snap back to the real one unseen
+        setTimeout(function () {
+          lprvTrack.style.transition = "none";
+          lprvTrack.style.transform = "translateY(0)";
+          lprvIdx = 0;
+        }, lprvStill ? 0 : 650);
+      }
+    }, 3800);
+  }
+
+  /* =========================================================
      Ads landing page — lead form.
      Posts once to /api/lead, which writes the lead into the
      Notion CRM and emails it. Shows a thank-you on success.

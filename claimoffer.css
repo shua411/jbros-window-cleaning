@@ -14,12 +14,41 @@
   font-family:var(--font-head);font-size:1rem;letter-spacing:.04em;
   color:var(--blue1);white-space:nowrap;
 }
-.lphead__site{flex:none}
+/* "See more reviews" button that replaced the website button */
+.lphead__more{flex:none}
+
+/* ---- review ticker in the header ---- */
+.lprv{
+  --rvh:44px;
+  flex:1;min-width:0;max-width:460px;margin-inline:auto;
+  height:var(--rvh);overflow:hidden;position:relative;
+  /* soft fade at top and bottom as reviews roll through */
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);
+          mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);
+}
+.lprv__track{will-change:transform}
+.lprv__item{
+  height:var(--rvh);margin:0;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.lprv__top{display:flex;align-items:center;gap:.4rem;line-height:1.1}
+.lprv__stars{color:#f5b301;font-size:.68rem;letter-spacing:1px}
+.lprv__top b{
+  font-family:var(--font-head);font-weight:400;font-size:.7rem;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--text);
+}
+.lprv blockquote{
+  margin:.15rem 0 0;font-size:.68rem;line-height:1.3;color:var(--muted);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
 
 /* ---- hero ---- */
 .lphero{
   position:relative;overflow:hidden;text-align:center;
-  padding:clamp(2.5rem,7vw,4.5rem) 0 clamp(2.4rem,5vw,3.4rem);
+  /* fixed at the height it had with the old intro line, so the photo
+     stays the same size; content is centred vertically within it */
+  min-height:527px;display:flex;align-items:center;
+  padding:clamp(2rem,5vw,3rem) 0 3.8rem;  /* bottom room for the pinned badges */
   background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 100%);
 }
 /* Full-width background, centred. The photo is a portrait shot of a
@@ -34,21 +63,18 @@
   content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(4,6,11,.5),rgba(4,6,11,.3));
 }
-.lphero__inner{position:relative;z-index:1}
+.lphero__inner{position:relative;z-index:1;width:min(var(--wrap),92vw)}
 .lphero h1{font-size:clamp(2.1rem,6vw,3.6rem);color:#fff;line-height:1.04}
-.lphero p{
-  color:rgba(232,237,245,.85);font-size:clamp(1rem,1.9vw,1.2rem);
-  line-height:1.65;max-width:46ch;margin:1.1rem auto 0;
-}
-.lphero p b{color:#fff}
+/* trust badges pinned along the bottom edge of the hero photo */
 .lptrust{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;
-  margin-top:1.6rem;
+  position:absolute;left:0;right:0;bottom:1rem;z-index:1;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem;
+  padding:0 1rem;
 }
 .lptrust span{
-  font-size:.76rem;color:rgba(232,237,245,.95);white-space:nowrap;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
-  padding:.4rem .85rem;border-radius:999px;backdrop-filter:blur(6px);
+  font-size:.66rem;color:rgba(232,237,245,.92);white-space:nowrap;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  padding:.3rem .7rem;border-radius:999px;backdrop-filter:blur(6px);
 }
 
 /* ---- layout ---- */
@@ -107,11 +133,11 @@
 
 /* ---- offer badge in the hero ---- */
 .lpbadge{
-  display:inline-block;margin-bottom:1rem;
-  font-family:var(--font-head);font-size:.72rem;
+  display:inline-block;margin-bottom:.9rem;
+  font-family:var(--font-head);font-size:.62rem;
   letter-spacing:.2em;text-transform:uppercase;color:#fff;
   background:linear-gradient(90deg,#d14b2a,#f0802a);
-  padding:.45rem 1rem;border-radius:999px;
+  padding:.36rem .85rem;border-radius:999px;
   box-shadow:0 6px 22px rgba(209,75,42,.45);
 }
 
@@ -203,12 +229,26 @@
 
 @media (max-width:560px){
   /* keep all three badges on a single row */
-  .lptrust{flex-wrap:nowrap;gap:.3rem;margin-top:1.2rem}
-  .lptrust span{font-size:.6rem;padding:.35rem .5rem;letter-spacing:-.01em}
+  .lptrust{flex-wrap:nowrap;gap:.25rem;bottom:.7rem;padding:0 .5rem}
+  .lptrust span{font-size:.52rem;padding:.26rem .45rem;letter-spacing:-.01em}
 
-  .lphead__logo{height:42px}
-  .lphead__right{gap:.6rem}
+  .lphead{padding:.6rem 0}
+  .lphead__inner{gap:.6rem}
+  .lphead__logo{height:40px;flex:none}
+  .lphead__right{gap:.6rem;flex:none}
   .lphead__phone{display:none}      /* the call button in the form covers this */
+  .lprv{--rvh:46px;margin:0;text-align:center}
+  .lprv__top{justify-content:center}
+  .lprv__stars{font-size:.56rem}
+  .lprv__top b{font-size:.58rem}
+  .lprv blockquote{font-size:.6rem;line-height:1.3}
+  .lphead__right{margin-left:0}
+  .lphead__more{
+    --pad:.42rem .6rem;
+    font-size:.58rem;line-height:1.15;letter-spacing:.05em;
+    white-space:normal;text-align:center;
+    max-width:74px;border-radius:10px;
+  }
   .lppick{grid-template-columns:1fr 1fr}
   .lpf--2{grid-template-columns:1fr}
 }
@@ -219,11 +259,9 @@
    ========================================================= */
 @media (max-width:560px){
   /* hero */
-  .lphero{padding:1.6rem 0 1.6rem}
-  .lpbadge{font-size:.62rem;padding:.35rem .8rem;margin-bottom:.7rem}
-  .lphero h1{font-size:1.85rem;line-height:1.02}
-  .lphero p{font-size:.9rem;line-height:1.5;margin-top:.7rem}
-  .lptrust{margin-top:.9rem}
+  .lphero{padding:1.2rem 0 2.6rem;min-height:299px}
+  .lpbadge{font-size:.54rem;padding:.3rem .7rem;margin-bottom:.65rem}
+  .lphero h1{font-size:2.05rem;line-height:1.02}
 
   /* section + card spacing */
   .lpmain{padding:1rem 0 2rem}
