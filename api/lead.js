@@ -9,6 +9,7 @@
 
 const NOTION_DB = "61167d1f-ec96-40d2-987e-9487299a4f86"; // Ad Leads
 const LEAD_EMAIL = "jbroswc@gmail.com";
+const SITE = "https://www.jbroswc.ca";
 
 /* keep anything we store to the options the database actually has */
 const CITIES = ["North Vancouver","West Vancouver","Vancouver","Burnaby","Coquitlam","Other"];
@@ -100,7 +101,14 @@ async function sendEmail(d) {
 
   const r = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(LEAD_EMAIL)}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      // FormSubmit rejects requests that don't say which site they came from.
+      // Browsers add these automatically; a server has to set them itself.
+      "Origin": SITE,
+      "Referer": `${SITE}/claimoffer`,
+    },
     body: JSON.stringify({
       _subject: `NEW AD LEAD: ${clean(d.name)} - gutters (${clean(d.timeline)})`,
       _template: "table",
@@ -111,7 +119,11 @@ async function sendEmail(d) {
       message: body,
     }),
   });
-  if (!r.ok) throw new Error(`Email ${r.status}`);
+  // FormSubmit answers 200 even when it refuses, so check the body too
+  const out = await r.json().catch(() => ({}));
+  if (!r.ok || String(out.success) !== "true") {
+    throw new Error(`Email ${r.status}: ${out.message || "unknown error"}`);
+  }
 }
 
 export default async function handler(req, res) {
