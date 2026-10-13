@@ -571,14 +571,50 @@
       return el ? el.value.trim() : "";
     }
 
+    /* ---- running estimate (same pricing as the main site) ---- */
+    var numOf = function (id) {
+      var el = document.getElementById(id);
+      return el ? parseFloat(el.value) || 0 : 0;
+    };
+    var labelOf = function (id) {
+      var el = document.getElementById(id);
+      return el ? el.options[el.selectedIndex].textContent.trim() : "";
+    };
+    var money = function (n) { return "$" + Math.round(n / 5) * 5; };
+
+    var estState = { gutterLow: 0, gutterHigh: 0, windowValue: 0 };
+
+    function updateEstimate() {
+      var size = numOf("lpSize") || 1;
+      var storeys = numOf("lpStoreys") || 1;
+
+      var gutter = numOf("lpGutStoreys") * size + numOf("lpGutLast") + numOf("lpRoof");
+      var low = gutter * 0.9, high = gutter * 1.15;
+
+      // what exterior windows would normally cost this home
+      var windows = 200 * size * storeys;
+
+      estState = { gutterLow: low, gutterHigh: high, windowValue: windows };
+
+      var set = function (id, txt) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+      set("lpGutPrice", money(low) + " – " + money(high));
+      set("lpWinWas", money(windows));
+      set("lpWinWas2", money(windows));
+      set("lpSave", money(windows));
+    }
+
+    ["lpSize","lpStoreys","lpGutStoreys","lpGutLast","lpRoof"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener("change", updateEstimate);
+    });
+    updateEstimate();
+
     leadForm.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!leadValid()) return;
-
-      var services = [];
-      leadForm.querySelectorAll("#lpServices input:checked").forEach(function (c) {
-        services.push(c.value);
-      });
 
       var payload = {
         name: fieldVal("name"),
@@ -586,11 +622,17 @@
         email: fieldVal("email"),
         address: fieldVal("address"),
         city: fieldVal("city"),
-        homeSize: fieldVal("homeSize"),
-        stories: fieldVal("stories"),
+        homeSize: labelOf("lpSize"),
+        stories: labelOf("lpStoreys"),
         timeline: fieldVal("timeline"),
         notes: fieldVal("notes"),
-        services: services
+        services: ["Gutter Cleaning", "Window Cleaning"],
+        offer: "Gutter cleaning + free exterior window cleaning",
+        gutterStoreys: labelOf("lpGutStoreys"),
+        gutterLast: labelOf("lpGutLast"),
+        roofClean: labelOf("lpRoof"),
+        estimate: money(estState.gutterLow) + " - " + money(estState.gutterHigh),
+        freeWindowValue: money(estState.windowValue)
       };
 
       leadBtn.disabled = true;

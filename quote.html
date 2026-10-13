@@ -48,8 +48,9 @@
   <section class="lphero">
     <div class="lphero__bg" data-img="images/hero.jpg"></div>
     <div class="wrap lphero__inner">
-      <h1>Get Your Free<br /><span class="glow-text">Cleaning Quote</span></h1>
-      <p>Tell us about your place and we'll get back to you <b>within the hour</b> with a firm price. No pressure, no obligation.</p>
+      <span class="lpbadge">Limited Time Offer</span>
+      <h1>Book Gutter Cleaning,<br />Get Window Cleaning<br /><span class="glow-text">Absolutely Free</span></h1>
+      <p>Get your gutters cleared by the only crew on the North Shore using a camera-tipped vacuum, and we'll clean your exterior windows at <b>no charge</b>.</p>
       <div class="lptrust">
         <span>400+ homes cleaned</span>
         <span>★★★★★ 5.0 rated</span>
@@ -62,8 +63,8 @@
     <div class="wrap lpgrid">
 
       <div class="lpform" id="formCard">
-        <h2>Request your quote</h2>
-        <p class="lpform__sub">Takes about 30 seconds.</p>
+        <h2>Claim the offer</h2>
+        <p class="lpform__sub">Takes about 30 seconds. We&rsquo;ll call to confirm your exact price.</p>
 
         <form id="leadForm" novalidate>
 
@@ -101,35 +102,82 @@
             <input type="text" name="address" placeholder="123 Lonsdale Ave" />
           </div>
 
-          <div class="lpf">
-            <label>What do you need? <em>*</em></label>
-            <div class="lpchecks" id="lpServices">
-              <label class="lpchk"><input type="checkbox" value="Window Cleaning" checked /><span>Window Cleaning</span></label>
-              <label class="lpchk"><input type="checkbox" value="Gutter Cleaning" /><span>Gutter Cleaning</span></label>
-              <label class="lpchk"><input type="checkbox" value="Pressure Washing" /><span>Pressure Washing</span></label>
-              <label class="lpchk"><input type="checkbox" value="House Washing" /><span>House Washing</span></label>
-              <label class="lpchk"><input type="checkbox" value="Seal Coating" /><span>Seal Coating</span></label>
-              <label class="lpchk"><input type="checkbox" value="Holiday Lighting" /><span>Holiday Lighting</span></label>
-            </div>
-          </div>
-
           <div class="lpf lpf--2">
             <div>
               <label>Home size</label>
-              <select name="homeSize">
-                <option>Small</option>
-                <option selected>Medium</option>
-                <option>Large</option>
+              <select name="homeSize" id="lpSize">
+                <option value="0.78">Small (1&ndash;2 bed)</option>
+                <option value="1" selected>Medium (3&ndash;4 bed)</option>
+                <option value="1.4">Large (5+ bed)</option>
               </select>
             </div>
             <div>
               <label>Stories</label>
-              <select name="stories">
-                <option>1 storey</option>
-                <option selected>2 storeys</option>
-                <option>3+ storeys</option>
+              <select name="stories" id="lpStoreys">
+                <option value="0.85">1 storey</option>
+                <option value="1" selected>2 storeys</option>
+                <option value="1.28">3+ storeys</option>
               </select>
             </div>
+          </div>
+
+          <div class="lpsvc">
+            <div class="lpsvc__head">
+              <span class="lpsvc__tick">&#10003;</span>
+              <h3>Gutter Cleaning</h3>
+            </div>
+            <div class="lpf lpf--2">
+              <div>
+                <label>How many stories have gutters?</label>
+                <select id="lpGutStoreys">
+                  <option value="160">1 storey</option>
+                  <option value="230" selected>2 storeys</option>
+                  <option value="320">3+ storeys</option>
+                </select>
+              </div>
+              <div>
+                <label>Last cleaned?</label>
+                <select id="lpGutLast">
+                  <option value="0">Within 6 months</option>
+                  <option value="0" selected>6&ndash;12 months ago</option>
+                  <option value="40">1&ndash;2 years ago</option>
+                  <option value="75">Over 2 years ago</option>
+                  <option value="60">Never / not sure</option>
+                </select>
+              </div>
+            </div>
+            <div class="lpf">
+              <label>Add a basic roof clean? <span class="opt">(moss up top ends up back in clean gutters)</span></label>
+              <select id="lpRoof">
+                <option value="0">No, just the gutters</option>
+                <option value="200">Yes, clear the roof too</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="lpsvc lpsvc--free">
+            <div class="lpsvc__head">
+              <span class="lpsvc__tick">&#9733;</span>
+              <h3>Exterior Window Cleaning</h3>
+              <span class="lpsvc__tag">Included Free</span>
+            </div>
+            <p class="lpsvc__note">
+              Normally <s id="lpWinWas">$200</s> for a home your size &mdash;
+              <b>yours free</b> when you book your gutters with us.
+            </p>
+          </div>
+
+          <div class="lpest" id="lpEst">
+            <div class="lpest__row">
+              <span>Gutter cleaning</span>
+              <b id="lpGutPrice">$230 &ndash; $300</b>
+            </div>
+            <div class="lpest__row lpest__row--free">
+              <span>Exterior window cleaning</span>
+              <b><s id="lpWinWas2">$200</s> FREE</b>
+            </div>
+            <div class="lpest__save">You save <b id="lpSave">$200</b> today</div>
+            <p class="lpest__note">Estimate based on what you've told us. We'll call to confirm the exact price before any work starts.</p>
           </div>
 
           <div class="lpf">
@@ -147,7 +195,7 @@
             <textarea name="notes" rows="2" placeholder="Hard-to-reach windows, moss on the roof, etc."></textarea>
           </div>
 
-          <button type="submit" class="btn btn--grad btn--full btn--lg" id="leadSubmit">Get my free quote</button>
+          <button type="submit" class="btn btn--grad btn--full btn--lg" id="leadSubmit">Claim my free window cleaning</button>
           <p class="lpform__note">We reply within the hour during business hours. We never share your details.</p>
         </form>
       </div>

@@ -15,6 +15,12 @@ const CITIES = ["North Vancouver","West Vancouver","Vancouver","Burnaby","Coquit
 const SERVICES = ["Window Cleaning","Gutter Cleaning","Pressure Washing","House Washing","Seal Coating","Holiday Lighting"];
 const SIZES = ["Small","Medium","Large"];
 const STOREYS = ["1 storey","2 storeys","3+ storeys"];
+
+/* the landing page sends friendly labels like "Medium (3-4 bed)" */
+const matchOption = (val, allowed, fallback) => {
+  const v = String(val || "").toLowerCase();
+  return allowed.find((o) => v.includes(o.toLowerCase().split(" ")[0])) || fallback;
+};
 const TIMELINES = ["ASAP","Within 2 weeks","Within a month","Just researching"];
 
 const pick = (val, allowed, fallback) => (allowed.includes(val) ? val : fallback);
@@ -33,8 +39,8 @@ async function writeToNotion(d) {
     "Lead Status": { select: { name: "New" } },
     "Source":      { select: { name: "Meta Ad" } },
     "City":        { select: { name: pick(clean(d.city), CITIES, "Other") } },
-    "Home Size":   { select: { name: pick(clean(d.homeSize), SIZES, "Medium") } },
-    "Stories":     { select: { name: pick(clean(d.stories), STOREYS, "2 storeys") } },
+    "Home Size":   { select: { name: matchOption(d.homeSize, SIZES, "Medium") } },
+    "Stories":     { select: { name: matchOption(d.stories, STOREYS, "2 storeys") } },
     "Timeline":    { select: { name: pick(clean(d.timeline), TIMELINES, "ASAP") } },
   };
 
@@ -42,7 +48,16 @@ async function writeToNotion(d) {
   if (clean(d.phone))  props["Phone"]    = { phone_number: clean(d.phone, 40) };
   if (clean(d.email))  props["Email"]    = { email: clean(d.email, 120) };
   if (clean(d.address)) props["Address"] = { rich_text: [{ text: { content: clean(d.address, 300) } }] };
-  if (clean(d.notes))  props["Notes"]    = { rich_text: [{ text: { content: clean(d.notes, 1800) } }] };
+  const notes = [
+    d.offer ? `OFFER: ${clean(d.offer, 120)}` : "",
+    d.estimate ? `Gutter estimate shown: ${clean(d.estimate, 40)}` : "",
+    d.freeWindowValue ? `Free window cleaning value: ${clean(d.freeWindowValue, 20)}` : "",
+    d.gutterStoreys ? `Gutters on: ${clean(d.gutterStoreys, 60)}` : "",
+    d.gutterLast ? `Last cleaned: ${clean(d.gutterLast, 60)}` : "",
+    d.roofClean ? `Roof clean: ${clean(d.roofClean, 60)}` : "",
+    clean(d.notes) ? `\nThey said: ${clean(d.notes, 1200)}` : "",
+  ].filter(Boolean).join("\n");
+  if (notes) props["Notes"] = { rich_text: [{ text: { content: notes.slice(0, 1900) } }] };
 
   const r = await fetch("https://api.notion.com/v1/pages", {
     method: "POST",
@@ -58,29 +73,36 @@ async function writeToNotion(d) {
 }
 
 async function sendEmail(d) {
-  const services = (Array.isArray(d.services) ? d.services : []).join(", ") || "(none picked)";
   const body = [
     "*** NEW LEAD FROM META AD ***",
+    clean(d.offer) ? clean(d.offer, 120) : "",
     "",
     `Name: ${clean(d.name)}`,
     `Phone: ${clean(d.phone)}`,
     `Email: ${clean(d.email)}`,
     `Address: ${clean(d.address) || "(not given)"}, ${clean(d.city)}`,
-    "",
-    `Services: ${services}`,
-    `Home: ${clean(d.homeSize)} / ${clean(d.stories)}`,
     `Timeline: ${clean(d.timeline)}`,
+    "",
+    "--- GUTTER CLEANING ---",
+    `Home: ${clean(d.homeSize)} / ${clean(d.stories)}`,
+    `Gutters on: ${clean(d.gutterStoreys)}`,
+    `Last cleaned: ${clean(d.gutterLast)}`,
+    `Roof clean: ${clean(d.roofClean)}`,
+    `Estimate shown to them: ${clean(d.estimate)}`,
+    "",
+    "--- FREE WINDOW CLEANING ---",
+    `Value shown to them: ${clean(d.freeWindowValue)}`,
     "",
     `Notes: ${clean(d.notes) || "(none)"}`,
     "",
     "Saved to the Ad Leads database in Notion.",
-  ].join("\n");
+  ].filter((l) => l !== null).join("\n");
 
   const r = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(LEAD_EMAIL)}`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "Accept": "application/json" },
     body: JSON.stringify({
-      _subject: `NEW AD LEAD: ${clean(d.name)} (${clean(d.timeline)})`,
+      _subject: `NEW AD LEAD: ${clean(d.name)} - gutters (${clean(d.timeline)})`,
       _template: "table",
       _captcha: "false",
       name: clean(d.name),
