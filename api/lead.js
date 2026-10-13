@@ -147,9 +147,15 @@ export default async function handler(req, res) {
     return res.status(502).json({ ok: false, error: "Could not record the lead" });
   }
 
-  return res.status(200).json({
+  const body = {
     ok: true,
     notion: notion.status === "fulfilled",
     email: email.status === "fulfilled",
-  });
+  };
+  // only reveal error detail when explicitly asked (for troubleshooting)
+  if (req.headers["x-debug"] === "1") {
+    if (notion.status === "rejected") body.notionError = String(notion.reason && notion.reason.message);
+    if (email.status === "rejected") body.emailError = String(email.reason && email.reason.message);
+  }
+  return res.status(200).json(body);
 }
