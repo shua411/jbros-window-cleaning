@@ -19,14 +19,12 @@
 /* ---- hero ---- */
 .lphero{
   position:relative;overflow:hidden;text-align:center;
-  padding:clamp(2.5rem,7vw,4.5rem) 0 clamp(2rem,5vw,3rem);
-  background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 70%,rgba(10,18,32,0) 100%);
+  padding:clamp(2.5rem,7vw,4.5rem) 0 clamp(2.4rem,5vw,3.4rem);
+  background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 100%);
 }
 .lphero__bg{
   position:absolute;inset:0;background-size:cover;background-position:center;
   opacity:.5;
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 70%,transparent 100%);
-          mask-image:linear-gradient(180deg,#000 0%,#000 70%,transparent 100%);
 }
 .lphero__bg::after{
   content:"";position:absolute;inset:0;
@@ -44,8 +42,8 @@
   margin-top:1.6rem;
 }
 .lptrust span{
-  font-size:.76rem;color:rgba(232,237,245,.9);
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  font-size:.76rem;color:rgba(232,237,245,.95);white-space:nowrap;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
   padding:.4rem .85rem;border-radius:999px;backdrop-filter:blur(6px);
 }
 
@@ -112,13 +110,6 @@
   padding:.45rem 1rem;border-radius:999px;
   box-shadow:0 6px 22px rgba(209,75,42,.45);
 }
-
-.lptimer{
-  display:flex;align-items:center;justify-content:center;gap:.4rem;
-  font-size:.82rem;letter-spacing:.04em;
-  color:rgba(255,220,190,.95);margin:-.45rem 0 1.1rem;
-}
-.lptimer svg{width:15px;height:15px;flex:none}
 
 /* ---- the two service blocks in the form ---- */
 .lpsvc{
@@ -210,10 +201,13 @@
 }
 
 @media (max-width:560px){
+  /* keep all three badges on a single row */
+  .lptrust{flex-wrap:nowrap;gap:.3rem;margin-top:1.2rem}
+  .lptrust span{font-size:.6rem;padding:.35rem .5rem;letter-spacing:-.01em}
+
   .lphead__logo{height:42px}
   .lphead__right{gap:.6rem}
   .lphead__phone{display:none}      /* the call button in the form covers this */
   .lppick{grid-template-columns:1fr 1fr}
   .lpf--2{grid-template-columns:1fr}
-  .lptimer{font-size:.76rem}
 }
