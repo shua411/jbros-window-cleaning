@@ -9,10 +9,12 @@
   position:sticky;top:0;z-index:20}
 .lphead__inner{display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .lphead__logo{height:52px;width:auto}
+.lphead__right{display:flex;align-items:center;gap:.9rem}
 .lphead__phone{
   font-family:var(--font-head);font-size:1rem;letter-spacing:.04em;
   color:var(--blue1);white-space:nowrap;
 }
+.lphead__site{flex:none}
 
 /* ---- hero ---- */
 .lphero{
@@ -49,7 +51,7 @@
 
 /* ---- layout ---- */
 .lpmain{padding:clamp(2rem,5vw,3.5rem) 0 clamp(3rem,6vw,5rem)}
-.lpgrid{display:grid;grid-template-columns:1.45fr .85fr;gap:clamp(1.5rem,4vw,2.8rem);align-items:start}
+.lpwrap{max-width:660px;margin-inline:auto}
 
 /* ---- the form ---- */
 .lpform{
@@ -84,20 +86,6 @@
 }
 .lpf input.invalid{border-color:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.15)}
 
-/* service checkboxes */
-.lpchecks{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-.lpchk{position:relative;cursor:pointer}
-.lpchk input{position:absolute;opacity:0;pointer-events:none}
-.lpchk span{
-  display:block;text-align:center;padding:.65rem .5rem;border-radius:11px;
-  border:1px solid var(--line2);background:#fbfcfe;
-  font-size:.84rem;color:var(--muted);transition:.2s;user-select:none;
-}
-.lpchk input:checked+span{
-  color:#fff;border-color:transparent;background:var(--grad);
-  box-shadow:0 6px 18px rgba(0,78,212,.3);
-}
-
 /* timeline pills */
 .lppick{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem}
 .lppick__opt{position:relative;cursor:pointer}
@@ -124,6 +112,13 @@
   padding:.45rem 1rem;border-radius:999px;
   box-shadow:0 6px 22px rgba(209,75,42,.45);
 }
+
+.lptimer{
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+  font-size:.82rem;letter-spacing:.04em;
+  color:rgba(255,220,190,.95);margin:-.45rem 0 1.1rem;
+}
+.lptimer svg{width:15px;height:15px;flex:none}
 
 /* ---- the two service blocks in the form ---- */
 .lpsvc{
@@ -182,29 +177,21 @@
   margin-top:.7rem;text-align:center;
 }
 
-/* ---- sidebar proof ---- */
-.lpwsbc{
-  background:#fff;border:1px solid var(--line);border-radius:16px;
-  padding:1.1rem 1.2rem;margin-bottom:1rem;
-  box-shadow:0 10px 30px rgba(15,30,60,.08);
+/* ---- call us instead ---- */
+.lpcall{margin-top:1.4rem;text-align:center}
+.lpcall__or{
+  display:block;position:relative;
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:.9rem;
 }
-.lpwsbc img{width:150px;height:auto;margin-bottom:.7rem}
-.lpwsbc p{font-size:.86rem;color:var(--muted);line-height:1.6}
-.lpwsbc p b{color:var(--text)}
-.lprev{
-  background:#fff;border:1px solid var(--line);border-radius:16px;
-  padding:1.1rem 1.2rem;margin:0 0 .8rem;
-  box-shadow:0 10px 30px rgba(15,30,60,.08);
+.lpcall__or::before,.lpcall__or::after{
+  content:"";position:absolute;top:50%;width:calc(50% - 1.6rem);height:1px;background:var(--line);
 }
-.lprev .stars{
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;
-  color:transparent;font-size:.95rem;letter-spacing:1.5px;margin-bottom:.5rem;
-}
-.lprev blockquote{font-size:.88rem;color:#3a4658;line-height:1.6;margin-bottom:.6rem}
-.lprev figcaption{
-  font-family:var(--font-head);font-size:.82rem;letter-spacing:.04em;
-  text-transform:uppercase;color:var(--text);
-}
+.lpcall__or::before{left:0}
+.lpcall__or::after{right:0}
+.lpcall p{font-size:.86rem;color:var(--muted);line-height:1.55;margin-bottom:.8rem}
+.lpcall__btn{gap:.5rem;font-size:1rem}
+.lpcall__btn svg{width:17px;height:17px}
 
 /* ---- sent state ---- */
 .lpsent{text-align:center;padding:clamp(2rem,5vw,3rem) 1rem}
@@ -219,23 +206,14 @@
 
 /* ---- footer ---- */
 .lpfoot{
-  padding:2rem 0;text-align:center;border-top:1px solid var(--line);
-  color:var(--muted);font-size:.88rem;
+  padding:2.4rem 0 3rem;text-align:center;border-top:1px solid var(--line);
 }
-.lpfoot p{margin-bottom:.35rem}
-.lpfoot a{color:var(--blue1);font-weight:600}
 
-@media (max-width:860px){
-  .lpgrid{grid-template-columns:1fr}
-  .lpside{order:-1}
-  .lprev{display:none}            /* keep the form near the top on phones */
-  .lpwsbc{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem}
-  .lpwsbc img{margin:0;width:110px;flex:none}
-}
 @media (max-width:560px){
-  .lphead__logo{height:44px}
-  .lpchecks{grid-template-columns:1fr 1fr}
+  .lphead__logo{height:42px}
+  .lphead__right{gap:.6rem}
+  .lphead__phone{display:none}      /* the call button in the form covers this */
   .lppick{grid-template-columns:1fr 1fr}
   .lpf--2{grid-template-columns:1fr}
-  .lpwsbc{flex-direction:column;align-items:flex-start;text-align:left}
+  .lptimer{font-size:.76rem}
 }
