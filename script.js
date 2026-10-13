@@ -607,6 +607,16 @@
     var CR_EMAIL = "jbroswc@gmail.com";
     var crBtn = document.getElementById("crSubmit");
 
+    /* ---------------------------------------------------------
+       Google Appointment Schedule booking page.
+       Paste the booking link between the quotes and the calendar
+       appears right after they submit, so they pick a slot that
+       lands straight in your real calendar with a Meet link.
+       The link must end in ?gv=true to embed properly.
+       Leave it empty and they just get the confirmation message.
+       --------------------------------------------------------- */
+    var CR_BOOKING_URL = "";
+
     crForm.querySelectorAll("input").forEach(function (i) {
       i.addEventListener("input", function () { i.classList.remove("invalid"); });
     });
@@ -667,13 +677,38 @@
       }).then(function (r) { return r.json(); })
         .then(function (data) {
           if (data && String(data.success) === "true") {
-            crForm.parentElement.innerHTML =
-              '<div class="crsent">' +
-              '<div class="crsent__tick">✓</div>' +
-              "<h2>Got it, " + name.split(" ")[0] + ".</h2>" +
-              "<p>We'll reach out within a day or two with the pay structure, " +
-              "the schedule and what the first week looks like. Keep an eye on your phone.</p>" +
-              "</div>";
+            var first = name.split(" ")[0];
+            var html;
+
+            if (CR_BOOKING_URL) {
+              // details are in Josh's inbox; now let them lock in a call
+              html =
+                '<div class="crsent">' +
+                '<div class="crsent__tick">✓</div>' +
+                "<h2>Got it, " + first + ".</h2>" +
+                "<p>Last step: grab a time below for a quick 15-minute chat over " +
+                "Google Meet. We'll walk you through the pay structure, the schedule " +
+                "and what the first week looks like.</p>" +
+                "</div>" +
+                '<div class="crbook">' +
+                '<iframe src="' + CR_BOOKING_URL + '" ' +
+                'title="Book a call with JBros" loading="lazy" ' +
+                'frameborder="0" scrolling="yes"></iframe>' +
+                "</div>" +
+                '<p class="crbook__note">Can\'t find a time that works? ' +
+                'Text us at <a href="tel:7789570282">778 957 0282</a>.</p>';
+            } else {
+              html =
+                '<div class="crsent">' +
+                '<div class="crsent__tick">✓</div>' +
+                "<h2>Got it, " + first + ".</h2>" +
+                "<p>We'll reach out within a day or two with the pay structure, " +
+                "the schedule and what the first week looks like. Keep an eye on your phone.</p>" +
+                "</div>";
+            }
+
+            crForm.parentElement.innerHTML = html;
+            crForm.parentElement.scrollIntoView({ behavior: "smooth", block: "start" });
           } else {
             crBtn.disabled = false;
             crBtn.textContent = "Didn't send — tap to retry";
