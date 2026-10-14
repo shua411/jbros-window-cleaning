@@ -234,9 +234,8 @@
     </div>
   </div>
   <script>
-    // open the popup immediately, before anything else loads (once per visit)
+    // open the popup immediately on every page load, before anything else loads
     (function () {
-      try { if (sessionStorage.getItem("jbros_offer_seen") === "1") return; } catch (x) {}
       var m = document.getElementById("qmodal");
       m.hidden = false;
       document.body.classList.add("modal-open");

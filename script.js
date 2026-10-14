@@ -579,7 +579,7 @@
      Posts once to /api/lead, which writes the lead into the
      Notion CRM and emails it. Shows a thank-you on success.
      ========================================================= */
-  /* ---- Popup form: auto-opens on arrival once per visit, and from any [data-quote] button ---- */
+  /* ---- Popup form: auto-opens on every page load, and from any [data-quote] button ---- */
   var qm = document.getElementById("qmodal");
   if (qm) {
     var qPanelEl = qm.querySelector(".qmodal-panel");
@@ -613,10 +613,6 @@
       if (e.key === "Escape" && qm.classList.contains("open")) qClose();
     });
 
-    var Q_SEEN = "jbros_offer_seen";
-    function qMarkSeen() { try { sessionStorage.setItem(Q_SEEN, "1"); } catch (x) {} }
-    qm.addEventListener("click", function (e) { if (e.target.closest("[data-qclose]")) qMarkSeen(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") qMarkSeen(); });
     // auto-open happens in an inline script right after the popup markup, so it shows on first paint
   }
 
