@@ -6,9 +6,17 @@
    instead (see script.js) because FormSubmit returns 403 to
    requests coming from Vercel's servers.
 
-   Needs one environment variable set in Vercel:
-     NOTION_TOKEN  — internal integration secret (starts ntn_)
+   It also sends the Lead to Meta's Conversions API, but only for
+   North / West Vancouver leads, with the same event id the browser
+   pixel uses so Meta counts one Lead.
+
+   Environment variables set in Vercel:
+     NOTION_TOKEN          — internal integration secret (starts ntn_)
+     META_CAPI_TOKEN       — Conversions API access token from Events Manager
+     META_TEST_EVENT_CODE  — optional, e.g. TEST12345, only while testing
    ========================================================= */
+
+import { createHash } from "node:crypto";
 
 const NOTION_DB = "61167d1f-ec96-40d2-987e-9487299a4f86"; // Ad Leads
 
@@ -74,6 +82,66 @@ async function writeToNotion(d) {
   if (!r.ok) throw new Error(`Notion ${r.status}: ${await r.text()}`);
 }
 
+/* ---------- Meta Conversions API ---------- */
+const META_PIXEL = "1036420242504746";
+const META_API = "https://graph.facebook.com/v23.0";
+const IN_AREA = ["North Vancouver", "West Vancouver"];
+
+const sha256 = (v) => createHash("sha256").update(v).digest("hex");
+const hashed = (v) => (v ? [sha256(v)] : undefined);
+
+async function sendToMeta(d, req) {
+  const location = clean(d.location || d.city, 60);
+  if (!IN_AREA.includes(location)) return "skipped (out of area)";
+
+  const token = process.env.META_CAPI_TOKEN;
+  if (!token) return "skipped (META_CAPI_TOKEN not set)";
+
+  const names = clean(d.name, 120).toLowerCase().split(/\s+/).filter(Boolean);
+  let phone = clean(d.phone, 40).replace(/\D/g, "");
+  if (phone.length === 10) phone = "1" + phone;
+
+  const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
+             req.socket?.remoteAddress || undefined;
+
+  const event = {
+    event_name: "Lead",
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: clean(d.eventId, 80) || undefined,
+    action_source: "website",
+    event_source_url: clean(d.pageUrl, 500) || undefined,
+    user_data: {
+      em: hashed(clean(d.email, 120).toLowerCase()),
+      ph: hashed(phone),
+      fn: hashed(names[0]),
+      ln: hashed(names.length > 1 ? names[names.length - 1] : ""),
+      ct: hashed(location.replace(/\s+/g, "").toLowerCase()),
+      st: hashed("bc"),
+      country: hashed("ca"),
+      client_ip_address: ip,
+      client_user_agent: req.headers["user-agent"] || undefined,
+      fbp: clean(d.fbp, 200) || undefined,
+      fbc: clean(d.fbc, 500) || undefined,
+    },
+    custom_data: {
+      content_name: "Quote Request",
+      content_category: clean(d.service, 80) || "Gutter Cleaning",
+      city: location,
+    },
+  };
+
+  const body = { data: [event] };
+  if (process.env.META_TEST_EVENT_CODE) body.test_event_code = process.env.META_TEST_EVENT_CODE;
+
+  const r = await fetch(`${META_API}/${META_PIXEL}/events?access_token=${encodeURIComponent(token)}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`Meta ${r.status}: ${await r.text()}`);
+  return "sent";
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
@@ -87,11 +155,21 @@ export default async function handler(req, res) {
 
   try {
     await writeToNotion(d);
-    return res.status(200).json({ ok: true, notion: true });
   } catch (err) {
     console.error("Notion write failed:", err);
     const body = { ok: false, notion: false };
     if (req.headers["x-debug"] === "1") body.notionError = String(err && err.message);
     return res.status(502).json(body);
   }
+
+  // the lead is safely stored; a Meta hiccup must never cost us the lead
+  let meta;
+  try {
+    meta = await sendToMeta(d, req);
+  } catch (err) {
+    console.error("Meta CAPI failed:", err);
+    meta = "failed";
+  }
+
+  return res.status(200).json({ ok: true, notion: true, meta });
 }

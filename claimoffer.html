@@ -27,6 +27,7 @@
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('set', 'autoConfig', false, '1036420242504746');
   fbq('init', '1036420242504746');
   fbq('track', 'PageView');
   </script>
@@ -79,13 +80,33 @@
   </section>
 
   <section class="lpmain">
-    <div class="wrap lpwrap">
+    <div class="wrap lpwrap lpcta">
+      <a href="#claim" class="btn btn--grad btn--lg" data-quote="Page Button">Claim my free window cleaning</a>
+      <p>Takes 30 seconds. We reply within the hour.</p>
+    </div>
+  </section>
+
+  <!-- ===== Popup form: opens instantly on arrival (once per visit) and from any [data-quote] button ===== -->
+  <div class="qmodal" id="qmodal" role="dialog" aria-modal="true" aria-label="Claim the offer" hidden>
+    <div class="qmodal-veil" data-qclose></div>
+    <div class="qmodal-panel" role="document">
+      <button class="qmodal-x" type="button" data-qclose aria-label="Close"><svg viewBox="0 0 24 24"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg></button>
 
       <div class="lpform" id="formCard">
         <h2>Claim the offer</h2>
         <p class="lpform__sub">Fill out the form below to get an instant quote range. We'll reach out within the hour to confirm the exact price and a date that works for you.</p>
 
         <form id="leadForm" novalidate>
+
+          <div class="lpf">
+            <label>Location <em>*</em></label>
+            <select name="Location" id="lpLocation" required>
+              <option value="" disabled selected>Where are you located?</option>
+              <option>North Vancouver</option>
+              <option>West Vancouver</option>
+              <option>Other</option>
+            </select>
+          </div>
 
           <div class="lpf lpf--2">
             <div>
@@ -98,22 +119,9 @@
             </div>
           </div>
 
-          <div class="lpf lpf--2">
-            <div>
-              <label>Email <em>*</em></label>
-              <input type="email" name="email" placeholder="you@email.com" required />
-            </div>
-            <div>
-              <label>City <em>*</em></label>
-              <select name="city">
-                <option>North Vancouver</option>
-                <option>West Vancouver</option>
-                <option>Vancouver</option>
-                <option>Burnaby</option>
-                <option>Coquitlam</option>
-                <option>Other</option>
-              </select>
-            </div>
+          <div class="lpf">
+            <label>Email <em>*</em></label>
+            <input type="email" name="email" placeholder="you@email.com" required />
           </div>
 
           <div class="lpf">
@@ -224,7 +232,18 @@
       </div>
 
     </div>
-  </section>
+  </div>
+  <script>
+    // open the popup immediately, before anything else loads (once per visit)
+    (function () {
+      try { if (sessionStorage.getItem("jbros_offer_seen") === "1") return; } catch (x) {}
+      var m = document.getElementById("qmodal");
+      m.hidden = false;
+      document.body.classList.add("modal-open");
+      void m.offsetWidth; // lock in the start state so the fade still plays
+      m.classList.add("open");
+    })();
+  </script>
 
   <script src="script.js"></script>
 </body>

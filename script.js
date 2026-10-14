@@ -297,6 +297,12 @@
         if (bad && !first) first = input;
         if (bad) ok = false;
       });
+      var loc = document.getElementById("lpLocation");
+      if (loc && !loc.value) {
+        loc.classList.add("invalid");
+        if (!first) first = loc;
+        ok = false;
+      }
       if (first) first.focus();
       return ok;
     }
@@ -573,13 +579,56 @@
      Posts once to /api/lead, which writes the lead into the
      Notion CRM and emails it. Shows a thank-you on success.
      ========================================================= */
+  /* ---- Popup form: auto-opens on arrival once per visit, and from any [data-quote] button ---- */
+  var qm = document.getElementById("qmodal");
+  if (qm) {
+    var qPanelEl = qm.querySelector(".qmodal-panel");
+    var qLastFocus = null, qHideT = null;
+
+    function qOpen() {
+      if (qHideT) { clearTimeout(qHideT); qHideT = null; }
+      qLastFocus = document.activeElement;
+      qm.hidden = false;
+      qPanelEl.scrollTop = 0;
+      document.body.classList.add("modal-open");
+      // one frame mounted but not .open, so the fade has a start state
+      requestAnimationFrame(function () { requestAnimationFrame(function () {
+        qm.classList.add("open");
+      }); });
+    }
+    function qClose() {
+      qm.classList.remove("open");
+      document.body.classList.remove("modal-open");
+      if (qLastFocus && qLastFocus.focus) qLastFocus.focus();
+      // unmount only after the fade-out finishes
+      qHideT = setTimeout(function () { qm.hidden = true; qHideT = null; }, 320);
+    }
+
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest("[data-quote]");
+      if (t) { e.preventDefault(); qOpen(); return; }
+      if (e.target.closest("[data-qclose]")) { e.preventDefault(); qClose(); }
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && qm.classList.contains("open")) qClose();
+    });
+
+    var Q_SEEN = "jbros_offer_seen";
+    function qMarkSeen() { try { sessionStorage.setItem(Q_SEEN, "1"); } catch (x) {} }
+    qm.addEventListener("click", function (e) { if (e.target.closest("[data-qclose]")) qMarkSeen(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") qMarkSeen(); });
+    // auto-open happens in an inline script right after the popup markup, so it shows on first paint
+  }
+
   var leadForm = document.getElementById("leadForm");
   if (leadForm) {
     var leadBtn = document.getElementById("leadSubmit");
     var formCard = document.getElementById("formCard");
 
-    leadForm.querySelectorAll("input").forEach(function (i) {
-      i.addEventListener("input", function () { i.classList.remove("invalid"); });
+    leadForm.querySelectorAll("input, select").forEach(function (i) {
+      var clear = function () { i.classList.remove("invalid"); };
+      i.addEventListener("input", clear);
+      i.addEventListener("change", clear);
     });
 
     function leadValid() {
@@ -600,6 +649,41 @@
       var el = leadForm.querySelector('[name="' + n + '"]:checked') ||
                leadForm.querySelector('[name="' + n + '"]');
       return el ? el.value.trim() : "";
+    }
+
+    /* ---- Meta tracking: only North / West Vancouver leads become conversions ---- */
+    var META_PIXEL = "1036420242504746";
+    var IN_AREA = ["North Vancouver", "West Vancouver"];
+
+    function cookieVal(n) {
+      var m = document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)"));
+      return m ? decodeURIComponent(m[1]) : "";
+    }
+    function fbcFromUrl() {
+      var id = new URLSearchParams(location.search).get("fbclid");
+      return id ? "fb.1." + Date.now() + "." + id : "";
+    }
+
+    // runs only after the lead was delivered. "Other" fires nothing at all.
+    function trackInAreaLead(p) {
+      if (IN_AREA.indexOf(p.location) === -1 || typeof fbq !== "function") return;
+      var nm = p.name.split(/\s+/).filter(Boolean);
+      var ph = p.phone.replace(/\D/g, "");
+      if (ph.length === 10) ph = "1" + ph;
+      fbq("init", META_PIXEL, {
+        em: p.email.toLowerCase() || undefined,
+        ph: ph || undefined,
+        fn: nm[0] ? nm[0].toLowerCase() : undefined,
+        ln: nm.length > 1 ? nm[nm.length - 1].toLowerCase() : undefined,
+        ct: p.location.replace(/\s+/g, "").toLowerCase(),
+        st: "bc",
+        country: "ca"
+      });
+      fbq("track", "Lead", {
+        content_name: "Quote Request",
+        content_category: p.service,
+        city: p.location
+      }, { eventID: p.eventId });
     }
 
     /* ---- running estimate (same pricing as the main site) ---- */
@@ -652,7 +736,8 @@
         phone: fieldVal("phone"),
         email: fieldVal("email"),
         address: fieldVal("address"),
-        city: fieldVal("city"),
+        city: fieldVal("Location"),
+        location: fieldVal("Location"),
         homeSize: labelOf("lpSize"),
         stories: labelOf("lpStoreys"),
         timeline: fieldVal("timeline"),
@@ -665,6 +750,14 @@
         estimate: money(estState.gutterLow) + " - " + money(estState.gutterHigh),
         freeWindowValue: money(estState.windowValue)
       };
+
+      // Meta: one event id shared by the browser pixel and the server (Conversions API)
+      // so Meta counts a single Lead. Both sides only fire for in-area leads.
+      payload.eventId = "lead_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
+      payload.service = "Gutter Cleaning";
+      payload.fbp = cookieVal("_fbp");
+      payload.fbc = cookieVal("_fbc") || fbcFromUrl();
+      payload.pageUrl = location.href;
 
       leadBtn.disabled = true;
       leadBtn.textContent = "Sending…";
@@ -719,7 +812,7 @@
 
       Promise.all([toNotion, toEmail]).then(function (res) {
         if (res[0] || res[1]) {
-          if (window.fbq) fbq("track", "Lead");
+          trackInAreaLead(payload);
           formCard.innerHTML =
             '<div class="lpsent">' +
             '<div class="lpsent__tick">✓</div>' +
@@ -731,7 +824,9 @@
             '<a href="tel:7789570282" class="btn btn--ghost">Or call us now</a>' +
             "</div>" +
             "</div>";
-          formCard.scrollIntoView({ behavior: "smooth", block: "center" });
+          var qPanel = formCard.closest(".qmodal-panel");
+          if (qPanel) qPanel.scrollTop = 0;
+          else formCard.scrollIntoView({ behavior: "smooth", block: "center" });
         } else {
           leadBtn.disabled = false;
           leadBtn.textContent = "Didn't send — tap to retry";

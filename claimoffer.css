@@ -112,7 +112,7 @@
 .lpf input:focus,.lpf select:focus,.lpf textarea:focus{
   outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(66,155,248,.18);
 }
-.lpf input.invalid{border-color:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.15)}
+.lpf input.invalid,.lpf select.invalid{border-color:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.15)}
 
 /* timeline pills */
 .lppick{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem}
@@ -309,3 +309,37 @@
   .lpcall p{font-size:.8rem;margin-bottom:.55rem}
 
 }
+
+/* ---- button that reopens the popup form ---- */
+.lpcta{text-align:center}
+.lpcta .btn{width:100%;max-width:420px}
+.lpcta p{color:var(--muted);font-size:.85rem;margin-top:.7rem}
+
+/* ---- popup form ---- */
+body.modal-open{overflow:hidden}
+.qmodal{position:fixed;inset:0;z-index:1400;display:flex;align-items:center;justify-content:center;padding:24px 18px;
+  opacity:0;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
+.qmodal[hidden]{display:none}
+.qmodal.open{opacity:1;visibility:visible;transition:opacity .15s ease,visibility 0s}
+.qmodal-veil{position:absolute;inset:0;background:rgba(6,6,6,.74);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.qmodal-panel{position:relative;z-index:2;width:100%;max-width:620px;max-height:calc(100vh - 48px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:#fff;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.45);
+  opacity:0;transform:translateY(16px) scale(.98);
+  transition:opacity .15s ease,transform .25s cubic-bezier(.16,.84,.34,1)}
+.qmodal.open .qmodal-panel{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .qmodal,.qmodal-panel{transition:none}
+  .qmodal-panel{transform:none}
+}
+.qmodal .lpform{border:0;box-shadow:none;border-radius:0;background:transparent}
+.qmodal-x{position:absolute;top:12px;right:12px;z-index:3;width:36px;height:36px;border:0;background:transparent;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#9aa3b0;transition:.18s}
+.qmodal-x:hover{background:var(--bg);color:var(--text)}
+.qmodal-x svg{width:17px;height:17px;fill:currentColor}
+@media (max-width:520px){
+  .qmodal{padding:16px 14px}
+  .qmodal-panel{border-radius:14px;max-height:calc(100vh - 32px)}
+}
+
+/* location dropdown shows its placeholder in grey until they pick */
+.lpf select:required:invalid{color:var(--muted)}
+.lpf select option{color:var(--text)}
