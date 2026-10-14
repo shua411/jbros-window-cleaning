@@ -343,3 +343,31 @@ body.modal-open{overflow:hidden}
 /* location dropdown shows its placeholder in grey until they pick */
 .lpf select:required:invalid{color:var(--muted)}
 .lpf select option{color:var(--text)}
+
+/* ---- short popup form (eyebrow, five fields, one button) ---- */
+.qmodal .lpform{padding:34px 30px 30px}
+.qeyebrow{display:flex;align-items:center;gap:.7rem;font-family:var(--font-head);font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue1);margin-bottom:.7rem}
+.qeyebrow::before{content:"";width:28px;height:2px;background:currentColor;border-radius:2px}
+.qmodal .lpform h2{font-size:1.7rem;line-height:1.1;margin-bottom:.5rem;padding-right:2rem}
+.qmodal .lpform__sub{font-size:.92rem;line-height:1.6;margin:0 0 1.3rem}
+.qf{display:grid;gap:11px}
+.qf input,.qf select{width:100%;background-color:#fff;border:1.5px solid var(--line2);border-radius:11px;color:var(--text);
+  font-family:inherit;font-size:16px;padding:15px 16px;transition:border-color .18s;-webkit-appearance:none;appearance:none}
+.qf input::placeholder{color:#9aa3b0}
+.qf input:focus,.qf select:focus{outline:none;border-color:var(--text)}
+.qf select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%238E8E8E' d='M1.4 0 6 4.6 10.6 0 12 1.4 6 7.4 0 1.4z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 15px center;background-size:11px 8px;padding-right:40px;cursor:pointer}
+.qf select:required:invalid{color:#9aa3b0}
+.qf select option{color:var(--text)}
+.qf .invalid{border-color:#e5484d}
+.qf .btn{margin-top:3px;border-radius:11px;text-transform:uppercase;letter-spacing:.12em}
+.qf__err{display:none;font-size:.84rem;font-weight:700;color:#e5484d;text-align:center}
+.qf__err.show{display:block}
+.qalt{margin-top:16px;padding-top:16px;border-top:1px solid var(--line2);text-align:center;font-size:.86rem;color:var(--muted)}
+.qalt a{font-weight:700;color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.qmodal-panel{max-width:460px}
+@media (max-width:520px){
+  .qmodal .lpform{padding:30px 20px 24px}
+  .qmodal .lpform h2{font-size:1.45rem}
+  .qmodal .lpform__sub{font-size:.88rem;margin-bottom:1.1rem}
+}

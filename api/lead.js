@@ -49,16 +49,19 @@ async function writeToNotion(d) {
     "Lead Status": { select: { name: "New" } },
     "Source":      { select: { name: "Meta Ad" } },
     "City":        { select: { name: pick(clean(d.city), CITIES, "Other") } },
-    "Home Size":   { select: { name: matchOption(d.homeSize, SIZES, "Medium") } },
-    "Stories":     { select: { name: matchOption(d.stories, STOREYS, "2 storeys") } },
-    "Timeline":    { select: { name: pick(clean(d.timeline), TIMELINES, "ASAP") } },
   };
+
+  // the short popup form doesn't ask these, so only fill them when sent
+  if (clean(d.homeSize)) props["Home Size"] = { select: { name: matchOption(d.homeSize, SIZES, "Medium") } };
+  if (clean(d.stories))  props["Stories"]   = { select: { name: matchOption(d.stories, STOREYS, "2 storeys") } };
+  if (clean(d.timeline)) props["Timeline"]  = { select: { name: pick(clean(d.timeline), TIMELINES, "ASAP") } };
 
   if (services.length) props["Services"] = { multi_select: services };
   if (clean(d.phone))  props["Phone"]    = { phone_number: clean(d.phone, 40) };
   if (clean(d.email))  props["Email"]    = { email: clean(d.email, 120) };
   if (clean(d.address)) props["Address"] = { rich_text: [{ text: { content: clean(d.address, 300) } }] };
   const notes = [
+    d.service ? `Wants: ${clean(d.service, 80)}` : "",
     d.offer ? `OFFER: ${clean(d.offer, 120)}` : "",
     d.estimate ? `Gutter estimate shown: ${clean(d.estimate, 40)}` : "",
     d.freeWindowValue ? `Free window cleaning value: ${clean(d.freeWindowValue, 20)}` : "",

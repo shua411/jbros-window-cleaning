@@ -297,12 +297,6 @@
         if (bad && !first) first = input;
         if (bad) ok = false;
       });
-      var loc = document.getElementById("lpLocation");
-      if (loc && !loc.value) {
-        loc.classList.add("invalid");
-        if (!first) first = loc;
-        ok = false;
-      }
       if (first) first.focus();
       return ok;
     }
@@ -619,6 +613,7 @@
   var leadForm = document.getElementById("leadForm");
   if (leadForm) {
     var leadBtn = document.getElementById("leadSubmit");
+    var leadErr = document.getElementById("leadErr");
     var formCard = document.getElementById("formCard");
 
     leadForm.querySelectorAll("input, select").forEach(function (i) {
@@ -627,9 +622,19 @@
       i.addEventListener("change", clear);
     });
 
+    function fieldVal(n) {
+      var el = leadForm.querySelector('[name="' + n + '"]');
+      return el ? el.value.trim() : "";
+    }
+
+    function showLeadErr(msg) {
+      leadErr.textContent = msg;
+      leadErr.classList.toggle("show", !!msg);
+    }
+
     function leadValid() {
       var ok = true, first = null;
-      ["name", "phone", "email"].forEach(function (n) {
+      ["Location", "Service", "name", "phone", "email"].forEach(function (n) {
         var el = leadForm.querySelector('[name="' + n + '"]');
         var bad = !el.value.trim() ||
           (n === "email" && !/^\S+@\S+\.\S+$/.test(el.value.trim()));
@@ -637,14 +642,21 @@
         if (bad && !first) first = el;
         if (bad) ok = false;
       });
+
+      // catch mistyped numbers before they cost a lead
+      var phEl = leadForm.querySelector('[name="phone"]');
+      var digits = phEl.value.replace(/\D/g, "");
+      if (digits.length === 11 && digits.charAt(0) === "1") digits = digits.slice(1);
+      if (ok && (digits.length !== 10 || /^(\d)\1{9}$/.test(digits) ||
+                 digits.charAt(0) === "0" || digits.charAt(0) === "1")) {
+        phEl.classList.add("invalid");
+        showLeadErr("That phone number doesn't look right. Please check it and try again.");
+        first = phEl;
+        ok = false;
+      }
+
       if (first) first.focus();
       return ok;
-    }
-
-    function fieldVal(n) {
-      var el = leadForm.querySelector('[name="' + n + '"]:checked') ||
-               leadForm.querySelector('[name="' + n + '"]');
-      return el ? el.value.trim() : "";
     }
 
     /* ---- Meta tracking: only North / West Vancouver leads become conversions ---- */
@@ -682,75 +694,33 @@
       }, { eventID: p.eventId });
     }
 
-    /* ---- running estimate (same pricing as the main site) ---- */
-    var numOf = function (id) {
-      var el = document.getElementById(id);
-      return el ? parseFloat(el.value) || 0 : 0;
+    // what each choice books, in the Notion "Services" options
+    var SERVICE_MAP = {
+      "Gutter cleaning only": ["Gutter Cleaning"],
+      "Window cleaning only": ["Window Cleaning"],
+      "Gutters + FREE window cleaning": ["Gutter Cleaning", "Window Cleaning"]
     };
-    var labelOf = function (id) {
-      var el = document.getElementById(id);
-      return el ? el.options[el.selectedIndex].textContent.trim() : "";
-    };
-    var money = function (n) { return "$" + Math.round(n / 5) * 5; };
-
-    var estState = { gutterLow: 0, gutterHigh: 0, windowValue: 0 };
-
-    function updateEstimate() {
-      var size = numOf("lpSize") || 1;
-      var storeys = numOf("lpStoreys") || 1;
-
-      var gutter = numOf("lpGutStoreys") * size + numOf("lpGutLast") + numOf("lpRoof");
-      var low = gutter * 0.9, high = gutter * 1.15;
-
-      // what exterior windows would normally cost this home
-      var windows = 200 * size * storeys;
-
-      estState = { gutterLow: low, gutterHigh: high, windowValue: windows };
-
-      var set = function (id, txt) {
-        var el = document.getElementById(id);
-        if (el) el.textContent = txt;
-      };
-      set("lpGutPrice", money(low) + " – " + money(high));
-      set("lpWinWas", money(windows));
-      set("lpWinWas2", money(windows));
-      set("lpSave", money(windows));
-    }
-
-    ["lpSize","lpStoreys","lpGutStoreys","lpGutLast","lpRoof"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.addEventListener("change", updateEstimate);
-    });
-    updateEstimate();
 
     leadForm.addEventListener("submit", function (e) {
       e.preventDefault();
+      showLeadErr("");
       if (!leadValid()) return;
 
+      var service = fieldVal("Service");
       var payload = {
         name: fieldVal("name"),
         phone: fieldVal("phone"),
         email: fieldVal("email"),
-        address: fieldVal("address"),
         city: fieldVal("Location"),
         location: fieldVal("Location"),
-        homeSize: labelOf("lpSize"),
-        stories: labelOf("lpStoreys"),
-        timeline: fieldVal("timeline"),
-        notes: fieldVal("notes"),
-        services: ["Gutter Cleaning", "Window Cleaning"],
-        offer: "Gutter cleaning + free exterior window cleaning",
-        gutterStoreys: labelOf("lpGutStoreys"),
-        gutterLast: labelOf("lpGutLast"),
-        roofClean: labelOf("lpRoof"),
-        estimate: money(estState.gutterLow) + " - " + money(estState.gutterHigh),
-        freeWindowValue: money(estState.windowValue)
+        service: service,
+        services: SERVICE_MAP[service] || [],
+        offer: service.indexOf("FREE") > -1 ? "Gutter cleaning + free exterior window cleaning" : ""
       };
 
       // Meta: one event id shared by the browser pixel and the server (Conversions API)
       // so Meta counts a single Lead. Both sides only fire for in-area leads.
       payload.eventId = "lead_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
-      payload.service = "Gutter Cleaning";
       payload.fbp = cookieVal("_fbp");
       payload.fbc = cookieVal("_fbc") || fbcFromUrl();
       payload.pageUrl = location.href;
@@ -771,30 +741,19 @@
 
       var emailBody = [
         "*** NEW LEAD FROM META AD ***",
-        payload.offer,
         "",
         "Name: " + payload.name,
         "Phone: " + payload.phone,
         "Email: " + payload.email,
-        "Address: " + (payload.address || "(not given)") + ", " + payload.city,
-        "Timeline: " + payload.timeline,
-        "",
-        "--- GUTTER CLEANING ---",
-        "Home: " + payload.homeSize + " / " + payload.stories,
-        "Gutters on: " + payload.gutterStoreys,
-        "Last cleaned: " + payload.gutterLast,
-        "Roof clean: " + payload.roofClean,
-        "Estimate shown to them: " + payload.estimate,
-        "",
-        "--- FREE WINDOW CLEANING ---",
-        "Value shown to them: " + payload.freeWindowValue
+        "Location: " + payload.location,
+        "Wants: " + payload.service
       ].join("\n");
 
       var toEmail = fetch("https://formsubmit.co/ajax/jbroswc@gmail.com", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
-          _subject: "NEW AD LEAD: " + payload.name + " - gutters (" + payload.timeline + ")",
+          _subject: "NEW AD LEAD: " + payload.name + " - " + payload.service + " (" + payload.location + ")",
           _template: "table",
           _captcha: "false",
           name: payload.name,
@@ -826,6 +785,7 @@
         } else {
           leadBtn.disabled = false;
           leadBtn.textContent = "Didn't send — tap to retry";
+          showLeadErr("That didn't send. Please call or text 778 957 0282.");
         }
       });
     });
