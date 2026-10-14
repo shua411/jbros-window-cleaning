@@ -610,6 +610,55 @@
     // auto-open happens in an inline script right after the popup markup, so it shows on first paint
   }
 
+  /* ---- Meta tracking: only North / West Vancouver leads become conversions ---- */
+  var META_PIXEL = "1036420242504746";
+  var IN_AREA = ["North Vancouver", "West Vancouver"];
+
+  function cookieVal(n) {
+    var m = document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)"));
+    return m ? decodeURIComponent(m[1]) : "";
+  }
+  function fbcFromUrl() {
+    var id = new URLSearchParams(location.search).get("fbclid");
+    return id ? "fb.1." + Date.now() + "." + id : "";
+  }
+
+  // runs only after the lead was delivered. "Other" fires nothing at all.
+  function trackInAreaLead(p) {
+    if (IN_AREA.indexOf(p.location) === -1 || typeof fbq !== "function") return;
+    var nm = p.name.split(/\s+/).filter(Boolean);
+    var ph = p.phone.replace(/\D/g, "");
+    if (ph.length === 10) ph = "1" + ph;
+    fbq("init", META_PIXEL, {
+      em: p.email.toLowerCase() || undefined,
+      ph: ph || undefined,
+      fn: nm[0] ? nm[0].toLowerCase() : undefined,
+      ln: nm.length > 1 ? nm[nm.length - 1].toLowerCase() : undefined,
+      ct: p.location.replace(/\s+/g, "").toLowerCase(),
+      st: "bc",
+      country: "ca"
+    });
+    fbq("track", "Lead", {
+      content_name: "Quote Request",
+      content_category: p.service,
+      city: p.location
+    }, { eventID: p.eventId });
+  }
+
+  /* ---- Ads thank-you page (/claimoffer-thankyou): greet them and fire the Lead once ---- */
+  var tyName = document.getElementById("tyName");
+  if (tyName) {
+    var tyLead = null;
+    try {
+      tyLead = JSON.parse(sessionStorage.getItem("jbros_lead") || "null");
+      sessionStorage.removeItem("jbros_lead"); // a refresh must not count a second Lead
+    } catch (x) {}
+    if (tyLead) {
+      tyName.textContent = "Thanks, " + tyLead.name.split(" ")[0] + ".";
+      trackInAreaLead(tyLead);
+    }
+  }
+
   var leadForm = document.getElementById("leadForm");
   if (leadForm) {
     var leadBtn = document.getElementById("leadSubmit");
@@ -657,41 +706,6 @@
 
       if (first) first.focus();
       return ok;
-    }
-
-    /* ---- Meta tracking: only North / West Vancouver leads become conversions ---- */
-    var META_PIXEL = "1036420242504746";
-    var IN_AREA = ["North Vancouver", "West Vancouver"];
-
-    function cookieVal(n) {
-      var m = document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)"));
-      return m ? decodeURIComponent(m[1]) : "";
-    }
-    function fbcFromUrl() {
-      var id = new URLSearchParams(location.search).get("fbclid");
-      return id ? "fb.1." + Date.now() + "." + id : "";
-    }
-
-    // runs only after the lead was delivered. "Other" fires nothing at all.
-    function trackInAreaLead(p) {
-      if (IN_AREA.indexOf(p.location) === -1 || typeof fbq !== "function") return;
-      var nm = p.name.split(/\s+/).filter(Boolean);
-      var ph = p.phone.replace(/\D/g, "");
-      if (ph.length === 10) ph = "1" + ph;
-      fbq("init", META_PIXEL, {
-        em: p.email.toLowerCase() || undefined,
-        ph: ph || undefined,
-        fn: nm[0] ? nm[0].toLowerCase() : undefined,
-        ln: nm.length > 1 ? nm[nm.length - 1].toLowerCase() : undefined,
-        ct: p.location.replace(/\s+/g, "").toLowerCase(),
-        st: "bc",
-        country: "ca"
-      });
-      fbq("track", "Lead", {
-        content_name: "Quote Request",
-        content_category: p.service,
-        city: p.location
-      }, { eventID: p.eventId });
     }
 
     // what each choice books, in the Notion "Services" options
@@ -767,21 +781,21 @@
 
       Promise.all([toNotion, toEmail]).then(function (res) {
         if (res[0] || res[1]) {
-          trackInAreaLead(payload);
-          formCard.innerHTML =
-            '<div class="lpsent">' +
-            '<div class="lpsent__tick">✓</div>' +
-            "<h2>Thanks, " + payload.name.split(" ")[0] + ".</h2>" +
-            "<p>We've got your details and we'll be in touch within the hour " +
-            "with your quote. Keep an eye on your phone.</p>" +
-            '<div class="lpsent__actions">' +
-            '<a href="index.html" class="btn btn--grad">Check out website</a>' +
-            '<a href="tel:7789570282" class="btn btn--ghost">Or call us now</a>' +
-            "</div>" +
-            "</div>";
-          var qPanel = formCard.closest(".qmodal-panel");
-          if (qPanel) qPanel.scrollTop = 0;
-          else formCard.scrollIntoView({ behavior: "smooth", block: "center" });
+          // the thank-you page fires the Lead, so it only counts once they land there
+          var thanksUrl = "claimoffer-thankyou" + (location.protocol === "file:" ? ".html" : "");
+          var lead = {
+            name: payload.name, phone: payload.phone, email: payload.email,
+            location: payload.location, service: payload.service, eventId: payload.eventId
+          };
+          try {
+            sessionStorage.setItem("jbros_lead", JSON.stringify(lead));
+          } catch (x) {
+            // no storage (rare private modes): fire here and give the pixel a moment before leaving
+            trackInAreaLead(lead);
+            setTimeout(function () { location.href = thanksUrl; }, 600);
+            return;
+          }
+          location.href = thanksUrl;
         } else {
           leadBtn.disabled = false;
           leadBtn.textContent = "Didn't send — tap to retry";
