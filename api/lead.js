@@ -7,7 +7,7 @@
    requests coming from Vercel's servers.
 
    It also sends the Lead to Meta's Conversions API, but only for
-   North / West Vancouver leads, with the same event id the browser
+   North Vancouver leads, with the same event id the browser
    pixel uses so Meta counts one Lead.
 
    Environment variables set in Vercel:
@@ -88,7 +88,7 @@ async function writeToNotion(d) {
 /* ---------- Meta Conversions API ---------- */
 const META_PIXEL = "1036420242504746";
 const META_API = "https://graph.facebook.com/v23.0";
-const IN_AREA = ["North Vancouver", "West Vancouver"];
+const IN_AREA = ["North Vancouver"]; // only North Van leads teach Meta who to find
 
 const sha256 = (v) => createHash("sha256").update(v).digest("hex");
 const hashed = (v) => (v ? [sha256(v)] : undefined);

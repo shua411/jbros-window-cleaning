@@ -610,9 +610,9 @@
     // auto-open happens in an inline script right after the popup markup, so it shows on first paint
   }
 
-  /* ---- Meta tracking: only North / West Vancouver leads become conversions ---- */
+  /* ---- Meta tracking: only North Vancouver leads become conversions ---- */
   var META_PIXEL = "1036420242504746";
-  var IN_AREA = ["North Vancouver", "West Vancouver"];
+  var IN_AREA = ["North Vancouver"]; // only North Van leads teach Meta who to find
 
   function cookieVal(n) {
     var m = document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)"));
