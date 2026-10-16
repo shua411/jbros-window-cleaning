@@ -4,6 +4,26 @@
 (function () {
   "use strict";
 
+  /* ---- Phone numbers in FormSubmit emails ----
+     Mail apps only make a number tappable when it looks like a phone number,
+     so emails get "+1 (778) 957-0282" plus a "Tap to call" link. The link goes
+     through /api/call because email apps won't link a tel: address directly. */
+  function phoneDigits(raw) {
+    var d = String(raw || "").replace(/\D/g, "");
+    if (d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+    return d;
+  }
+  function emailPhone(raw) {
+    var d = phoneDigits(raw);
+    return d.length === 10
+      ? "+1 (" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6)
+      : String(raw || "").trim();
+  }
+  function callLink(raw) {
+    var d = phoneDigits(raw);
+    return d.length === 10 ? "https://www.jbroswc.ca/api/call?n=" + d : "";
+  }
+
   /* ---- Year ---- */
   var y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
@@ -428,7 +448,8 @@
           _template: "table",
           _captcha: "false",
           name: name,
-          phone: form.querySelector('[name="phone"]').value.trim(),
+          phone: emailPhone(form.querySelector('[name="phone"]').value),
+          "Tap to call": callLink(form.querySelector('[name="phone"]').value),
           email: form.querySelector('[name="email"]').value.trim(),
           message: body
         })
@@ -771,7 +792,8 @@
           _template: "table",
           _captcha: "false",
           name: payload.name,
-          phone: payload.phone,
+          phone: emailPhone(payload.phone),
+          "Tap to call": callLink(payload.phone),
           email: payload.email,
           message: emailBody
         })
@@ -938,7 +960,8 @@
           _template: "table",
           _captcha: "false",
           name: name,
-          phone: crVal("phone"),
+          phone: emailPhone(crVal("phone")),
+          "Tap to call": callLink(crVal("phone")),
           email: crVal("email"),
           message: body
         })
