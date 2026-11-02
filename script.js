@@ -890,7 +890,7 @@
   }
 
   /* =========================================================
-     Careers page — applicant form (same FormSubmit inbox)
+     Careers pages — applicant form, one per role (same FormSubmit inbox)
      ========================================================= */
   var crForm = document.getElementById("careersForm");
   if (crForm) {
@@ -936,18 +936,26 @@
       if (!crValidate()) return;
 
       var name = crVal("name");
+      var role = crForm.getAttribute("data-role") || "Sales Rep";
+
+      // each role page asks its own questions; send whatever it asked
+      var answers = Array.prototype.map.call(crForm.querySelectorAll(".crq"), function (q) {
+        var label = q.querySelector(".crq__label").textContent.replace(/^\d+\.\s*/, "");
+        var picked = q.querySelector("input:checked");
+        return label + " " + (picked ? picked.value : "(no answer)");
+      });
+
       var body = [
-        "*** SALES REP APPLICANT ***",
+        "*** " + role.toUpperCase() + " APPLICANT ***",
         "",
         "Name: " + name,
         "Phone: " + crVal("phone"),
         "Email: " + crVal("email"),
-        "",
-        "Sales experience: " + crVal("experience"),
-        "Availability: " + crVal("availability"),
+        ""
+      ].concat(answers, [
         "",
         "Their note: " + (crVal("note") || "(none)")
-      ].join("\n");
+      ]).join("\n");
 
       crBtn.disabled = true;
       crBtn.textContent = "Sending…";
@@ -956,7 +964,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
-          _subject: "JOB APPLICANT: " + name,
+          _subject: "JOB APPLICANT (" + role + "): " + name,
           _template: "table",
           _captcha: "false",
           name: name,
@@ -998,8 +1006,9 @@
                 "</div>";
             }
 
-            crForm.parentElement.innerHTML = html;
-            crForm.parentElement.scrollIntoView({ behavior: "smooth", block: "start" });
+            var crCard = crForm.parentElement;
+            crCard.innerHTML = html;
+            crCard.scrollIntoView({ behavior: "smooth", block: "start" });
           } else {
             crBtn.disabled = false;
             crBtn.textContent = "Didn't send — tap to retry";
