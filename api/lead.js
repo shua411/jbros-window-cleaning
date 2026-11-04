@@ -152,7 +152,7 @@ export default async function handler(req, res) {
 
   const d = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
 
-  if (!clean(d.name) || !clean(d.phone) || !clean(d.email)) {
+  if (!clean(d.name) || !clean(d.phone)) {
     return res.status(400).json({ ok: false, error: "Missing required fields" });
   }
 

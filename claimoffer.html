@@ -9,7 +9,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&family=Nunito+Sans:wght@400;600&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
 
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png" />
@@ -36,7 +37,7 @@
   /></noscript>
   <!-- End Meta Pixel Code -->
 </head>
-<body class="lp">
+<body class="lp modal-open">
 
   <!-- no nav: this page has exactly one job -->
   <header class="lphead">
@@ -91,25 +92,31 @@
     <p>&copy; 2026 JBros Window Cleaning &middot; North Vancouver, BC</p>
   </footer>
 
-  <!-- ===== Popup form: opens instantly on arrival (once per visit) and from any [data-quote] button ===== -->
-  <div class="qmodal" id="qmodal" role="dialog" aria-modal="true" aria-label="Claim the offer" hidden>
+  <!-- ===== Popup form: already open in the markup, so it is on screen at first paint on every load and refresh ===== -->
+  <div class="qmodal open" id="qmodal" data-autoopen role="dialog" aria-modal="true" aria-label="Claim the offer">
     <div class="qmodal-veil" data-qclose></div>
     <div class="qmodal-panel" role="document">
       <button class="qmodal-x" type="button" data-qclose aria-label="Close"><svg viewBox="0 0 24 24"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg></button>
 
-      <div class="lpform" id="formCard">
-        <span class="qeyebrow">Get Booked In</span>
-        <h2>Get Your Free Quote</h2>
-        <p class="lpform__sub">Two quick questions and your number. We come back with a price and the next open slot.</p>
+      <div class="lpform qoffer" id="formCard">
+        <div class="qo-card">
+          <h2 class="qo-title"><b>Gutter Cleaning</b> +<br />FREE Window Cleaning Included</h2>
+          <div class="qo-price">
+            <s class="qo-was">$499</s>
+            <span class="qo-now"><small>Starting at</small>$200</span>
+          </div>
+          <span class="qo-tag">Limited Time Offer</span>
+        </div>
 
-        <form class="qf" id="leadForm" novalidate>
+        <form class="qf qo-form" id="leadForm" novalidate>
+          <input type="text" name="name" placeholder="Your name" autocomplete="name" aria-label="Your name" required />
+          <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel" aria-label="Phone number" required />
           <select name="Location" id="lpLocation" aria-label="Where are you located" required>
             <option value="" disabled selected>Where are you located?</option>
             <option>North Vancouver</option>
             <option>West Vancouver</option>
             <option>Other</option>
           </select>
-
           <select name="Service" id="lpService" aria-label="Which service" required>
             <option value="" disabled selected>Gutters, windows or both?</option>
             <option>Gutter cleaning only</option>
@@ -117,28 +124,19 @@
             <option>Gutters + FREE window cleaning</option>
           </select>
 
-          <input type="text" name="name" placeholder="Your name" autocomplete="name" aria-label="Your name" required />
-          <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel" aria-label="Phone number" required />
-          <input type="email" name="email" placeholder="Email address" autocomplete="email" aria-label="Email address" required />
-
-          <button type="submit" class="btn btn--grad btn--full btn--lg" id="leadSubmit">Submit Now</button>
+          <button type="submit" class="qo-btn" id="leadSubmit">Claim My Discount</button>
           <p class="qf__err" id="leadErr"></p>
         </form>
 
-        <p class="qalt">Rather just talk? Call or text <a href="tel:7789570282">778 957 0282</a></p>
+        <p class="qo-foot"><span>&#9733; 5.0 Google rated</span><span>WorkSafeBC Covered</span></p>
       </div>
 
     </div>
   </div>
   <script>
-    // open the popup immediately on every page load, before anything else loads
-    (function () {
-      var m = document.getElementById("qmodal");
-      m.hidden = false;
-      document.body.classList.add("modal-open");
-      void m.offsetWidth; // lock in the start state so the fade still plays
-      m.classList.add("open");
-    })();
+    // a refresh starts fresh: back at the top, nothing left in the form
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
   </script>
 
   <script src="script.js"></script>

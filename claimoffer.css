@@ -372,6 +372,41 @@ body.modal-open{overflow:hidden}
   .qmodal .lpform__sub{font-size:.88rem;margin-bottom:1.1rem}
 }
 
+/* ---- offer popup: offer card, three fields, green button ---- */
+.qmodal-panel{max-width:400px;border-radius:20px}
+.qmodal-x{top:10px;right:10px;width:32px;height:32px;background:#fff;border:1px solid #dedede;color:#111}
+.qmodal-x:hover{background:#f4f4f5;color:#111}
+.qmodal-x svg{width:15px;height:15px}
+.qmodal .qoffer{padding:52px 18px 24px;font-family:"Inter",system-ui,-apple-system,sans-serif}
+.qo-card{background:#f7f7f8;border:1px solid #e4e4e7;border-radius:14px;padding:16px 14px;text-align:center}
+.qmodal .qoffer .qo-title{font-family:inherit;font-size:18px;font-weight:600;line-height:1.25;letter-spacing:-.01em;color:#55555f;margin:0;padding:0;text-transform:none}
+.qo-title b{font-weight:800;color:#0b0b0b}
+.qo-price{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:10px 0 2px}
+.qo-was{position:relative;margin-bottom:5px;font-size:28px;font-weight:700;color:#a1a1aa;text-decoration:none;letter-spacing:-.01em}
+.qo-was::after{content:"";position:absolute;left:-3px;right:-3px;top:52%;height:2px;background:#e5484d;transform:rotate(-8deg)}
+.qo-now{display:flex;flex-direction:column;align-items:center;font-size:44px;font-weight:800;line-height:1;letter-spacing:-.02em;color:#45a049}
+.qo-now small{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6b6b6b;margin-bottom:3px}
+.qo-tag{display:inline-block;margin-top:12px;background:#0b0b0b;color:#fff;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:8px 13px;border-radius:7px;box-shadow:none}
+.qo-form{gap:14px;margin-top:20px}
+.qo-form input,.qo-form select{font-family:inherit;font-size:16px;padding:18px 18px;border:1px solid #dcdcdc;border-radius:14px}
+.qo-form input::placeholder,.qo-form select:required:invalid{color:#8e8e8e}
+.qo-form select{background-position:right 18px center;padding-right:44px}
+.qo-form input:focus,.qo-form select:focus{border-color:var(--blue2)}
+.qo-form input.invalid,.qo-form select.invalid{border-color:#e5484d}
+.qo-btn{width:100%;margin-top:2px;padding:19px 16px;border:1px solid rgba(0,0,0,.08);border-radius:14px;cursor:pointer;
+  background:var(--grad);color:#fff;font-family:inherit;font-size:16.5px;font-weight:700;letter-spacing:-.005em;
+  box-shadow:0 10px 26px rgba(66,155,248,.35);transition:background .18s,transform .18s}
+.qo-btn:hover{transform:translateY(-1px);box-shadow:0 14px 34px rgba(66,155,248,.45)}
+.qo-btn:disabled{opacity:.7;cursor:default;transform:none}
+.qo-foot{display:flex;justify-content:center;gap:22px;margin:16px 0 0;font-size:13.5px;color:#8a8a8a}
+.qo-foot span:first-child{color:#333;font-weight:500}
+@media (max-width:520px){
+  .qmodal .qoffer{padding:50px 16px 22px}
+}
+@media (max-width:380px){
+  .qmodal .qoffer .qo-title{font-size:16.5px}
+}
+
 /* ---- footer + privacy policy ---- */
 .lpfoot{text-align:center;padding:1.5rem 1rem 2.5rem;border-top:1px solid var(--line)}
 .lpfoot p{color:var(--muted);font-size:.78rem;margin-top:.8rem}

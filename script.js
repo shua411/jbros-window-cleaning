@@ -628,7 +628,18 @@
       if (e.key === "Escape" && qm.classList.contains("open")) qClose();
     });
 
-    // auto-open happens in an inline script right after the popup markup, so it shows on first paint
+    // the ad page ships with the popup already open in its markup, so it shows on first paint.
+    // Coming back with the Back button restores the old page from cache, so open it again.
+    if (qm.hasAttribute("data-autoopen")) {
+      window.addEventListener("pageshow", function (e) {
+        if (!e.persisted) return;
+        if (qHideT) { clearTimeout(qHideT); qHideT = null; }
+        qm.hidden = false;
+        qm.classList.add("open");
+        document.body.classList.add("modal-open");
+        qPanelEl.scrollTop = 0;
+      });
+    }
   }
 
   /* ---- Meta tracking: only North Vancouver leads become conversions ---- */
@@ -685,6 +696,18 @@
     var leadBtn = document.getElementById("leadSubmit");
     var leadErr = document.getElementById("leadErr");
     var formCard = document.getElementById("formCard");
+    var leadBtnText = leadBtn.textContent;
+
+    // every load (refresh or Back) starts with an empty form, like a first visit
+    function resetLeadForm() {
+      leadForm.reset();
+      leadForm.querySelectorAll(".invalid").forEach(function (el) { el.classList.remove("invalid"); });
+      leadBtn.disabled = false;
+      leadBtn.textContent = leadBtnText;
+      showLeadErr("");
+    }
+    resetLeadForm();
+    window.addEventListener("pageshow", function (e) { if (e.persisted) resetLeadForm(); });
 
     leadForm.querySelectorAll("input, select").forEach(function (i) {
       var clear = function () { i.classList.remove("invalid"); };
@@ -704,8 +727,9 @@
 
     function leadValid() {
       var ok = true, first = null;
-      ["Location", "Service", "name", "phone", "email"].forEach(function (n) {
+      ["name", "phone", "Location", "Service", "email"].forEach(function (n) {
         var el = leadForm.querySelector('[name="' + n + '"]');
+        if (!el) return; // the short popup has no email field
         var bad = !el.value.trim() ||
           (n === "email" && !/^\S+@\S+\.\S+$/.test(el.value.trim()));
         el.classList.toggle("invalid", bad);
@@ -779,10 +803,10 @@
         "",
         "Name: " + payload.name,
         "Phone: " + payload.phone,
-        "Email: " + payload.email,
+        payload.email ? "Email: " + payload.email : "",
         "Location: " + payload.location,
         "Wants: " + payload.service
-      ].join("\n");
+      ].filter(Boolean).join("\n");
 
       var toEmail = fetch("https://formsubmit.co/ajax/jbroswc@gmail.com", {
         method: "POST",
@@ -794,7 +818,7 @@
           name: payload.name,
           phone: emailPhone(payload.phone),
           "Tap to call": callLink(payload.phone),
-          email: payload.email,
+          email: payload.email || undefined,
           message: emailBody
         })
       }).then(function (r) { return r.json(); })
