@@ -75,7 +75,8 @@ export default async function handler(req, res) {
     ? `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
     : clean(d.phone, 40);
   const tel = digits.length === 10 ? `tel:+1${digits}` : "";
-  const sms = digits.length === 10 ? `sms:+1${digits}` : "";
+  // Gmail on iPhone drops sms: links, so Text goes through our bridge page (api/call.js)
+  const sms = digits.length === 10 ? `https://www.jbroswc.ca/api/call?n=${digits}&t=text` : "";
 
   const sectionHtml = sections.map((s) => `
   ${s.title ? `<p style="margin:22px 0 8px;font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:#666">${esc(s.title)}</p>` : ""}
