@@ -2,9 +2,8 @@
    Vercel serverless function: receives a lead from the ads
    landing page and writes it into the Notion "Ad Leads" database.
 
-   The email notification is sent from the visitor's browser
-   instead (see script.js) because FormSubmit returns 403 to
-   requests coming from Vercel's servers.
+   The email notification goes through api/notify.js, which the
+   page calls alongside this one.
 
    It also sends the Lead to Meta's Conversions API, but only for
    North Vancouver leads, with the same event id the browser

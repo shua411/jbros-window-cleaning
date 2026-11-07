@@ -24,6 +24,44 @@
     return d.length === 10 ? "https://www.jbroswc.ca/api/call?n=" + d : "";
   }
 
+  /* ---- Lead emails ----
+     Our own server sends them first (/api/notify, through Resend), so they
+     don't depend on the visitor's browser or on FormSubmit being up.
+     FormSubmit from the browser is only the backup, and gets 8 seconds
+     before we give up on it so a dead service can't freeze the form.
+     p: { subject, name, phone, email, message } → resolves true/false */
+  function sendLeadEmail(p) {
+    var toServer = fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(p)
+    }).then(function (r) { return r.json(); })
+      .then(function (d) { return !!(d && d.ok); })
+      .catch(function () { return false; });
+
+    return toServer.then(function (ok) {
+      if (ok) return true;
+      var backup = fetch("https://formsubmit.co/ajax/jbroswc@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: p.subject,
+          _template: "table",
+          _captcha: "false",
+          name: p.name,
+          phone: emailPhone(p.phone),
+          "Tap to call": callLink(p.phone),
+          email: p.email || undefined,
+          message: p.message
+        })
+      }).then(function (r) { return r.json(); })
+        .then(function (d) { return String(d && d.success) === "true"; })
+        .catch(function () { return false; });
+      var giveUp = new Promise(function (resolve) { setTimeout(function () { resolve(false); }, 8000); });
+      return Promise.race([backup, giveUp]);
+    });
+  }
+
   /* ---- Year ---- */
   var y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
@@ -371,11 +409,8 @@
     }
 
     /* =========================================================
-       Request Final Quote  →  emails LEAD_EMAIL via FormSubmit
-       ---------------------------------------------------------
-       No account or key needed. The FIRST time a request is sent,
-       FormSubmit emails LEAD_EMAIL a one-time "Activate" link —
-       click it once and every request after that lands in the inbox.
+       Request Final Quote  →  emails the inbox via sendLeadEmail
+       (our server first, FormSubmit as the backup)
        ========================================================= */
     var LEAD_EMAIL = "jbroswc@gmail.com";
 
@@ -440,32 +475,20 @@
 
       btn.disabled = true;
       btn.textContent = "Sending…";
-      fetch("https://formsubmit.co/ajax/" + encodeURIComponent(LEAD_EMAIL), {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          _subject: opts.subject + name,
-          _template: "table",
-          _captcha: "false",
-          name: name,
-          phone: emailPhone(form.querySelector('[name="phone"]').value),
-          "Tap to call": callLink(form.querySelector('[name="phone"]').value),
-          email: form.querySelector('[name="email"]').value.trim(),
-          message: body
-        })
-      }).then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data && String(data.success) === "true") {
+      sendLeadEmail({
+        subject: opts.subject + name,
+        name: name,
+        phone: form.querySelector('[name="phone"]').value,
+        email: form.querySelector('[name="email"]').value.trim(),
+        message: body
+      }).then(function (sent) {
+          if (sent) {
             btn.textContent = opts.done;
             if (window.fbq) fbq("track", "Lead"); // Meta Pixel conversion
           } else {
             btn.disabled = false;
             btn.textContent = "Didn't send — tap to retry";
           }
-        })
-        .catch(function () {
-          btn.disabled = false;
-          btn.textContent = "Didn't send — tap to retry";
         });
     }
 
@@ -787,8 +810,7 @@
       leadBtn.disabled = true;
       leadBtn.textContent = "Sending…";
 
-      // Notion via our server; email straight from the browser (FormSubmit
-      // blocks requests from servers but accepts them from real visitors).
+      // Notion and the email go out side by side.
       // Either one landing is enough to count the lead as captured.
       var toNotion = fetch("/api/lead", {
         method: "POST",
@@ -808,22 +830,13 @@
         "Wants: " + payload.service
       ].filter(Boolean).join("\n");
 
-      var toEmail = fetch("https://formsubmit.co/ajax/jbroswc@gmail.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          _subject: "NEW AD LEAD: " + payload.name + " - " + payload.service + " (" + payload.location + ")",
-          _template: "table",
-          _captcha: "false",
-          name: payload.name,
-          phone: emailPhone(payload.phone),
-          "Tap to call": callLink(payload.phone),
-          email: payload.email || undefined,
-          message: emailBody
-        })
-      }).then(function (r) { return r.json(); })
-        .then(function (d) { return String(d && d.success) === "true"; })
-        .catch(function () { return false; });
+      var toEmail = sendLeadEmail({
+        subject: "NEW AD LEAD: " + payload.name + " - " + payload.service + " (" + payload.location + ")",
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email,
+        message: emailBody
+      });
 
       Promise.all([toNotion, toEmail]).then(function (res) {
         if (res[0] || res[1]) {
@@ -914,11 +927,10 @@
   }
 
   /* =========================================================
-     Careers pages — applicant form, one per role (same FormSubmit inbox)
+     Careers pages — applicant form, one per role (same inbox, via sendLeadEmail)
      ========================================================= */
   var crForm = document.getElementById("careersForm");
   if (crForm) {
-    var CR_EMAIL = "jbroswc@gmail.com";
     var crBtn = document.getElementById("crSubmit");
 
     /* ---------------------------------------------------------
@@ -984,22 +996,14 @@
       crBtn.disabled = true;
       crBtn.textContent = "Sending…";
 
-      fetch("https://formsubmit.co/ajax/" + encodeURIComponent(CR_EMAIL), {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          _subject: "JOB APPLICANT (" + role + "): " + name,
-          _template: "table",
-          _captcha: "false",
-          name: name,
-          phone: emailPhone(crVal("phone")),
-          "Tap to call": callLink(crVal("phone")),
-          email: crVal("email"),
-          message: body
-        })
-      }).then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data && String(data.success) === "true") {
+      sendLeadEmail({
+        subject: "JOB APPLICANT (" + role + "): " + name,
+        name: name,
+        phone: crVal("phone"),
+        email: crVal("email"),
+        message: body
+      }).then(function (sent) {
+          if (sent) {
             var first = name.split(" ")[0];
             var html;
 
@@ -1037,10 +1041,6 @@
             crBtn.disabled = false;
             crBtn.textContent = "Didn't send — tap to retry";
           }
-        })
-        .catch(function () {
-          crBtn.disabled = false;
-          crBtn.textContent = "Didn't send — tap to retry";
         });
     });
   }
