@@ -41,17 +41,18 @@ export default async function handler(req, res) {
   const message = clean(d.message, 6000);
   if (!subject || !name) return res.status(400).json({ ok: false, error: "Missing fields" });
 
-  // big tappable number plus a call link, so calling back is one tap from the notification
+  // big tappable number plus a call button that dials straight from the email app
+  // (this email is our own HTML, so a plain tel: link works; no trip through the website)
   const digits = phoneDigits(d.phone);
   const phone = digits.length === 10
     ? `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
     : clean(d.phone, 40);
-  const callUrl = digits.length === 10 ? `https://www.jbroswc.ca/api/call?n=${digits}` : "";
+  const callUrl = digits.length === 10 ? `tel:+1${digits}` : "";
 
   const html = `
 <div style="font-family:Arial,sans-serif;font-size:16px;color:#111;line-height:1.5">
   <p style="margin:0 0 4px;font-size:20px"><b>${esc(name)}</b></p>
-  <p style="margin:0 0 14px;font-size:20px">${esc(phone)}</p>
+  <p style="margin:0 0 14px;font-size:20px">${callUrl ? `<a href="${callUrl}" style="color:#004ed4">${esc(phone)}</a>` : esc(phone)}</p>
   ${callUrl ? `<p style="margin:0 0 18px"><a href="${callUrl}" style="display:inline-block;background:#004ed4;color:#fff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:8px">Tap to call ${esc(phone)}</a></p>` : ""}
   ${email ? `<p style="margin:0 0 14px">Email: <a href="mailto:${esc(email)}">${esc(email)}</a></p>` : ""}
   <pre style="font-family:Arial,sans-serif;font-size:15px;white-space:pre-wrap;margin:0;padding:14px;background:#f4f5f7;border-radius:8px">${esc(message)}</pre>
@@ -59,7 +60,6 @@ export default async function handler(req, res) {
   const text = [
     name,
     phone,
-    ...(callUrl ? [`Tap to call: ${callUrl}`] : []),
     ...(email ? [`Email: ${email}`] : []),
     "",
     message,
