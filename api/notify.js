@@ -29,7 +29,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
-  const key = process.env.RESEND_API_KEY;
+  // trimmed: a stray space or newline pasted into Vercel makes the request header invalid
+  const key = String(process.env.RESEND_API_KEY || "").trim();
   if (!key) return res.status(200).json({ ok: false, error: "RESEND_API_KEY not set" });
 
   const d = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
@@ -86,6 +87,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("Resend failed:", err);
-    return res.status(200).json({ ok: false, error: "Resend unreachable" });
+    return res.status(200).json({ ok: false, error: "Resend unreachable: " + String(err && err.message).slice(0, 120) });
   }
 }
