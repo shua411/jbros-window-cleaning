@@ -29,7 +29,17 @@
      don't depend on the visitor's browser or on FormSubmit being up.
      FormSubmit from the browser is only the backup, and gets 8 seconds
      before we give up on it so a dead service can't freeze the form.
-     p: { subject, name, phone, email, message } → resolves true/false */
+     p: { kind, source, subject, name, phone, email,
+          sections: [{ title, rows: [[label, value], ...] }] } → resolves true/false */
+  function sectionsText(p) {
+    var out = ["FROM: " + p.source.toUpperCase()];
+    p.sections.forEach(function (s) {
+      out.push("", s.title.toUpperCase());
+      s.rows.forEach(function (r) { out.push(r[0] + ": " + r[1]); });
+    });
+    return out.join("\n");
+  }
+
   function sendLeadEmail(p) {
     var toServer = fetch("/api/notify", {
       method: "POST",
@@ -52,7 +62,7 @@
           phone: emailPhone(p.phone),
           "Tap to call": callLink(p.phone),
           email: p.email || undefined,
-          message: p.message
+          message: sectionsText(p)
         })
       }).then(function (r) { return r.json(); })
         .then(function (d) { return String(d && d.success) === "true"; })
@@ -414,55 +424,75 @@
        ========================================================= */
     var LEAD_EMAIL = "jbroswc@gmail.com";
 
-    /* callbackOnly = customer skipped the details and just wants a phone call */
+    /* callbackOnly = customer skipped the details and just wants a phone call.
+       Returns the email's sections: one row per question, exactly as they answered it. */
     function collectRequest(callbackOnly) {
       var f = function (n) { return form.querySelector('[name="' + n + '"]').value.trim(); };
       var sel = function (id) {
         var s = document.getElementById(id);
         return s.options[s.selectedIndex].textContent;
       };
-      var lines = [
-        callbackOnly
-          ? "*** CALLBACK REQUEST — customer would rather talk on the phone ***"
-          : "New quote request from the website",
-        "",
-        "Name: " + f("name"),
-        "Phone: " + f("phone"),
-        "Email: " + f("email"),
-        "Address: " + f("address") + ", " + form.querySelector('[name="city"]').value,
-        "Home: " + sel("size") + " · " + sel("stories"),
-        ""
-      ];
+      var labelFor = function (el) {
+        // the label sits in the nearest wrapper: the half-width column, or the whole row
+        var l = el.closest("div").querySelector("label");
+        return l ? l.textContent.trim() : "";
+      };
+
+      var picked = svcs.filter(function (svc) { return svc.querySelector(".svc__check").checked; });
+      var sections = [{
+        title: callbackOnly ? "Callback request: they want a phone call" : "Customer",
+        rows: [
+          ["Address", f("address")],
+          ["City", form.querySelector('[name="city"]').value],
+          ["Home size", sel("size")],
+          ["Stories", sel("stories")]
+        ]
+      }];
       if (callbackOnly) {
-        lines.push("They did not fill out the service details — give them a call.");
-        return lines.join("\n");
+        sections[0].rows.push(["Services", "Skipped the details. Call them to sort it out."]);
+        return sections;
       }
-      lines.push("Services requested:");
-      svcs.forEach(function (svc) {
-        if (!svc.querySelector(".svc__check").checked) return;
-        var name = svc.querySelector(".svc__name").textContent;
-        var details = [];
+
+      sections[0].rows.push(["Services picked", picked.map(function (svc) {
+        return svc.querySelector(".svc__name").textContent.trim();
+      }).join(", ") || "None"]);
+
+      picked.forEach(function (svc) {
+        var rows = [];
         svc.querySelectorAll(".svc__panel select").forEach(function (s) {
-          var label = s.closest(".opt").querySelector("label") ||
-                      s.closest("div").querySelector("label");
-          details.push((label ? label.textContent + " " : "") + s.options[s.selectedIndex].textContent);
+          rows.push([labelFor(s), s.options[s.selectedIndex].textContent.trim()]);
         });
-        svc.querySelectorAll("[data-surface]:checked").forEach(function (c) {
-          details.push(c.parentElement.textContent.trim());
+        var surfaces = Array.prototype.map.call(svc.querySelectorAll("[data-surface]:checked"), function (c) {
+          return c.parentElement.textContent.trim();
         });
-        lines.push("• " + name + (details.length ? ": " + details.join("; ") : ""));
+        var surfaceBox = svc.querySelector("[data-surface]");
+        if (surfaceBox) rows.push([surfaceBox.closest(".opt").querySelector("label").textContent.trim(), surfaces.join(", ") || "None picked"]);
+        sections.push({ title: svc.querySelector(".svc__name").textContent.trim(), rows: rows });
       });
-      lines.push("", "Instant estimate shown: " + estimateValue.textContent);
+
       var photos = photoInput && photoInput.files.length;
-      if (photos) lines.push("(Customer has " + photos + " photo(s) to share. Reply to request them.)");
-      return lines.join("\n");
+      sections.push({
+        title: "Estimate",
+        rows: [["Instant estimate shown", estimateValue.textContent]].concat(
+          photos ? [["Photos", photos + " photo(s) to share. Reply to ask for them."]] : [])
+      });
+      return sections;
     }
 
     /* shared sender for both the full quote request and the callback request */
     function sendLead(btn, opts) {
       if (!validate()) return;
       var name = form.querySelector('[name="name"]').value.trim();
-      var body = collectRequest(opts.callbackOnly);
+      var lead = {
+        kind: "website",
+        source: "Website quote form (jbroswc.ca)",
+        subject: opts.subject + name,
+        name: name,
+        phone: form.querySelector('[name="phone"]').value,
+        email: form.querySelector('[name="email"]').value.trim(),
+        sections: collectRequest(opts.callbackOnly)
+      };
+      var body = sectionsText(lead);
 
       if (!LEAD_EMAIL) {
         window.location.href =
@@ -475,13 +505,7 @@
 
       btn.disabled = true;
       btn.textContent = "Sending…";
-      sendLeadEmail({
-        subject: opts.subject + name,
-        name: name,
-        phone: form.querySelector('[name="phone"]').value,
-        email: form.querySelector('[name="email"]').value.trim(),
-        message: body
-      }).then(function (sent) {
+      sendLeadEmail(lead).then(function (sent) {
           if (sent) {
             btn.textContent = opts.done;
             if (window.fbq) fbq("track", "Lead"); // Meta Pixel conversion
@@ -495,7 +519,7 @@
     var reqBtn = document.getElementById("requestQuote");
     if (reqBtn) {
       reqBtn.addEventListener("click", function () {
-        sendLead(reqBtn, { subject: "New quote request: ", done: "✓ Request Sent" });
+        sendLead(reqBtn, { subject: "🌐 WEBSITE QUOTE: ", done: "✓ Request Sent" });
       });
     }
 
@@ -504,7 +528,7 @@
       callBtn.addEventListener("click", function () {
         sendLead(callBtn, {
           callbackOnly: true,
-          subject: "CALLBACK REQUEST: ",
+          subject: "🌐 WEBSITE CALLBACK: ",
           done: "✓ Got it — we'll call you shortly"
         });
       });
@@ -820,22 +844,21 @@
         .then(function (d) { return !!(d && d.ok && d.notion); })
         .catch(function () { return false; });
 
-      var emailBody = [
-        "*** NEW LEAD FROM META AD ***",
-        "",
-        "Name: " + payload.name,
-        "Phone: " + payload.phone,
-        payload.email ? "Email: " + payload.email : "",
-        "Location: " + payload.location,
-        "Wants: " + payload.service
-      ].filter(Boolean).join("\n");
-
       var toEmail = sendLeadEmail({
-        subject: "NEW AD LEAD: " + payload.name + " - " + payload.service + " (" + payload.location + ")",
+        kind: "ad",
+        source: "Meta ad landing page (/claimoffer)",
+        subject: "📣 AD LEAD: " + payload.name + " - " + payload.service + " (" + payload.location + ")",
         name: payload.name,
         phone: payload.phone,
         email: payload.email,
-        message: emailBody
+        sections: [{
+          title: "What they picked",
+          rows: [
+            ["Where are you located?", payload.location],
+            ["Gutters, windows or both?", payload.service],
+            ["Offer", "$499 → starting at $200, gutter cleaning + FREE window cleaning"]
+          ]
+        }]
       });
 
       Promise.all([toNotion, toEmail]).then(function (res) {
@@ -974,34 +997,27 @@
       var name = crVal("name");
       var role = crForm.getAttribute("data-role") || "Sales Rep";
 
-      // each role page asks its own questions; send whatever it asked
+      // each role page asks its own questions; send whatever it asked, one row each
       var answers = Array.prototype.map.call(crForm.querySelectorAll(".crq"), function (q) {
-        var label = q.querySelector(".crq__label").textContent.replace(/^\d+\.\s*/, "");
+        var label = q.querySelector(".crq__label").textContent.replace(/^\d+\.\s*/, "").trim();
         var picked = q.querySelector("input:checked");
-        return label + " " + (picked ? picked.value : "(no answer)");
+        return [label, picked ? picked.value : "(no answer)"];
       });
-
-      var body = [
-        "*** " + role.toUpperCase() + " APPLICANT ***",
-        "",
-        "Name: " + name,
-        "Phone: " + crVal("phone"),
-        "Email: " + crVal("email"),
-        ""
-      ].concat(answers, [
-        "",
-        "Their note: " + (crVal("note") || "(none)")
-      ]).join("\n");
 
       crBtn.disabled = true;
       crBtn.textContent = "Sending…";
 
       sendLeadEmail({
-        subject: "JOB APPLICANT (" + role + "): " + name,
+        kind: "hiring",
+        source: "Hiring page: " + role,
+        subject: "🧰 JOB APPLICANT (" + role + "): " + name,
         name: name,
         phone: crVal("phone"),
         email: crVal("email"),
-        message: body
+        sections: [
+          { title: "Their answers", rows: answers },
+          { title: "Their note", rows: [["Note", crVal("note") || "(none)"]] }
+        ]
       }).then(function (sent) {
           if (sent) {
             var first = name.split(" ")[0];
