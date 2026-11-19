@@ -1,6 +1,6 @@
 /* =========================================================
    Vercel serverless function: receives a lead from the ads
-   landing page and writes it into the Notion "Ad Leads" database.
+   landing page and saves it into the Jbros CRM (Leads).
 
    The email notification goes through api/notify.js, which the
    page calls alongside this one.
@@ -10,14 +10,13 @@
    pixel uses so Meta counts one Lead.
 
    Environment variables set in Vercel:
-     NOTION_TOKEN          — internal integration secret (starts ntn_)
      META_CAPI_TOKEN       — Conversions API access token from Events Manager
      META_TEST_EVENT_CODE  — optional, e.g. TEST12345, only while testing
    ========================================================= */
 
 import { createHash } from "node:crypto";
+import { saveToCrm } from "./_crm.js";
 
-const NOTION_DB = "61167d1f-ec96-40d2-987e-9487299a4f86"; // Ad Leads
 
 /* keep anything we store to the options the database actually has */
 const CITIES = ["North Vancouver","West Vancouver","Vancouver","Burnaby","Coquitlam","Other"];
@@ -35,33 +34,23 @@ const TIMELINES = ["ASAP","Within 2 weeks","Within a month","Just researching"];
 const pick = (val, allowed, fallback) => (allowed.includes(val) ? val : fallback);
 const clean = (v, max = 400) => String(v == null ? "" : v).trim().slice(0, max);
 
-async function writeToNotion(d) {
-  const token = process.env.NOTION_TOKEN;
-  if (!token) throw new Error("NOTION_TOKEN is not set");
+/* what they picked on the ad page ("Gutters", "Windows", "Both") → CRM service names */
+function servicesFrom(d) {
+  if (Array.isArray(d.services) && d.services.length) return d.services.filter((s) => SERVICES.includes(s));
+  const v = clean(d.service, 80).toLowerCase();
+  const out = [];
+  if (v.includes("gutter") || v.includes("both")) out.push("Gutter Cleaning");
+  if (v.includes("window") || v.includes("both")) out.push("Window Cleaning");
+  return out;
+}
 
-  const services = (Array.isArray(d.services) ? d.services : [])
-    .filter((s) => SERVICES.includes(s))
-    .map((name) => ({ name }));
-
-  const props = {
-    "Name":        { title: [{ text: { content: clean(d.name, 120) || "(no name)" } }] },
-    "Lead Status": { select: { name: "New" } },
-    "Source":      { select: { name: "Meta Ad" } },
-    "City":        { select: { name: pick(clean(d.city), CITIES, "Other") } },
-  };
-
-  // the short popup form doesn't ask these, so only fill them when sent
-  if (clean(d.homeSize)) props["Home Size"] = { select: { name: matchOption(d.homeSize, SIZES, "Medium") } };
-  if (clean(d.stories))  props["Stories"]   = { select: { name: matchOption(d.stories, STOREYS, "2 storeys") } };
-  if (clean(d.timeline)) props["Timeline"]  = { select: { name: pick(clean(d.timeline), TIMELINES, "ASAP") } };
-
-  if (services.length) props["Services"] = { multi_select: services };
-  if (clean(d.phone))  props["Phone"]    = { phone_number: clean(d.phone, 40) };
-  if (clean(d.email))  props["Email"]    = { email: clean(d.email, 120) };
-  if (clean(d.address)) props["Address"] = { rich_text: [{ text: { content: clean(d.address, 300) } }] };
+async function writeToCrm(d) {
   const notes = [
     d.service ? `Wants: ${clean(d.service, 80)}` : "",
     d.offer ? `OFFER: ${clean(d.offer, 120)}` : "",
+    clean(d.homeSize) ? `Home size: ${matchOption(d.homeSize, SIZES, "Medium")}` : "",
+    clean(d.stories) ? `Stories: ${matchOption(d.stories, STOREYS, "2 storeys")}` : "",
+    clean(d.timeline) ? `Timeline: ${pick(clean(d.timeline), TIMELINES, "ASAP")}` : "",
     d.estimate ? `Gutter estimate shown: ${clean(d.estimate, 40)}` : "",
     d.freeWindowValue ? `Free window cleaning value: ${clean(d.freeWindowValue, 20)}` : "",
     d.gutterStoreys ? `Gutters on: ${clean(d.gutterStoreys, 60)}` : "",
@@ -69,19 +58,17 @@ async function writeToNotion(d) {
     d.roofClean ? `Roof clean: ${clean(d.roofClean, 60)}` : "",
     clean(d.notes) ? `\nThey said: ${clean(d.notes, 1200)}` : "",
   ].filter(Boolean).join("\n");
-  if (notes) props["Notes"] = { rich_text: [{ text: { content: notes.slice(0, 1900) } }] };
 
-  const r = await fetch("https://api.notion.com/v1/pages", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Notion-Version": "2022-06-28",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ parent: { database_id: NOTION_DB }, properties: props }),
+  return saveToCrm({
+    kind: "ad",
+    name: clean(d.name, 120) || "(no name)",
+    phone: clean(d.phone, 40),
+    email: clean(d.email, 120),
+    address: clean(d.address, 300),
+    city: pick(clean(d.city || d.location), CITIES, "Other"),
+    services: servicesFrom(d),
+    notes,
   });
-
-  if (!r.ok) throw new Error(`Notion ${r.status}: ${await r.text()}`);
 }
 
 /* ---------- Meta Conversions API ---------- */
@@ -156,11 +143,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    await writeToNotion(d);
+    await writeToCrm(d);
   } catch (err) {
-    console.error("Notion write failed:", err);
-    const body = { ok: false, notion: false };
-    if (req.headers["x-debug"] === "1") body.notionError = String(err && err.message);
+    console.error("CRM write failed:", err);
+    const body = { ok: false, notion: false, crm: false };
+    if (req.headers["x-debug"] === "1") body.crmError = String(err && err.message);
     return res.status(502).json(body);
   }
 
@@ -173,5 +160,5 @@ export default async function handler(req, res) {
     meta = "failed";
   }
 
-  return res.status(200).json({ ok: true, notion: true, meta });
+  return res.status(200).json({ ok: true, notion: true, crm: true, meta });
 }

@@ -2,6 +2,9 @@
    Vercel serverless function: emails a new lead or job applicant
    to the JBros inbox through Resend (resend.com).
 
+   Website quote requests and job applications are also saved into the
+   Jbros CRM from here (ad leads are saved by api/lead.js instead).
+
    Every form on the site calls this first. Sending from our own
    server means the email no longer depends on the visitor's
    browser or on FormSubmit being up. The browser only falls back
@@ -19,6 +22,8 @@
                        can only deliver to the email the Resend account was
                        made with (so sign up with jbroswc@gmail.com)
    ========================================================= */
+
+import { saveToCrm } from "./_crm.js";
 
 const clean = (v, max = 400) => String(v == null ? "" : v).trim().slice(0, max);
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -49,9 +54,47 @@ function readSections(raw) {
 const btn = (href, label, bg) =>
   `<a href="${href}" style="display:inline-block;background:${bg};color:#fff;text-decoration:none;font-weight:bold;font-size:16px;padding:13px 22px;border-radius:8px;margin:0 8px 8px 0">${label}</a>`;
 
+/* Turn the email payload into a CRM record. Ad leads return null (api/lead.js saves those). */
+function crmForm(d) {
+  const kind = clean(d.kind, 20);
+  if (kind !== "website" && kind !== "hiring") return null;
+  const sections = readSections(d.sections);
+  const find = (label) => {
+    for (const s of sections) for (const [k, v] of s.rows) if (k.toLowerCase() === label) return v;
+    return "";
+  };
+  if (kind === "hiring") {
+    const answers = (sections.find((s) => /answers/i.test(s.title)) || { rows: [] }).rows;
+    const note = find("note");
+    return {
+      kind, name: clean(d.name, 120), phone: clean(d.phone, 40), email: clean(d.email, 120),
+      role: clean(d.source, 120).replace(/^Hiring page:\s*/i, ""),
+      answers, note: note === "(none)" ? "" : note,
+    };
+  }
+  const picked = find("services picked");
+  const notes = sections.map((s) => [s.title.toUpperCase(), ...s.rows.map(([k, v]) => `${k}: ${v}`)].join("\n")).join("\n\n");
+  return {
+    kind, name: clean(d.name, 120), phone: clean(d.phone, 40), email: clean(d.email, 120),
+    address: find("address"), city: find("city"),
+    services: picked && picked !== "None" ? picked.split(/,\s*/) : [],
+    notes,
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
+  }
+
+  // Save website quote requests and job applications in the CRM first. A CRM hiccup must
+  // never block the email, so errors are only logged.
+  try {
+    const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+    const form = crmForm(body);
+    if (form) await saveToCrm(form);
+  } catch (err) {
+    console.error("CRM save failed:", err);
   }
 
   // trimmed: a stray space or newline pasted into Vercel makes the request header invalid
