@@ -1,4 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/invoice/:code",
+      "destination": "https://jbros-crm.pages.dev/d/:code",
+      "permanent": false
+    },
+    {
+      "source": "/quote/:code",
+      "destination": "https://jbros-crm.pages.dev/d/:code",
+      "permanent": false
+    },
+    {
+      "source": "/plan/:code",
+      "destination": "https://jbros-crm.pages.dev/d/:code",
+      "permanent": false
+    }
+  ]
 }
