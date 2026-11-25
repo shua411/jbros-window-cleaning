@@ -4,17 +4,17 @@
   "redirects": [
     {
       "source": "/invoice/:code",
-      "destination": "https://jbros-crm.pages.dev/d/:code",
+      "destination": "https://jbros-crm.pages.dev/invoice/:code",
       "permanent": false
     },
     {
       "source": "/quote/:code",
-      "destination": "https://jbros-crm.pages.dev/d/:code",
+      "destination": "https://jbros-crm.pages.dev/quote/:code",
       "permanent": false
     },
     {
       "source": "/plan/:code",
-      "destination": "https://jbros-crm.pages.dev/d/:code",
+      "destination": "https://jbros-crm.pages.dev/plan/:code",
       "permanent": false
     }
   ]
